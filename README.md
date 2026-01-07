@@ -2,16 +2,21 @@
 
 A powerful, Trello-style project management tool built with the Claude Agent SDK. Designed for local teams of up to 30 users with natural language interface for managing projects, boards, tasks, and team collaboration.
 
+**✨ NEW: Now available as a web application! Access via browser at http://localhost:3000**
+
 ## Features
 
-- **Natural Language Interface**: Interact with your PM tool using conversational language powered by Claude
-- **User Management**: Create and manage team members with different roles (admin, manager, member)
-- **Project Organization**: Organize work into projects with multiple team members
-- **Trello-style Boards**: Create boards with customizable lists (To Do, In Progress, Done, etc.)
-- **Task Management**: Create, assign, prioritize, and track tasks through different stages
-- **Comments**: Add comments to tasks for discussion and updates
-- **Local SQLite Database**: All data stored locally for privacy and control
-- **Multi-user Support**: Designed for teams up to 30 users
+- **🌐 Web Interface**: Modern, responsive web UI accessible via browser
+- **💬 Natural Language Interface**: Interact with your PM tool using conversational language powered by Claude
+- **🔌 REST API**: Full API for programmatic access and integrations
+- **👥 User Management**: Create and manage team members with different roles (admin, manager, member)
+- **📊 Project Organization**: Organize work into projects with multiple team members
+- **📋 Trello-style Boards**: Create boards with customizable lists (To Do, In Progress, Done, etc.)
+- **✅ Task Management**: Create, assign, prioritize, and track tasks through different stages
+- **💬 Comments**: Add comments to tasks for discussion and updates
+- **💾 Local SQLite Database**: All data stored locally for privacy and control
+- **👨‍👩‍👧‍👦 Multi-user Support**: Designed for teams up to 30 users
+- **⌨️ CLI Mode**: Optional command-line interface for terminal users
 
 ## Architecture
 
@@ -61,19 +66,41 @@ npm start
 
 ## Usage
 
-### Starting the Tool
+### Web Application (Recommended)
+
+The easiest way to use the PM tool is via the web interface:
 
 ```bash
-# Production mode
+# Start the web server (production)
 npm start
 
 # Development mode (with hot reload)
 npm run dev
 ```
 
+Then open your browser to: **http://localhost:3000**
+
+The web interface provides:
+- Interactive dashboard with project statistics
+- Chat interface for natural language commands
+- Visual boards and task lists
+- Real-time updates
+
+### CLI Mode
+
+For terminal users, a command-line interface is also available:
+
+```bash
+# Start CLI mode
+npm run start:cli
+
+# Development CLI mode
+npm run dev:cli
+```
+
 ### Example Conversations
 
-Once started, you can interact with the PM tool using natural language:
+You can interact with the PM tool using natural language (via web chat or CLI):
 
 #### Setting Up
 
@@ -134,6 +161,82 @@ The agent has access to the following tools:
 - `get_task` - Get full task details with comments
 - `add_comment` - Add a comment to a task
 
+## REST API
+
+The web server exposes a comprehensive REST API for programmatic access:
+
+### Chat/Query Endpoint
+
+**POST** `/api/chat`
+```json
+{
+  "message": "Create a user named John Doe with email john@example.com"
+}
+```
+
+Response:
+```json
+{
+  "response": "User created successfully: John Doe (johndoe)",
+  "toolCalls": [...],
+  "success": true
+}
+```
+
+### Direct Database Endpoints
+
+#### Users
+- **GET** `/api/users` - List all users
+- **POST** `/api/users` - Create a user
+  ```json
+  {
+    "username": "john",
+    "full_name": "John Doe",
+    "email": "john@example.com",
+    "role": "member"
+  }
+  ```
+
+#### Projects
+- **GET** `/api/projects` - List all projects
+- **POST** `/api/projects` - Create a project
+  ```json
+  {
+    "name": "Website Redesign",
+    "description": "Q1 2026 redesign project",
+    "owner_id": 1
+  }
+  ```
+
+#### Boards
+- **GET** `/api/boards?project_id=1` - List boards (optionally filter by project)
+- **GET** `/api/boards/:id` - Get board with lists and tasks
+- **POST** `/api/boards` - Create a board
+  ```json
+  {
+    "name": "Sprint 1",
+    "project_id": 1,
+    "description": "First sprint board"
+  }
+  ```
+
+#### Tasks
+- **GET** `/api/tasks?board_id=1&assignee_id=2` - List tasks with filters
+- **POST** `/api/tasks` - Create a task
+  ```json
+  {
+    "title": "Design homepage",
+    "list_id": 1,
+    "description": "Create mockups for new homepage",
+    "creator_id": 1,
+    "assignee_id": 2,
+    "priority": "high",
+    "due_date": "2026-02-01"
+  }
+  ```
+- **PUT** `/api/tasks/:id` - Update a task
+- **DELETE** `/api/tasks/:id` - Delete a task
+
 ## Database Schema
 
 The tool uses SQLite with the following tables:
@@ -160,10 +263,14 @@ pm/
 │   │   ├── user-tools.ts   # User management tools
 │   │   ├── project-tools.ts # Project and board tools
 │   │   └── task-tools.ts   # Task management tools
-│   ├── agent.ts            # Main agent configuration
-│   └── index.ts            # Entry point and CLI
+│   ├── agent.ts            # MCP server configuration
+│   ├── server.ts           # Web server (Express + REST API)
+│   └── index.ts            # CLI interface
+├── public/
+│   └── index.html          # Web UI
 ├── package.json
 ├── tsconfig.json
+├── .env.example
 └── README.md
 ```
 
@@ -207,14 +314,45 @@ This tool uses the Claude Agent SDK to provide natural language interaction. To 
 - Flexible workflow (customize lists)
 - Local data control
 
-## Scaling
+## Deployment & Scaling
 
-This tool is designed for teams up to 30 users on a local network. For larger teams or cloud deployment:
+### Local Network Deployment
 
-- Consider migrating to PostgreSQL or MySQL
-- Add authentication and authorization
-- Implement REST API for web/mobile clients
-- Add real-time updates with WebSockets
+The web server can be accessed by multiple users on your local network:
+
+1. Start the server on a computer accessible to your team
+2. Find the server's local IP address (e.g., `192.168.1.100`)
+3. Team members access via `http://192.168.1.100:3000`
+
+### Environment Variables for Production
+
+```bash
+# .env file
+ANTHROPIC_API_KEY=your_actual_key_here
+PORT=3000
+SESSION_SECRET=your-secure-random-secret
+DB_PATH=./pm.db
+```
+
+### Cloud Deployment
+
+Deploy to platforms like:
+- **Heroku**: `heroku create` → `git push heroku main`
+- **Railway**: Connect your repo and deploy
+- **DigitalOcean/AWS**: Run with PM2 or Docker
+- **Vercel/Netlify**: For serverless deployment
+
+### Scaling Beyond 30 Users
+
+For larger teams or enterprise deployment:
+
+- ✅ Migrate to PostgreSQL or MySQL for better concurrency
+- ✅ Add authentication (OAuth, JWT, or session-based)
+- ✅ Implement role-based access control (RBAC)
+- ✅ Add WebSocket support for real-time updates
+- ✅ Set up load balancing with multiple server instances
+- ✅ Add caching layer (Redis) for better performance
+- ✅ Implement rate limiting and security headers
 
 ## Troubleshooting
 
