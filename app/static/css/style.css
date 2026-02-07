@@ -627,10 +627,80 @@ footer {
 .psr-compliant { background: rgba(63,185,80,0.2); color: var(--green); border: 1px solid var(--green); }
 .psr-atrisk { background: rgba(248,81,73,0.2); color: var(--red); border: 1px solid var(--red); }
 
+/* ==================== INTEL EDITOR ==================== */
+.intel-target-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: border-color .2s;
+}
+.intel-target-row:hover { border-color: var(--arsenal-red); }
+.intel-target-row.intel-unavailable { opacity: 0.5; border-color: var(--red); }
+.intel-player-info { flex: 1; min-width: 160px; }
+.intel-player-info .intel-name { font-weight: 700; font-size: 15px; color: var(--text-primary); }
+.intel-player-info .intel-meta { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.intel-field { display: flex; flex-direction: column; gap: 4px; }
+.intel-field label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.intel-field select,
+.intel-field input[type="number"],
+.intel-field input[type="text"] {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-family: inherit;
+}
+.intel-field select { min-width: 140px; cursor: pointer; }
+.intel-field input[type="number"] { width: 80px; }
+.intel-field input[type="text"] { width: 200px; }
+.intel-field select:focus,
+.intel-field input:focus { outline: none; border-color: var(--arsenal-red); }
+
+.intel-status-available { color: var(--green); }
+.intel-status-rival { color: var(--red); }
+.intel-status-priced-out { color: var(--yellow); }
+
+.intel-log-entry {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-left: 3px solid var(--arsenal-red);
+    background: rgba(255,255,255,0.02);
+    margin-bottom: 6px;
+    border-radius: 0 4px 4px 0;
+    font-size: 13px;
+}
+.intel-log-entry .log-time { color: var(--text-muted); font-size: 11px; min-width: 60px; }
+.intel-log-entry .log-msg { color: var(--text-secondary); }
+.intel-log-entry.log-removal { border-left-color: var(--red); }
+.intel-log-entry.log-fee { border-left-color: var(--yellow); }
+.intel-log-entry.log-note { border-left-color: var(--blue); }
+
+.intel-rival-badge {
+    display: inline-block;
+    background: rgba(248,81,73,0.15);
+    color: var(--red);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 6px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .top-bar { flex-direction: column; align-items: flex-start; }
     .kpi-row { flex-direction: column; }
     .stats-grid { grid-template-columns: repeat(3, 1fr); }
     main { padding: 12px; }
+    .intel-target-row { flex-direction: column; }
+    .intel-field input[type="text"] { width: 100%; }
 }

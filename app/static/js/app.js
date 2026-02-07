@@ -234,6 +234,75 @@
         return d;
     }
 
+    // ==================== INTEL STATE ====================
+    let INTEL_UPDATES = {}; // keyed by player name
+    let INTEL_LOG = [];
+
+    function loadIntelFromStorage() {
+        try {
+            const saved = localStorage.getItem("arsenal_intel");
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                INTEL_UPDATES = parsed.updates || {};
+                INTEL_LOG = parsed.log || [];
+            }
+        } catch (e) { /* ignore */ }
+    }
+    function saveIntelToStorage() {
+        try {
+            localStorage.setItem("arsenal_intel", JSON.stringify({
+                updates: INTEL_UPDATES,
+                log: INTEL_LOG,
+            }));
+        } catch (e) { /* ignore */ }
+    }
+
+    function applyIntelToBaseline() {
+        // Start from a fresh clone of the original baseline
+        const d = JSON.parse(JSON.stringify(BASELINE));
+
+        // Remove or modify targets based on intel
+        const removedNames = [];
+        for (const [name, intel] of Object.entries(INTEL_UPDATES)) {
+            if (intel.status === "signed_by_rival") {
+                removedNames.push(name);
+                // Remove from buy recommendations
+                d.transfer_plan.buy_recommendations = d.transfer_plan.buy_recommendations.filter(b => b.player !== name);
+                // Remove from targets
+                d.targets = (d.targets || []).filter(t => t.name !== name);
+            } else if (intel.status === "priced_out") {
+                removedNames.push(name);
+                d.transfer_plan.buy_recommendations = d.transfer_plan.buy_recommendations.filter(b => b.player !== name);
+                d.targets = (d.targets || []).filter(t => t.name !== name);
+            }
+            // Fee adjustments
+            if (intel.fee !== undefined && intel.fee !== null) {
+                const buyRec = d.transfer_plan.buy_recommendations.find(b => b.player === name);
+                if (buyRec) {
+                    buyRec.estimated_fee_m = intel.fee;
+                    if (buyRec.deal_structure) buyRec.deal_structure.total = intel.fee;
+                }
+                const target = (d.targets || []).find(t => t.name === name);
+                if (target) target.market_value_m = intel.fee;
+            }
+            // Add rival info to risk factors
+            if (intel.status === "signed_by_rival" && intel.rival) {
+                const buyRec = d.transfer_plan.buy_recommendations.find(b => b.player === name);
+                if (buyRec) {
+                    buyRec.risk_factors = buyRec.risk_factors || [];
+                    buyRec.risk_factors.push(`Already signed by ${intel.rival}`);
+                }
+            }
+        }
+
+        // Update BASELINE clone (this becomes the new working baseline for recalc)
+        BASELINE = d;
+        // Recalculate with current budget
+        const budget = Number(slider.value) || 150;
+        DATA = recalcWithBudget(budget);
+        render();
+    }
+
     function render() {
         if (!DATA) return;
         $("#loadingIndicator").classList.add("hidden");
@@ -244,6 +313,7 @@
         renderFinancialTab();
         renderRivalsTab();
         renderStrategyTab();
+        renderIntelTab();
     }
 
     // ==================== OVERVIEW ====================
@@ -795,6 +865,102 @@
         $("#strategyTimeline").innerHTML = html;
     }
 
+    // ==================== INTEL TAB ====================
+    function renderIntelTab() {
+        // Get all targets from original BASELINE (before intel applied)
+        let origBaseline;
+        try {
+            const raw = window.__INITIAL_DATA__;
+            origBaseline = raw;
+        } catch (e) {
+            origBaseline = BASELINE;
+        }
+        const allTargets = (origBaseline && origBaseline.transfer_plan)
+            ? origBaseline.transfer_plan.buy_recommendations || []
+            : (BASELINE && BASELINE.transfer_plan ? BASELINE.transfer_plan.buy_recommendations : []);
+
+        // Build target editor rows
+        let html = "";
+        for (const t of allTargets) {
+            const intel = INTEL_UPDATES[t.player] || {};
+            const status = intel.status || "available";
+            const fee = intel.fee !== undefined ? intel.fee : t.estimated_fee_m;
+            const rival = intel.rival || "";
+            const notes = intel.notes || "";
+            const unavailable = status === "signed_by_rival" || status === "priced_out";
+
+            html += `
+            <div class="intel-target-row ${unavailable ? "intel-unavailable" : ""}">
+                <div class="intel-player-info">
+                    <div class="intel-name">${t.player}${unavailable ? `<span class="intel-rival-badge">${status === "signed_by_rival" ? "SIGNED BY " + (rival || "RIVAL").toUpperCase() : "PRICED OUT"}</span>` : ""}</div>
+                    <div class="intel-meta">${t.position} &middot; ${t.age} &middot; ${t.current_club || ""}</div>
+                </div>
+                <div class="intel-field">
+                    <label>Status</label>
+                    <select data-player="${t.player}" data-field="status">
+                        <option value="available" ${status === "available" ? "selected" : ""}>Available</option>
+                        <option value="signed_by_rival" ${status === "signed_by_rival" ? "selected" : ""}>Signed by Rival</option>
+                        <option value="priced_out" ${status === "priced_out" ? "selected" : ""}>Priced Out</option>
+                    </select>
+                </div>
+                <div class="intel-field">
+                    <label>Rival Club</label>
+                    <input type="text" data-player="${t.player}" data-field="rival" value="${rival}" placeholder="e.g. Man City">
+                </div>
+                <div class="intel-field">
+                    <label>Fee (\u20ACm)</label>
+                    <input type="number" data-player="${t.player}" data-field="fee" value="${fee}" min="0" max="500" step="1">
+                </div>
+                <div class="intel-field">
+                    <label>Notes</label>
+                    <input type="text" data-player="${t.player}" data-field="notes" value="${notes}" placeholder="Scouting note...">
+                </div>
+            </div>`;
+        }
+        if (!allTargets.length) html = `<p style="color:var(--text-muted)">No transfer targets loaded.</p>`;
+        $("#intelTargetEditor").innerHTML = html;
+
+        // Bind change handlers on all intel fields
+        document.querySelectorAll("#intelTargetEditor select, #intelTargetEditor input").forEach(el => {
+            el.addEventListener("change", () => {
+                const player = el.dataset.player;
+                const field = el.dataset.field;
+                if (!INTEL_UPDATES[player]) INTEL_UPDATES[player] = {};
+                INTEL_UPDATES[player][field] = field === "fee" ? Number(el.value) : el.value;
+                saveIntelToStorage();
+            });
+            // Also save on input for text/number fields
+            if (el.tagName === "INPUT") {
+                el.addEventListener("input", () => {
+                    const player = el.dataset.player;
+                    const field = el.dataset.field;
+                    if (!INTEL_UPDATES[player]) INTEL_UPDATES[player] = {};
+                    INTEL_UPDATES[player][field] = field === "fee" ? Number(el.value) : el.value;
+                    saveIntelToStorage();
+                });
+            }
+        });
+
+        // Render intel log
+        renderIntelLog();
+    }
+
+    function renderIntelLog() {
+        if (!INTEL_LOG.length) {
+            $("#intelLog").innerHTML = `<p style="color:var(--text-muted);font-size:13px">No intel updates yet. Make changes above and click "Apply Changes".</p>`;
+            return;
+        }
+        let html = "";
+        for (const entry of INTEL_LOG.slice().reverse()) {
+            const cls = entry.type === "removal" ? "log-removal" : entry.type === "fee" ? "log-fee" : "log-note";
+            html += `<div class="intel-log-entry ${cls}">
+                <span class="log-time">${entry.time}</span>
+                <span class="log-msg">${entry.message}</span>
+            </div>`;
+        }
+        $("#intelLog").innerHTML = html;
+    }
+
     // ==================== HELPERS ====================
     function kpi(value, label, cls) {
         return `<div class="kpi-box ${cls}"><div class="kpi-value">${value}</div><div class="kpi-label">${label}</div></div>`;
@@ -822,6 +988,57 @@
         return order[pos] ?? 10;
     }
 
+    // ---- INTEL BUTTONS ----
+    document.addEventListener("DOMContentLoaded", () => {
+        const applyBtn = document.getElementById("intelApplyBtn");
+        const resetBtn = document.getElementById("intelResetBtn");
+        if (applyBtn) {
+            applyBtn.addEventListener("click", () => {
+                // Log the changes
+                const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+                for (const [player, intel] of Object.entries(INTEL_UPDATES)) {
+                    if (intel.status === "signed_by_rival") {
+                        INTEL_LOG.push({ time: now, type: "removal", message: `${player} marked as SIGNED BY ${(intel.rival || "rival").toUpperCase()} — removed from recommendations` });
+                    } else if (intel.status === "priced_out") {
+                        INTEL_LOG.push({ time: now, type: "removal", message: `${player} marked as PRICED OUT — removed from recommendations` });
+                    }
+                    if (intel.fee !== undefined) {
+                        INTEL_LOG.push({ time: now, type: "fee", message: `${player} fee updated to \u20AC${intel.fee}m` });
+                    }
+                    if (intel.notes) {
+                        INTEL_LOG.push({ time: now, type: "note", message: `${player}: "${intel.notes}"` });
+                    }
+                }
+                saveIntelToStorage();
+
+                // Reset BASELINE to original data and re-apply intel
+                BASELINE = JSON.parse(JSON.stringify(window.__INITIAL_DATA__));
+                applyIntelToBaseline();
+            });
+        }
+        if (resetBtn) {
+            resetBtn.addEventListener("click", () => {
+                INTEL_UPDATES = {};
+                INTEL_LOG = [];
+                localStorage.removeItem("arsenal_intel");
+                BASELINE = JSON.parse(JSON.stringify(window.__INITIAL_DATA__));
+                const budget = Number(slider.value) || 150;
+                DATA = recalcWithBudget(budget);
+                render();
+            });
+        }
+    });
+
     // ---- INIT ----
+    loadIntelFromStorage();
     loadData(150);
+
+    // After initial load, apply any saved intel
+    setTimeout(() => {
+        if (Object.keys(INTEL_UPDATES).length > 0 && BASELINE) {
+            const origBaseline = JSON.parse(JSON.stringify(window.__INITIAL_DATA__ || BASELINE));
+            BASELINE = origBaseline;
+            applyIntelToBaseline();
+        }
+    }, 100);
 })();

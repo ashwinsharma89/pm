@@ -32,6 +32,7 @@
         <button class="tab" data-tab="financial">Financial Model</button>
         <button class="tab" data-tab="rivals">Rival Intel</button>
         <button class="tab" data-tab="strategy">Window Strategy</button>
+        <button class="tab" data-tab="intel" style="color:var(--arsenal-gold)">Live Intel Updates</button>
     </nav>
 
     <main id="app">
@@ -145,6 +146,27 @@
         <!-- ============ WINDOW STRATEGY ============ -->
         <section id="tab-strategy" class="tab-content">
             <div id="strategyTimeline"></div>
+        </section>
+
+        <!-- ============ LIVE INTEL UPDATES ============ -->
+        <section id="tab-intel" class="tab-content">
+            <div class="card">
+                <h2>Live Transfer Intel Updates</h2>
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px">
+                    Update target status in real time. Mark players as signed by rivals, adjust fees, or add scouting notes.
+                    Changes recalculate the entire plan instantly and are saved in your browser (persist across refreshes).
+                </p>
+                <div id="intelTargetEditor"></div>
+            </div>
+            <div class="card">
+                <h2>Intel Log</h2>
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">History of all intel updates applied this session.</p>
+                <div id="intelLog"></div>
+            </div>
+            <div style="display:flex;gap:12px;margin-top:12px">
+                <button id="intelApplyBtn" class="btn-refresh" style="background:var(--green);padding:10px 24px;font-size:14px">Apply Changes &amp; Recalculate</button>
+                <button id="intelResetBtn" class="btn-refresh" style="background:var(--red);padding:10px 24px;font-size:14px">Reset All Intel</button>
+            </div>
         </section>
     </main>
 
