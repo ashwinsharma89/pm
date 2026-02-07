@@ -106,8 +106,9 @@ def _serialize_player(player) -> dict:
 
 @app.route("/")
 def index():
-    """Main dashboard page."""
-    return render_template("index.html")
+    """Main dashboard page - embeds initial data for instant render."""
+    plan = _build_full_plan(DEFAULT_BUDGET_M)
+    return render_template("index.html", initial_data=json.dumps(plan))
 
 
 @app.route("/api/plan")

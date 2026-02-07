@@ -48,6 +48,14 @@
     async function loadData(budget) {
         const loader = $("#loadingIndicator");
         loader.classList.remove("hidden");
+
+        // Use embedded data on first load, fetch on recalculate
+        if (!DATA && window.__INITIAL_DATA__) {
+            DATA = window.__INITIAL_DATA__;
+            render();
+            return;
+        }
+
         try {
             const res = await fetch(`/api/plan?budget=${budget || 150}`);
             DATA = await res.json();
