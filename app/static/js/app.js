@@ -45,24 +45,193 @@
     }
 
     // ---- LOAD DATA ----
+    // Store the original baseline data for client-side recalculations
+    let BASELINE = null;
+
     async function loadData(budget) {
         const loader = $("#loadingIndicator");
         loader.classList.remove("hidden");
 
-        // Use embedded data on first load, fetch on recalculate
+        // First load: use embedded data
         if (!DATA && window.__INITIAL_DATA__) {
             DATA = window.__INITIAL_DATA__;
+            BASELINE = JSON.parse(JSON.stringify(DATA)); // deep clone
             render();
             return;
         }
 
+        // Recalculate: try server first, fall back to client-side
         try {
             const res = await fetch(`/api/plan?budget=${budget || 150}`);
+            if (!res.ok) throw new Error("Server unavailable");
             DATA = await res.json();
             render();
         } catch (err) {
-            loader.innerHTML = `<p style="color:var(--red)">Error loading data: ${err.message}</p>`;
+            // Client-side recalculation (works in standalone mode)
+            if (BASELINE) {
+                DATA = recalcWithBudget(budget || 150);
+                render();
+            } else {
+                loader.innerHTML = `<p style="color:var(--red)">Error loading data: ${err.message}</p>`;
+            }
         }
+    }
+
+    // ---- CLIENT-SIDE BUDGET RECALCULATION ENGINE ----
+    function recalcWithBudget(budget) {
+        // Deep clone baseline so we don't mutate it
+        const d = JSON.parse(JSON.stringify(BASELINE));
+        const saleRevenue = d.transfer_plan.sell_recommendations.reduce((s, r) => s + r.projected_fee_m, 0);
+        const totalAvailable = budget + saleRevenue;
+
+        // Recalculate buy recommendation scores based on new budget
+        for (const b of d.transfer_plan.buy_recommendations) {
+            const fee = b.estimated_fee_m;
+            // Financial value: lower fee relative to budget = better
+            let valueScore;
+            if (fee === 0) {
+                valueScore = 100;
+            } else {
+                valueScore = Math.max(10, Math.min(100, Math.round(100 - (fee / budget) * 80)));
+            }
+            // Feasibility: can we afford it?
+            let feasScore = 70;
+            if (fee === 0) { feasScore = 95; }
+            else {
+                if (fee > budget * 0.6) feasScore -= 20;
+                if (fee > budget) feasScore -= 30;
+            }
+            // Check risk keywords in risk_factors
+            const riskKw = ["city", "liverpool", "real madrid", "already signed"];
+            for (const rf of (b.risk_factors || [])) {
+                if (riskKw.some(k => rf.toLowerCase().includes(k))) { feasScore -= 15; break; }
+            }
+            feasScore = Math.max(10, Math.min(100, feasScore));
+
+            b.score_breakdown.financial_value = valueScore;
+            b.score_breakdown.feasibility = feasScore;
+
+            // Recalculate priority score with same weights
+            const sb = b.score_breakdown;
+            b.priority_score = Math.round(
+                sb.squad_need * 0.25 +
+                sb.player_quality * 0.20 +
+                sb.financial_value * 0.20 +
+                sb.age_profile * 0.15 +
+                sb.feasibility * 0.20
+            );
+
+            // Update summary tier label
+            const tier = b.priority_score >= 75 ? "PRIORITY 1" : b.priority_score >= 60 ? "PRIORITY 2" : "PRIORITY 3";
+            b.recommendation_summary = `${tier}: Sign ${b.player} (${b.position}, ${b.age}). Estimated fee: \u20AC${fee}m. Recommendation score: ${b.priority_score}/100.`;
+        }
+        // Re-sort by new priority score
+        d.transfer_plan.buy_recommendations.sort((a, b) => b.priority_score - a.priority_score);
+
+        // Recalculate financial report
+        const top4 = d.transfer_plan.buy_recommendations.slice(0, 4);
+        const totalSpend = top4.reduce((s, b) => s + b.estimated_fee_m, 0);
+        const newWagesAnnual = top4.reduce((s, b) => s + b.estimated_wages_k * 52 / 1000, 0);
+        const wageSaved = d.transfer_plan.sell_recommendations.reduce((s, r) => s + r.wage_saving_annual_m, 0);
+        const currentWageBill = 186.0;
+        const annualRevenue = 480.0;
+        const netWageChange = newWagesAnnual - wageSaved;
+        const projectedWageBill = currentWageBill + netWageChange;
+        const wageRatio = projectedWageBill / annualRevenue;
+        const maxRatio = 0.55;
+        const existingAmort = 80.0;
+        const newAmort = top4.reduce((s, b) => s + b.estimated_fee_m / 5, 0);
+        const amortRemoved = saleRevenue * 0.1;
+        const totalAmort = existingAmort + newAmort - amortRemoved;
+        const otherCosts = 60.0;
+        const totalCosts = projectedWageBill + totalAmort + otherCosts;
+        const annualProfit = annualRevenue - totalCosts;
+
+        d.financial_report = {
+            budget_overview: {
+                base_budget_m: budget,
+                sale_revenue_m: Math.round(saleRevenue * 10) / 10,
+                total_available_m: Math.round(totalAvailable * 10) / 10,
+                total_spend_m: Math.round(totalSpend * 10) / 10,
+                remaining_m: Math.round((totalAvailable - totalSpend) * 10) / 10,
+                net_spend_m: Math.round((totalSpend - saleRevenue) * 10) / 10,
+            },
+            wage_impact: {
+                current_wage_bill_m: currentWageBill,
+                new_wages_added_m: Math.round(newWagesAnnual * 100) / 100,
+                wages_saved_m: Math.round(wageSaved * 100) / 100,
+                net_wage_change_m: Math.round(netWageChange * 100) / 100,
+                projected_wage_bill_m: Math.round(projectedWageBill * 100) / 100,
+                current_wage_ratio: Math.round(currentWageBill / annualRevenue * 1000) / 10,
+                projected_wage_ratio: Math.round(wageRatio * 1000) / 10,
+                max_sustainable_ratio: Math.round(maxRatio * 1000) / 10,
+                wage_headroom_m: Math.round((maxRatio * annualRevenue - projectedWageBill) * 100) / 100,
+                status: wageRatio < 0.45 ? "healthy" : wageRatio < 0.55 ? "caution" : "danger",
+            },
+            amortization: {
+                existing_annual_amortization_m: existingAmort,
+                new_amortization_m: Math.round(newAmort * 100) / 100,
+                amortization_removed_m: Math.round(amortRemoved * 100) / 100,
+                total_projected_amortization_m: Math.round(totalAmort * 100) / 100,
+                purchases_detail: top4.map(b => ({
+                    player: b.player,
+                    fee_m: b.estimated_fee_m,
+                    years: 5,
+                    annual_amort_m: Math.round(b.estimated_fee_m / 5 * 100) / 100,
+                })),
+            },
+            psr_compliance: {
+                estimated_annual_revenue_m: annualRevenue,
+                estimated_annual_costs_m: Math.round(totalCosts * 100) / 100,
+                estimated_annual_profit_m: Math.round(annualProfit * 100) / 100,
+                psr_allowable_loss_m: 105.0,
+                psr_headroom_m: Math.round((105.0 + annualProfit) * 100) / 100,
+                status: annualProfit > -105 ? "compliant" : "at_risk",
+                notes: annualProfit > -50
+                    ? "Arsenal's strong commercial revenue and CL qualification provide significant PSR headroom. The proposed transfer plan is well within sustainable limits."
+                    : "Caution: Proposed spending approaches PSR limits. Consider phasing purchases or increasing sales.",
+            },
+        };
+
+        // Update financial summary in transfer_plan
+        d.transfer_plan.financial_summary = {
+            transfer_budget_m: budget,
+            projected_sale_revenue_m: Math.round(saleRevenue * 10) / 10,
+            total_available_m: Math.round(totalAvailable * 10) / 10,
+            projected_purchase_cost_m: Math.round(totalSpend * 10) / 10,
+            net_spend_m: Math.round((totalSpend - saleRevenue) * 10) / 10,
+            wage_savings_annual_m: Math.round(wageSaved * 10) / 10,
+            new_wages_annual_m: Math.round(newWagesAnnual * 10) / 10,
+            net_wage_change_annual_m: Math.round(netWageChange * 10) / 10,
+        };
+
+        // Update strategy phases with re-sorted targets
+        const pBuys = d.transfer_plan.buy_recommendations;
+        const priority = pBuys.filter(b => b.priority_score >= 70);
+        const secondary = pBuys.filter(b => b.priority_score >= 55 && b.priority_score < 70);
+        const opp = pBuys.filter(b => b.priority_score < 55);
+        const sells = d.transfer_plan.sell_recommendations;
+        d.transfer_plan.transfer_window_strategy = {
+            phase_1_early_summer: {
+                description: "Secure priority targets before World Cup distraction",
+                targets: priority.slice(0, 3).map(b => b.player),
+                sales: sells.filter(s => s.urgency === "immediate").map(s => s.player),
+            },
+            phase_2_mid_summer: {
+                description: "Complete secondary business after World Cup",
+                targets: secondary.slice(0, 2).map(b => b.player),
+                sales: sells.filter(s => s.urgency === "summer").map(s => s.player),
+            },
+            phase_3_late_window: {
+                description: "Opportunistic deals and final squad trimming",
+                targets: opp.slice(0, 2).map(b => b.player),
+                sales: sells.filter(s => s.urgency === "optional").map(s => s.player),
+            },
+            total_priority_signings: priority.length,
+            total_sales_planned: sells.length,
+        };
+
+        return d;
     }
 
     function render() {
