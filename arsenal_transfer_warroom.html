@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arsenal FC - Transfer War Room 2026</title>
+    <style>
+/* ========================================================
+   Arsenal Transfer War Room - Enterprise Dashboard CSS
+   ======================================================== */
+
+:root {
+    --arsenal-red: #EF0107;
+    --arsenal-dark: #063672;
+    --arsenal-gold: #9C824A;
+    --bg-primary: #0d1117;
+    --bg-card: #161b22;
+    --bg-card-hover: #1c2129;
+    --border: #30363d;
+    --text-primary: #e6edf3;
+    --text-secondary: #8b949e;
+    --text-muted: #6e7681;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --blue: #58a6ff;
+    --purple: #bc8cff;
+    --radius: 8px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+}
+
+/* ---- TOP BAR ---- */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: linear-gradient(135deg, var(--arsenal-red) 0%, #9b0106 60%, var(--arsenal-dark) 100%);
+    border-bottom: 3px solid var(--arsenal-gold);
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.logo-area { display: flex; align-items: center; gap: 12px; }
+.cannon-icon {
+    font-size: 32px;
+    color: var(--arsenal-gold);
+    transform: rotate(-45deg);
+}
+.top-bar h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+.subtitle { font-size: 12px; color: rgba(255,255,255,0.7); }
+.budget-control { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.budget-control input[type=range] { width: 140px; accent-color: var(--arsenal-gold); }
+.budget-val {
+    background: rgba(0,0,0,0.3);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 16px;
+    min-width: 70px;
+    text-align: center;
+}
+.btn-refresh {
+    padding: 6px 16px;
+    background: var(--arsenal-gold);
+    color: #000;
+    border: none;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background 0.2s;
+}
+.btn-refresh:hover { background: #b8963a; }
+
+/* ---- TAB BAR ---- */
+.tab-bar {
+    display: flex;
+    gap: 2px;
+    padding: 0 24px;
+    background: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+}
+.tab {
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.tab:hover { color: var(--text-primary); background: rgba(255,255,255,0.03); }
+.tab.active {
+    color: var(--arsenal-red);
+    border-bottom-color: var(--arsenal-red);
+    font-weight: 600;
+}
+
+/* ---- MAIN ---- */
+main { padding: 24px; max-width: 1400px; margin: 0 auto; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ---- LOADING ---- */
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 0;
+    gap: 16px;
+    color: var(--text-secondary);
+}
+.loading.hidden { display: none; }
+.spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--border);
+    border-top-color: var(--arsenal-red);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---- GRID ---- */
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+@media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+
+/* ---- CARDS ---- */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+}
+.card h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-primary);
+}
+.card h3 { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+.section-sell { color: var(--red); }
+.section-buy { color: var(--green); }
+
+/* ---- KPI ROW ---- */
+.kpi-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+.kpi-box {
+    flex: 1;
+    min-width: 160px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+}
+.kpi-box .kpi-value {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+.kpi-box .kpi-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.kpi-green .kpi-value { color: var(--green); }
+.kpi-red .kpi-value { color: var(--red); }
+.kpi-yellow .kpi-value { color: var(--yellow); }
+.kpi-blue .kpi-value { color: var(--blue); }
+.kpi-gold .kpi-value { color: var(--arsenal-gold); }
+
+/* ---- DATA TABLE ---- */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+.data-table th {
+    background: rgba(255,255,255,0.05);
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+}
+.data-table td {
+    padding: 7px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    white-space: nowrap;
+}
+.data-table tbody tr:hover { background: var(--bg-card-hover); cursor: pointer; }
+
+/* ---- PITCH GRID (positional heatmap) ---- */
+.pitch-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(4, 60px);
+    gap: 6px;
+    max-width: 480px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, #1a3a1a 0%, #1e4a1e 100%);
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 6px;
+    padding: 12px;
+}
+.pitch-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    gap: 2px;
+    transition: transform 0.2s;
+}
+.pitch-cell:hover { transform: scale(1.08); }
+.pitch-cell .pos-label { font-size: 10px; opacity: 0.7; }
+.pitch-cell .pos-count { font-size: 16px; font-weight: 700; }
+.depth-strong { background: rgba(63,185,80,0.3); border: 1px solid var(--green); }
+.depth-adequate { background: rgba(210,153,34,0.3); border: 1px solid var(--yellow); }
+.depth-thin { background: rgba(248,81,73,0.25); border: 1px solid var(--red); }
+.depth-critical { background: rgba(248,81,73,0.5); border: 1px solid var(--red); animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+
+/* ---- RECOMMENDATION CARDS ---- */
+.rec-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    transition: border-color 0.2s;
+}
+.rec-card:hover { border-color: var(--arsenal-gold); }
+.rec-card.sell-card { border-left: 4px solid var(--red); }
+.rec-card.buy-card { border-left: 4px solid var(--green); }
+
+.rec-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.rec-player-info h3 { font-size: 18px; margin-bottom: 2px; }
+.rec-player-info .rec-meta {
+    font-size: 12px;
+    color: var(--text-secondary);
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.rec-score {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.priority-badge {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.priority-1 { background: var(--red); color: #fff; }
+.priority-2 { background: var(--yellow); color: #000; }
+.priority-3 { background: var(--blue); color: #000; }
+
+.score-ring {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    border: 3px solid;
+}
+.score-high { border-color: var(--green); color: var(--green); }
+.score-mid { border-color: var(--yellow); color: var(--yellow); }
+.score-low { border-color: var(--red); color: var(--red); }
+
+.rec-body { margin-top: 12px; }
+.rec-section { margin-bottom: 12px; }
+.rec-section h4 {
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+.rec-reason {
+    font-size: 13px;
+    padding: 4px 0;
+    padding-left: 14px;
+    position: relative;
+    color: var(--text-primary);
+}
+.rec-reason::before {
+    content: '\25B8';
+    position: absolute;
+    left: 0;
+    color: var(--arsenal-gold);
+}
+.eye-test-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 8px;
+}
+.stat-box {
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px;
+    padding: 8px;
+    text-align: center;
+}
+.stat-box .stat-val { font-size: 18px; font-weight: 700; color: var(--blue); }
+.stat-box .stat-label { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
+
+.score-breakdown {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.breakdown-bar {
+    flex: 1;
+    min-width: 80px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px;
+    padding: 6px 8px;
+    text-align: center;
+}
+.breakdown-bar .bar-label { font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
+.breakdown-bar .bar-fill {
+    height: 4px;
+    background: var(--arsenal-red);
+    border-radius: 2px;
+    margin: 4px 0;
+    transition: width 0.5s;
+}
+.breakdown-bar .bar-val { font-size: 12px; font-weight: 600; }
+
+.deal-box {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 12px;
+    font-size: 13px;
+}
+.deal-row { display: flex; justify-content: space-between; padding: 3px 0; }
+.deal-row .deal-label { color: var(--text-secondary); }
+.deal-row .deal-val { font-weight: 600; }
+
+.risk-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.risk-tag {
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    background: rgba(248,81,73,0.15);
+    color: var(--red);
+    border: 1px solid rgba(248,81,73,0.3);
+}
+.strength-tag {
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    background: rgba(63,185,80,0.15);
+    color: var(--green);
+    border: 1px solid rgba(63,185,80,0.3);
+}
+
+/* ---- CONTRACT RISK ---- */
+.risk-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.risk-indicator {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+}
+.risk-critical { background: var(--red); box-shadow: 0 0 6px var(--red); }
+.risk-high { background: var(--yellow); }
+.risk-medium { background: var(--blue); }
+.risk-name { font-weight: 600; min-width: 160px; }
+.risk-detail { font-size: 12px; color: var(--text-secondary); flex: 1; }
+
+/* ---- AGE PROFILE ---- */
+.age-bars { display: flex; flex-direction: column; gap: 10px; }
+.age-group { display: flex; align-items: center; gap: 12px; }
+.age-label { min-width: 130px; font-size: 13px; font-weight: 500; }
+.age-bar-track {
+    flex: 1; height: 24px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+.age-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    transition: width 0.6s ease;
+}
+.age-bar-fill.youth { background: var(--blue); }
+.age-bar-fill.prime { background: var(--green); }
+.age-bar-fill.experienced { background: var(--yellow); }
+.age-bar-fill.veteran { background: var(--red); }
+
+/* ---- PERF GAPS ---- */
+.gap-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px;
+    margin-bottom: 10px;
+}
+.gap-card h4 { font-size: 14px; margin-bottom: 8px; }
+.gap-issue {
+    display: flex;
+    gap: 12px;
+    padding: 6px 0;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+    align-items: center;
+}
+.severity-badge {
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    min-width: 55px;
+    text-align: center;
+}
+.severity-high { background: rgba(248,81,73,0.2); color: var(--red); }
+.severity-medium { background: rgba(210,153,34,0.2); color: var(--yellow); }
+.severity-low { background: rgba(88,166,255,0.2); color: var(--blue); }
+
+/* ---- STRATEGY TIMELINE ---- */
+.timeline { position: relative; padding-left: 30px; }
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 14px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+}
+.timeline-phase {
+    position: relative;
+    margin-bottom: 30px;
+}
+.timeline-phase::before {
+    content: '';
+    position: absolute;
+    left: -22px;
+    top: 6px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--arsenal-red);
+    border: 2px solid var(--bg-primary);
+}
+.timeline-phase h3 { font-size: 15px; margin-bottom: 4px; }
+.timeline-phase .phase-desc {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+.phase-items {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.phase-item {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+.phase-item.item-in { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+.phase-item.item-out { background: rgba(248,81,73,0.15); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+
+/* ---- RIVAL CARDS ---- */
+.rival-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+}
+.rival-card h3 { font-size: 16px; margin-bottom: 10px; }
+.rival-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.rival-section h4 { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; }
+.rival-list { list-style: none; font-size: 13px; }
+.rival-list li { padding: 3px 0; padding-left: 14px; position: relative; }
+.rival-list li::before { content: '\2022'; position: absolute; left: 0; color: var(--arsenal-gold); }
+
+/* ---- MODAL ---- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+.modal-overlay.show { display: flex; }
+.modal-content {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    max-width: 700px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+}
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 24px;
+    cursor: pointer;
+}
+.modal-close:hover { color: var(--text-primary); }
+
+/* ---- QUICK PLAN ITEMS ---- */
+.quick-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+}
+.quick-item .qi-name { font-weight: 600; }
+.quick-item .qi-fee { color: var(--text-secondary); }
+.quick-item .qi-pos {
+    padding: 1px 6px;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.06);
+    font-size: 11px;
+    margin-left: 6px;
+}
+
+/* ---- HEADLINE ITEMS ---- */
+#headlinesList { list-style: none; }
+#headlinesList li {
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    border-radius: 4px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+.headline-critical { background: rgba(248,81,73,0.12); border-left: 3px solid var(--red); }
+.headline-warning { background: rgba(210,153,34,0.12); border-left: 3px solid var(--yellow); }
+.headline-info { background: rgba(88,166,255,0.12); border-left: 3px solid var(--blue); }
+
+/* ---- FOOTER ---- */
+footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 11px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+}
+
+/* ---- PSR STATUS ---- */
+.psr-status {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+.psr-compliant { background: rgba(63,185,80,0.2); color: var(--green); border: 1px solid var(--green); }
+.psr-atrisk { background: rgba(248,81,73,0.2); color: var(--red); border: 1px solid var(--red); }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .top-bar { flex-direction: column; align-items: flex-start; }
+    .kpi-row { flex-direction: column; }
+    .stats-grid { grid-template-columns: repeat(3, 1fr); }
+    main { padding: 12px; }
+}
+    </style>
+</head>
+<body>
+    <header class="top-bar">
+        <div class="logo-area">
+            <div class="cannon-icon">&#9650;</div>
+            <div>
+                <h1>Arsenal FC &mdash; Transfer War Room</h1>
+                <span class="subtitle">Summer 2026 Window Planning &middot; Sporting Director Console</span>
+            </div>
+        </div>
+        <div class="budget-control">
+            <label for="budgetSlider">Transfer Budget (EUR m):</label>
+            <input type="range" id="budgetSlider" min="80" max="300" value="150" step="10">
+            <span id="budgetDisplay" class="budget-val">&euro;150m</span>
+            <button id="refreshBtn" class="btn-refresh">Recalculate</button>
+        </div>
+    </header>
+
+    <!-- TABS -->
+    <nav class="tab-bar">
+        <button class="tab active" data-tab="overview">Executive Summary</button>
+        <button class="tab" data-tab="squad">Squad Analysis</button>
+        <button class="tab" data-tab="sell">Sell Recommendations</button>
+        <button class="tab" data-tab="buy">Buy Recommendations</button>
+        <button class="tab" data-tab="financial">Financial Model</button>
+        <button class="tab" data-tab="rivals">Rival Intel</button>
+        <button class="tab" data-tab="strategy">Window Strategy</button>
+    </nav>
+
+    <main id="app">
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p>Analyzing squad data &amp; generating recommendations&hellip;</p>
+        </div>
+
+        <!-- ============ EXECUTIVE SUMMARY ============ -->
+        <section id="tab-overview" class="tab-content active">
+            <div class="kpi-row" id="kpiRow"></div>
+            <div class="grid-2">
+                <div class="card" id="headlinesCard">
+                    <h2>Key Findings</h2>
+                    <ul id="headlinesList"></ul>
+                </div>
+                <div class="card" id="depthHeatmap">
+                    <h2>Positional Depth Heatmap</h2>
+                    <div class="pitch-grid" id="pitchGrid"></div>
+                </div>
+            </div>
+            <div class="card" id="quickPlan">
+                <h2>Transfer Plan at a Glance</h2>
+                <div class="grid-2">
+                    <div>
+                        <h3 class="section-sell">Players OUT</h3>
+                        <div id="quickSellList"></div>
+                    </div>
+                    <div>
+                        <h3 class="section-buy">Players IN</h3>
+                        <div id="quickBuyList"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ SQUAD ANALYSIS ============ -->
+        <section id="tab-squad" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h2>Age Profile</h2>
+                    <div id="ageProfile"></div>
+                </div>
+                <div class="card">
+                    <h2>Contract Risk Matrix</h2>
+                    <div id="contractRisks"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Performance Gap Analysis</h2>
+                <div id="perfGaps"></div>
+            </div>
+            <div class="card">
+                <h2>Set-Piece Vulnerability Assessment</h2>
+                <div id="setPieces"></div>
+            </div>
+            <div class="card">
+                <h2>Full Squad Roster</h2>
+                <table class="data-table" id="squadTable">
+                    <thead>
+                        <tr>
+                            <th>#</th><th>Player</th><th>Pos</th><th>Age</th><th>Nation</th>
+                            <th>Apps</th><th>G</th><th>A</th><th>Min</th>
+                            <th>xG</th><th>Squawka</th><th>FotMob</th>
+                            <th>Value (m)</th><th>Wage (k/w)</th><th>Contract</th><th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody id="squadBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ============ SELL RECOMMENDATIONS ============ -->
+        <section id="tab-sell" class="tab-content">
+            <div class="card">
+                <h2>Sale Revenue Projection</h2>
+                <div class="kpi-row" id="sellKpi"></div>
+            </div>
+            <div id="sellCards"></div>
+        </section>
+
+        <!-- ============ BUY RECOMMENDATIONS ============ -->
+        <section id="tab-buy" class="tab-content">
+            <div id="buyCards"></div>
+        </section>
+
+        <!-- ============ FINANCIAL MODEL ============ -->
+        <section id="tab-financial" class="tab-content">
+            <div class="kpi-row" id="finKpi"></div>
+            <div class="grid-2">
+                <div class="card">
+                    <h2>Wage Bill Impact</h2>
+                    <div id="wageImpact"></div>
+                </div>
+                <div class="card">
+                    <h2>Amortization Schedule</h2>
+                    <div id="amortization"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>PSR Compliance Check</h2>
+                <div id="psrCheck"></div>
+            </div>
+        </section>
+
+        <!-- ============ RIVAL INTEL ============ -->
+        <section id="tab-rivals" class="tab-content">
+            <div id="rivalCards"></div>
+        </section>
+
+        <!-- ============ WINDOW STRATEGY ============ -->
+        <section id="tab-strategy" class="tab-content">
+            <div id="strategyTimeline"></div>
+        </section>
+    </main>
+
+    <!-- PLAYER DETAIL MODAL -->
+    <div class="modal-overlay" id="playerModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Arsenal Transfer War Room &copy; 2026 &middot; Data sourced from FBref, Squawka, FotMob, Transfermarkt &middot; Last updated: Feb 7 2026</p>
+    </footer>
+
+    <script>
+        window.__INITIAL_DATA__ = {"squad_report": {"overall_rating": 52, "depth_analysis": [{"position": "GK", "required_total": 2, "current_total": 2, "starters": 1, "quality_players": 1, "depth_score": 75, "status": "adequate", "players": [{"name": "David Raya", "role": "starter", "squawka": 60.0, "age": 29}, {"name": "Kepa Arrizabalaga", "role": "rotation", "squawka": 52.0, "age": 31}]}, {"position": "CB", "required_total": 4, "current_total": 3, "starters": 2, "quality_players": 2, "depth_score": 62, "status": "thin", "players": [{"name": "William Saliba", "role": "starter", "squawka": 74.0, "age": 24}, {"name": "Gabriel Magalhaes", "role": "starter", "squawka": 70.0, "age": 28}, {"name": "Cristhian Mosquera", "role": "rotation", "squawka": 62.0, "age": 20}]}, {"position": "RB", "required_total": 2, "current_total": 2, "starters": 1, "quality_players": 1, "depth_score": 75, "status": "adequate", "players": [{"name": "Jurrien Timber", "role": "starter", "squawka": 78.0, "age": 24}, {"name": "Ben White", "role": "rotation", "squawka": 55.0, "age": 28}]}, {"position": "LB", "required_total": 2, "current_total": 3, "starters": 1, "quality_players": 1, "depth_score": 100, "status": "adequate", "players": [{"name": "Riccardo Calafiori", "role": "starter", "squawka": 66.0, "age": 23}, {"name": "Piero Hincapie", "role": "rotation", "squawka": 58.0, "age": 23}, {"name": "Myles Lewis-Skelly", "role": "rotation", "squawka": 60.0, "age": 18}]}, {"position": "DM", "required_total": 2, "current_total": 2, "starters": 1, "quality_players": 1, "depth_score": 75, "status": "adequate", "players": [{"name": "Martin Zubimendi", "role": "starter", "squawka": 73.0, "age": 27}, {"name": "Christian Norgaard", "role": "backup", "squawka": 48.0, "age": 31}]}, {"position": "CM", "required_total": 2, "current_total": 2, "starters": 1, "quality_players": 2, "depth_score": 100, "status": "strong", "players": [{"name": "Declan Rice", "role": "starter", "squawka": 75.0, "age": 27}, {"name": "Mikel Merino", "role": "rotation", "squawka": 68.0, "age": 29}]}, {"position": "AM", "required_total": 2, "current_total": 3, "starters": 1, "quality_players": 2, "depth_score": 100, "status": "strong", "players": [{"name": "Martin Odegaard", "role": "starter", "squawka": 72.0, "age": 27}, {"name": "Eberechi Eze", "role": "rotation", "squawka": 65.0, "age": 27}, {"name": "Ethan Nwaneri", "role": "youth", "squawka": 58.0, "age": 18}]}, {"position": "RW", "required_total": 2, "current_total": 2, "starters": 1, "quality_players": 1, "depth_score": 75, "status": "adequate", "players": [{"name": "Bukayo Saka", "role": "starter", "squawka": 72.0, "age": 24}, {"name": "Noni Madueke", "role": "rotation", "squawka": 62.0, "age": 23}]}, {"position": "LW", "required_total": 2, "current_total": 2, "starters": 0, "quality_players": 0, "depth_score": 50, "status": "critical", "players": [{"name": "Gabriel Martinelli", "role": "rotation", "squawka": 56.0, "age": 24}, {"name": "Leandro Trossard", "role": "rotation", "squawka": 64.0, "age": 31}]}, {"position": "ST", "required_total": 2, "current_total": 2, "starters": 1, "quality_players": 0, "depth_score": 50, "status": "adequate", "players": [{"name": "Viktor Gyokeres", "role": "starter", "squawka": 58.0, "age": 27}, {"name": "Gabriel Jesus", "role": "backup", "squawka": 50.0, "age": 28}]}], "performance_gaps": [{"player": "Myles Lewis-Skelly", "position": "LB", "minutes": 780, "issues": [{"metric": "Defensive Actions", "detail": "1.2 tackles/90 (benchmark: 2.0)", "severity": "medium", "recommendation": "Defensive engagement below benchmark"}]}, {"player": "Declan Rice", "position": "CM", "minutes": 2070, "issues": [{"metric": "Progressive Passing", "detail": "2.4/90 (benchmark: 4.0/90)", "severity": "medium", "recommendation": "Below progressive passing threshold"}]}, {"player": "Mikel Merino", "position": "CM", "minutes": 1560, "issues": [{"metric": "Progressive Passing", "detail": "2.8/90 (benchmark: 4.0/90)", "severity": "medium", "recommendation": "Below progressive passing threshold"}, {"metric": "Pass Completion", "detail": "86.5% (benchmark: 88.0%)", "severity": "low", "recommendation": "Below pass completion benchmark"}]}, {"player": "Eberechi Eze", "position": "AM", "minutes": 1200, "issues": [{"metric": "Progressive Passing", "detail": "2.2/90 (benchmark: 5.0/90)", "severity": "medium", "recommendation": "Below progressive passing threshold"}]}, {"player": "Ethan Nwaneri", "position": "AM", "minutes": 640, "issues": [{"metric": "Progressive Passing", "detail": "2.5/90 (benchmark: 5.0/90)", "severity": "medium", "recommendation": "Below progressive passing threshold"}]}, {"player": "Christian Norgaard", "position": "DM", "minutes": 520, "issues": [{"metric": "Progressive Passing", "detail": "2.1/90 (benchmark: 4.0/90)", "severity": "medium", "recommendation": "Below progressive passing threshold"}, {"metric": "Pass Completion", "detail": "85.0% (benchmark: 90.0%)", "severity": "low", "recommendation": "Below pass completion benchmark"}]}, {"player": "Viktor Gyokeres", "position": "ST", "minutes": 1760, "issues": [{"metric": "xG Underperformance", "detail": "6G from 8.5xG (delta: -2.5)", "severity": "medium", "recommendation": "Finishing coaching or consider alternative"}, {"metric": "Shot Accuracy", "detail": "33.3% (elite benchmark: 45.0%)", "severity": "high", "recommendation": "Significant finishing improvement needed"}]}], "age_profile": {"average_age": 25.7, "age_groups": {"under_23": {"count": 3, "players": ["Cristhian Mosquera", "Myles Lewis-Skelly", "Ethan Nwaneri"]}, "prime_23_28": {"count": 15, "players": ["William Saliba", "Gabriel Magalhaes", "Jurrien Timber", "Ben White", "Riccardo Calafiori", "Piero Hincapie", "Martin Odegaard", "Declan Rice", "Martin Zubimendi", "Eberechi Eze", "Bukayo Saka", "Noni Madueke", "Gabriel Martinelli", "Viktor Gyokeres", "Gabriel Jesus"]}, "experienced_29_31": {"count": 5, "players": ["David Raya", "Kepa Arrizabalaga", "Mikel Merino", "Christian Norgaard", "Leandro Trossard"]}, "veteran_32_plus": {"count": 0, "players": []}}, "assessment": "Well-balanced", "sustainability_score": 34}, "contract_risks": [{"player": "Piero Hincapie", "position": "LB", "contract_expiry": "2026-06-30", "risk_level": "critical", "market_value_m": 35.0, "wage_weekly_k": 80.0, "recommendation": "Renew or let leave for free. Decision needed immediately."}, {"player": "Leandro Trossard", "position": "LW", "contract_expiry": "2026-06-30", "risk_level": "critical", "market_value_m": 20.0, "wage_weekly_k": 120.0, "recommendation": "Renew or let leave for free. Decision needed immediately."}, {"player": "Oleksandr Zinchenko", "position": "LB", "contract_expiry": "2026-06-30", "risk_level": "critical", "market_value_m": 15.0, "wage_weekly_k": 200.0, "recommendation": "Renew or let leave for free. Decision needed immediately."}, {"player": "Karl Hein", "position": "GK", "contract_expiry": "2026-06-30", "risk_level": "critical", "market_value_m": 2.0, "wage_weekly_k": 15.0, "recommendation": "Renew or let leave for free. Decision needed immediately."}, {"player": "Christian Norgaard", "position": "DM", "contract_expiry": "2027-06-30", "risk_level": "high", "market_value_m": 8.0, "wage_weekly_k": 60.0, "recommendation": "Sell this summer or renew. Last chance to get a fee."}, {"player": "Gabriel Martinelli", "position": "LW", "contract_expiry": "2027-06-30", "risk_level": "high", "market_value_m": 50.0, "wage_weekly_k": 130.0, "recommendation": "Sell this summer or renew. Last chance to get a fee."}, {"player": "Gabriel Jesus", "position": "ST", "contract_expiry": "2027-06-30", "risk_level": "high", "market_value_m": 20.0, "wage_weekly_k": 165.0, "recommendation": "Sell this summer or renew. Last chance to get a fee."}, {"player": "Reiss Nelson", "position": "RW", "contract_expiry": "2027-06-30", "risk_level": "high", "market_value_m": 8.0, "wage_weekly_k": 60.0, "recommendation": "Sell this summer or renew. Last chance to get a fee."}, {"player": "Fabio Vieira", "position": "AM", "contract_expiry": "2027-06-30", "risk_level": "high", "market_value_m": 10.0, "wage_weekly_k": 65.0, "recommendation": "Sell this summer or renew. Last chance to get a fee."}, {"player": "David Raya", "position": "GK", "contract_expiry": "2028-06-30", "risk_level": "medium", "market_value_m": 35.0, "wage_weekly_k": 150.0, "recommendation": "Monitor. Consider extension talks if key player."}, {"player": "Ben White", "position": "RB", "contract_expiry": "2028-06-30", "risk_level": "medium", "market_value_m": 30.0, "wage_weekly_k": 120.0, "recommendation": "Monitor. Consider extension talks if key player."}, {"player": "Martin Odegaard", "position": "AM", "contract_expiry": "2028-06-30", "risk_level": "medium", "market_value_m": 100.0, "wage_weekly_k": 250.0, "recommendation": "Monitor. Consider extension talks if key player."}, {"player": "Declan Rice", "position": "CM", "contract_expiry": "2028-06-30", "risk_level": "medium", "market_value_m": 110.0, "wage_weekly_k": 250.0, "recommendation": "Monitor. Consider extension talks if key player."}, {"player": "Mikel Merino", "position": "CM", "contract_expiry": "2028-06-30", "risk_level": "medium", "market_value_m": 40.0, "wage_weekly_k": 140.0, "recommendation": "Monitor. Consider extension talks if key player."}, {"player": "Jakub Kiwior", "position": "CB", "contract_expiry": "2028-06-30", "risk_level": "medium", "market_value_m": 15.0, "wage_weekly_k": 70.0, "recommendation": "Monitor. Consider extension talks if key player."}], "set_piece_analysis": {"aerial_average_per90": 1.62, "assessment": "Below average - set-piece vulnerability confirmed", "key_aerial_players": [{"name": "Gabriel Magalhaes", "aerials_won": 52}, {"name": "William Saliba", "aerials_won": 45}, {"name": "Mikel Merino", "aerials_won": 28}, {"name": "Cristhian Mosquera", "aerials_won": 18}, {"name": "Christian Norgaard", "aerials_won": 16}], "recommendation": "Arsenal's set-piece defensive record has been poor. Consider adding a physically dominant CB (e.g., Marc Guehi) and improving coaching methodology. Gabriel Magalhaes (52 aerials won) is the primary aerial threat but the team needs more presence around him."}, "critical_positions": ["LW"], "thin_positions": ["CB"], "headline_findings": ["CRITICAL: Squad depth is critically thin at: LW", "WARNING: Depth concerns at: CB", "PERFORMANCE: xG underperformance detected for: Viktor Gyokeres", "CONTRACT: Contracts expiring THIS summer: Piero Hincapie, Leandro Trossard, Oleksandr Zinchenko, Karl Hein", "CONTRACT: Last chance to sell before free (2027 expiry): Christian Norgaard, Gabriel Martinelli, Gabriel Jesus, Reiss Nelson, Fabio Vieira", "SET PIECES: Below average - set-piece vulnerability confirmed"]}, "transfer_plan": {"sell_recommendations": [{"player": "Oleksandr Zinchenko", "position": "LB", "age": 29, "current_role": "backup", "contract_expiry": "2026-06-30", "projected_fee_m": 0.0, "wage_saving_weekly_k": 200.0, "wage_saving_annual_m": 10.4, "priority_score": 85, "urgency": "immediate", "reasons": ["Contract expires June 2026. Will leave for FREE if not sold/renewed.", "High wages (200.0k/wk) for a backup player.", "Currently on loan at Nottingham Forest -> sold to Ajax. Not in Arteta's plans.", "Aging backup (age 29) with limited contribution.", "Weakness: Defensive liability", "Weakness: Pace", "Weakness: Wages"], "eye_test": "Was loaned to Forest, now sold to Ajax. 200k/week wages freed up. Fell behind MLS/Calafiori in pecking order. Departure confirmed.", "recommendation_summary": "SELL/LET GO: Oleksandr Zinchenko's contract expires this summer. No realistic chance of renewal given squad competition. Will depart as a free agent. Wage savings: 200.0k/week."}, {"player": "Gabriel Jesus", "position": "ST", "age": 28, "current_role": "backup", "contract_expiry": "2027-06-30", "projected_fee_m": 20.0, "wage_saving_weekly_k": 165.0, "wage_saving_annual_m": 8.6, "priority_score": 79, "urgency": "immediate", "reasons": ["Contract expires 2027. This summer is the last chance to get a transfer fee.", "Below squad quality threshold: Squawka score 50.0/100.", "High wages (165.0k/wk) for a backup player.", "Aging backup (age 28) with limited contribution.", "Weakness: Injury prone", "Weakness: Conversion rate", "Weakness: High wages for role", "Weakness: Confidence issues"], "eye_test": "Injury-ravaged season. Only 9 appearances. When fit, brings excellent link-up and pressing but conversion has always been an issue. High wages for a backup. Potential sell candidate to recoup fees.", "recommendation_summary": "SELL: Gabriel Jesus should be sold for an estimated EUR 20.0m. Combined with 165.0k/week wage savings, this frees significant resources for upgrades."}, {"player": "Gabriel Martinelli", "position": "LW", "age": 24, "current_role": "rotation", "contract_expiry": "2027-06-30", "projected_fee_m": 50.0, "wage_saving_weekly_k": 130.0, "wage_saving_annual_m": 6.8, "priority_score": 74, "urgency": "immediate", "reasons": ["Contract expires 2027. This summer is the last chance to get a transfer fee.", "Below squad quality threshold: Squawka score 56.0/100.", "High wages (130.0k/wk) for a rotation player.", "Weakness: End product regression", "Weakness: Decision-making", "Weakness: Has hit ceiling", "Weakness: Inconsistent against deep blocks"], "eye_test": "Has plateaued since his 15-goal 2022/23 season. Inconsistent end product. High energy and pressing are assets, but final-third quality lacking. Reports suggest Arsenal are open to selling for ~50m to fund an upgrade.", "recommendation_summary": "SELL: Gabriel Martinelli should be sold for an estimated EUR 50.0m. Combined with 130.0k/week wage savings, this frees significant resources for upgrades."}, {"player": "Fabio Vieira", "position": "AM", "age": 25, "current_role": "backup", "contract_expiry": "2027-06-30", "projected_fee_m": 10.0, "wage_saving_weekly_k": 65.0, "wage_saving_annual_m": 3.4, "priority_score": 74, "urgency": "immediate", "reasons": ["Contract expires 2027. This summer is the last chance to get a transfer fee.", "Currently on loan at Hamburg. Not in Arteta's plans.", "Weakness: Physical weakness", "Weakness: Not PL level", "Weakness: Injuries"], "eye_test": "Creative talent but too lightweight for PL. On loan at Hamburg. Should be sold permanently to recoup some of original fee.", "recommendation_summary": "SELL: Fabio Vieira should be sold for an estimated EUR 10.0m. Combined with 65.0k/week wage savings, this frees significant resources for upgrades."}, {"player": "Reiss Nelson", "position": "RW", "age": 26, "current_role": "backup", "contract_expiry": "2027-06-30", "projected_fee_m": 8.0, "wage_saving_weekly_k": 60.0, "wage_saving_annual_m": 3.1, "priority_score": 73, "urgency": "immediate", "reasons": ["Contract expires 2027. This summer is the last chance to get a transfer fee.", "Currently on loan at Brentford. Not in Arteta's plans.", "Weakness: Not PL top-6 level", "Weakness: Injuries", "Weakness: End product"], "eye_test": "On loan at Brentford. Not Arsenal quality. Should be sold permanently.", "recommendation_summary": "SELL: Reiss Nelson should be sold for an estimated EUR 8.0m. Combined with 60.0k/week wage savings, this frees significant resources for upgrades."}, {"player": "Karl Hein", "position": "GK", "age": 23, "current_role": "backup", "contract_expiry": "2026-06-30", "projected_fee_m": 0.0, "wage_saving_weekly_k": 15.0, "wage_saving_annual_m": 0.8, "priority_score": 69, "urgency": "immediate", "reasons": ["Contract expires June 2026. Will leave for FREE if not sold/renewed.", "Currently on loan at Werder Bremen. Not in Arteta's plans.", "Weakness: Not top-6 level", "Weakness: No PL experience"], "eye_test": "On loan at Bremen. Third-choice GK. Contract expiring. Unlikely to have a future at Arsenal.", "recommendation_summary": "SELL/LET GO: Karl Hein's contract expires this summer. No realistic chance of renewal given squad competition. Will depart as a free agent. Wage savings: 15.0k/week."}, {"player": "Jakub Kiwior", "position": "CB", "age": 25, "current_role": "backup", "contract_expiry": "2028-06-30", "projected_fee_m": 15.0, "wage_saving_weekly_k": 70.0, "wage_saving_annual_m": 3.6, "priority_score": 68, "urgency": "summer", "reasons": ["Currently on loan at FC Porto. Not in Arteta's plans.", "Weakness: Not PL starting quality", "Weakness: Aerial duels", "Weakness: Pace"], "eye_test": "On loan at Porto. Decent left-footed CB. Not good enough to start for Arsenal. Likely to be sold permanently in summer.", "recommendation_summary": "SELL: Jakub Kiwior should be sold for an estimated EUR 15.0m. Combined with 70.0k/week wage savings, this frees significant resources for upgrades."}, {"player": "Piero Hincapie", "position": "LB", "age": 23, "current_role": "rotation", "contract_expiry": "2026-06-30", "projected_fee_m": 0.0, "wage_saving_weekly_k": 80.0, "wage_saving_annual_m": 4.2, "priority_score": 65, "urgency": "immediate", "reasons": ["Contract expires June 2026. Will leave for FREE if not sold/renewed.", "Below squad quality threshold: Squawka score 58.0/100.", "Weakness: Limited attacking output", "Weakness: Not permanent yet - loan decision needed"], "eye_test": "Leverkusen loanee. Solid defensive full-back/CB hybrid. Good in a back-three. Less dynamic going forward than Calafiori. Option to buy reportedly \u00a330m.", "recommendation_summary": "SELL/LET GO: Piero Hincapie's contract expires this summer. No realistic chance of renewal given squad competition. Will depart as a free agent. Wage savings: 80.0k/week."}, {"player": "Leandro Trossard", "position": "LW", "age": 31, "current_role": "rotation", "contract_expiry": "2026-06-30", "projected_fee_m": 0.0, "wage_saving_weekly_k": 120.0, "wage_saving_annual_m": 6.2, "priority_score": 65, "urgency": "immediate", "reasons": ["Contract expires June 2026. Will leave for FREE if not sold/renewed.", "High wages (120.0k/wk) for a rotation player.", "Weakness: Contract expiring", "Weakness: Age 31", "Weakness: Pace declining", "Weakness: Not a starter-level upgrade"], "eye_test": "Belgium veteran. Leads goal involvements (5G+4A). Clutch performer. Contract expires June 2026 - will leave for free unless renewed. 31 years old, Saudi interest reported. Excellent squad player but not the upgrade needed for title/CL push.", "recommendation_summary": "SELL/LET GO: Leandro Trossard's contract expires this summer. No realistic chance of renewal given squad competition. Will depart as a free agent. Wage savings: 120.0k/week."}, {"player": "Ben White", "position": "RB", "age": 28, "current_role": "rotation", "contract_expiry": "2028-06-30", "projected_fee_m": 25.0, "wage_saving_weekly_k": 120.0, "wage_saving_annual_m": 6.2, "priority_score": 62, "urgency": "summer", "reasons": ["Below squad quality threshold: Squawka score 55.0/100.", "High wages (120.0k/wk) for a rotation player.", "Weakness: Diminished minutes", "Weakness: Morale concerns", "Weakness: Not as dynamic as Timber going forward"], "eye_test": "Frustrated with lack of minutes behind Timber. Only 12 apps this season. Still a quality defender with good passing range. Can play CB. Reports suggest unhappy and open to exit.", "recommendation_summary": "SELL: Ben White should be sold for an estimated EUR 25.0m. Combined with 120.0k/week wage savings, this frees significant resources for upgrades."}], "buy_recommendations": [{"player": "Jeremy Jacquet", "position": "CB", "age": 19, "nationality": "France", "estimated_fee_m": 20.0, "estimated_wages_k": 40.0, "current_club": "Stade Rennais", "contract_expiry": "2029-06-30", "priority_score": 85, "score_breakdown": {"squad_need": 100, "player_quality": 76, "financial_value": 89, "age_profile": 90, "feasibility": 70}, "competing_with": ["William Saliba", "Gabriel Magalhaes", "Cristhian Mosquera"], "reasons": ["HIGH NEED: CB is a priority position for reinforcement.", "GOOD VALUE: Estimated fee of EUR 20.0m is reasonable.", "Strength: Ball progression from CB", "Strength: Youth and ceiling", "Strength: Positional intelligence", "Strength: Left-footed", "YOUTH INVESTMENT: At 19, significant development potential and resale value."], "eye_test": "19-year-old Rennes CB. Arsenal made initial contact (Romano). Excellent ball-playing defender. New contract until 2029 makes him more expensive. Alternative if Guehi goes to City.", "stats_summary": {"appearances": 22, "goals": 1, "assists": 0, "minutes": 1800, "goals_per90": 0.05, "assists_per90": 0.0, "xg": 0.0, "xa": 0.0, "progressive_passes": 35, "progressive_carries": 15, "key_passes": 0, "squawka_score": 64.0, "fotmob_rating": 7.0}, "deal_structure": {"type": "Permanent Transfer", "upfront": 10.0, "installments": 7.0, "installment_years": 2, "add_ons": 3.0, "total": 20.0, "notes": "Structured as EUR 10.0m upfront + EUR 7.0m in installments + EUR 3.0m in performance add-ons."}, "risk_factors": ["New long contract (harder to prise away)", "Physical development", "Ligue 1 to PL jump"], "recommendation_summary": "PRIORITY 1: Sign Jeremy Jacquet (CB, 19). Estimated fee: EUR 20.0m. Recommendation score: 85/100."}, {"player": "Marc Guehi", "position": "CB", "age": 25, "nationality": "England", "estimated_fee_m": 40.0, "estimated_wages_k": 120.0, "current_club": "Crystal Palace (free agent)", "contract_expiry": "2026-06-30", "priority_score": 79, "score_breakdown": {"squad_need": 100, "player_quality": 79, "financial_value": 78, "age_profile": 80, "feasibility": 55}, "competing_with": ["William Saliba", "Gabriel Magalhaes", "Cristhian Mosquera"], "reasons": ["HIGH NEED: CB is a priority position for reinforcement.", "Strength: Free transfer", "Strength: England international", "Strength: Leadership", "Strength: Consistent performer", "Strength: Ball-playing CB"], "eye_test": "Available on FREE transfer this summer (contract expires June 2026). England international. Arteta is a big fan. Reliable, consistent CB. Would provide elite depth at CB behind Saliba/Gabriel. BUT Man City reportedly won the race. Competition fierce from Liverpool, Bayern. If free, incredible value.", "stats_summary": {"appearances": 22, "goals": 1, "assists": 0, "minutes": 1980, "goals_per90": 0.05, "assists_per90": 0.0, "xg": 0.0, "xa": 0.0, "progressive_passes": 30, "progressive_carries": 18, "key_passes": 0, "squawka_score": 66.0, "fotmob_rating": 7.1}, "deal_structure": {"type": "Permanent Transfer", "upfront": 20.0, "installments": 14.0, "installment_years": 2, "add_ons": 6.0, "total": 40.0, "notes": "Structured as EUR 20.0m upfront + EUR 14.0m in installments + EUR 6.0m in performance add-ons."}, "risk_factors": ["City may have already signed him", "Not elite-tier like Saliba", "Limited aerial dominance"], "recommendation_summary": "PRIORITY 1: Sign Marc Guehi (CB, 25). Estimated fee: EUR 40.0m. Recommendation score: 79/100."}, {"player": "Tino Livramento", "position": "RB", "age": 23, "nationality": "England", "estimated_fee_m": 55.0, "estimated_wages_k": 100.0, "current_club": "Newcastle United", "contract_expiry": "2028-06-30", "priority_score": 75, "score_breakdown": {"squad_need": 70, "player_quality": 84, "financial_value": 70, "age_profile": 90, "feasibility": 70}, "competing_with": ["Jurrien Timber", "Ben White"], "reasons": ["MODERATE NEED: RB depth could be improved.", "Strength: Pace", "Strength: Attacking output", "Strength: Versatility (can play LB)", "Strength: Ball-carrying", "Strength: Young and improving", "YOUTH INVESTMENT: At 23, significant development potential and resale value.", "HIGH PERFORMANCE: Squawka score of 70.0 indicates elite level."], "eye_test": "Arsenal's TOP target at RB. Arteta and Berta both personally keen. Same agency as Arteta (easier personal terms). Timber-like profile but more dynamic in attack. Newcastle will demand 60m+ EUR. Contract talks stalled. Would replace Ben White and provide competition for Timber.", "stats_summary": {"appearances": 24, "goals": 2, "assists": 5, "minutes": 2100, "goals_per90": 0.09, "assists_per90": 0.21, "xg": 0.0, "xa": 0.0, "progressive_passes": 35, "progressive_carries": 65, "key_passes": 22, "squawka_score": 70.0, "fotmob_rating": 7.3}, "deal_structure": {"type": "Permanent Transfer", "upfront": 22.0, "installments": 24.8, "installment_years": 3, "add_ons": 8.2, "total": 55.0, "notes": "Structured as EUR 22.0m upfront + EUR 24.8m in installments + EUR 8.2m in performance add-ons."}, "risk_factors": ["Newcastle won't sell cheap", "High fee for RB position", "Defensive discipline needs work"], "recommendation_summary": "PRIORITY 1: Sign Tino Livramento (RB, 23). Estimated fee: EUR 55.0m. Recommendation score: 75/100."}, {"player": "Rodrygo", "position": "LW", "age": 25, "nationality": "Brazil", "estimated_fee_m": 90.0, "estimated_wages_k": 200.0, "current_club": "Real Madrid", "contract_expiry": "2028-06-30", "priority_score": 74, "score_breakdown": {"squad_need": 100, "player_quality": 81, "financial_value": 52, "age_profile": 80, "feasibility": 55}, "competing_with": ["Gabriel Martinelli", "Leandro Trossard"], "reasons": ["HIGH NEED: LW is a priority position for reinforcement.", "Strength: CL pedigree", "Strength: Versatility across front three", "Strength: Big-game mentality", "Strength: Finishing", "Strength: Link-up play", "Strength: 1v1 ability"], "eye_test": "World-class talent stuck behind Mbappe/Vinicius at Real Madrid. Unhappy and wants to leave post-World Cup. Wants to join Arsenal. Can play LW/RW/ST. Elite end product, CL-proven (scored in final). Would be a massive upgrade on Martinelli/Trossard. Fee likely 80-100m EUR.", "stats_summary": {"appearances": 22, "goals": 5, "assists": 3, "minutes": 1100, "goals_per90": 0.41, "assists_per90": 0.25, "xg": 4.5, "xa": 3.0, "progressive_passes": 25, "progressive_carries": 40, "key_passes": 20, "squawka_score": 68.0, "fotmob_rating": 7.2}, "deal_structure": {"type": "Permanent Transfer", "upfront": 31.5, "installments": 45.0, "installment_years": 3, "add_ons": 13.5, "total": 90.0, "notes": "Structured as EUR 31.5m upfront + EUR 45.0m in installments + EUR 13.5m in performance add-ons."}, "risk_factors": ["Fee will be very high", "Adaptation to PL intensity", "Competition from Liverpool/City"], "recommendation_summary": "PRIORITY 2: Sign Rodrygo (LW, 25). Estimated fee: EUR 90.0m. Recommendation score: 74/100."}, {"player": "Julian Alvarez", "position": "ST", "age": 26, "nationality": "Argentina", "estimated_fee_m": 80.0, "estimated_wages_k": 180.0, "current_club": "Atletico Madrid", "contract_expiry": "2029-06-30", "priority_score": 72, "score_breakdown": {"squad_need": 70, "player_quality": 86, "financial_value": 57, "age_profile": 80, "feasibility": 70}, "competing_with": ["Viktor Gyokeres", "Gabriel Jesus"], "reasons": ["MODERATE NEED: ST depth could be improved.", "Strength: Versatility across front 3", "Strength: Big-game mentality", "Strength: Work rate", "Strength: Link-up play", "Strength: World Cup winner", "HIGH PERFORMANCE: Squawka score of 72.0 indicates elite level."], "eye_test": "World Cup winner. Atletico Madrid forward who can play anywhere across the front line. Arsenal exploring possibility. Would give Gyokeres elite competition or allow tactical flexibility. Fee would be massive (80m+).", "stats_summary": {"appearances": 25, "goals": 10, "assists": 5, "minutes": 2000, "goals_per90": 0.45, "assists_per90": 0.23, "xg": 9.0, "xa": 4.0, "progressive_passes": 20, "progressive_carries": 35, "key_passes": 18, "squawka_score": 72.0, "fotmob_rating": 7.4}, "deal_structure": {"type": "Permanent Transfer", "upfront": 28.0, "installments": 40.0, "installment_years": 3, "add_ons": 12.0, "total": 80.0, "notes": "Structured as EUR 28.0m upfront + EUR 40.0m in installments + EUR 12.0m in performance add-ons."}, "risk_factors": ["Atletico unlikely to sell", "Very expensive", "Would need to displace Gyokeres or adjust system"], "recommendation_summary": "PRIORITY 2: Sign Julian Alvarez (ST, 26). Estimated fee: EUR 80.0m. Recommendation score: 72/100."}, {"player": "Davide Bartesaghi", "position": "LB", "age": 19, "nationality": "Italy", "estimated_fee_m": 12.0, "estimated_wages_k": 25.0, "current_club": "AC Milan", "contract_expiry": "2028-06-30", "priority_score": 72, "score_breakdown": {"squad_need": 50, "player_quality": 69, "financial_value": 93, "age_profile": 90, "feasibility": 70}, "competing_with": ["Riccardo Calafiori", "Piero Hincapie", "Myles Lewis-Skelly"], "reasons": ["MODERATE NEED: LB depth could be improved.", "GOOD VALUE: Estimated fee of EUR 12.0m is reasonable.", "Strength: Athletic profile", "Strength: Youth", "Strength: Modern full-back attributes", "YOUTH INVESTMENT: At 19, significant development potential and resale value."], "eye_test": "AC Milan LB prospect Arsenal are monitoring. Athletic, modern full-back profile. Would be a long-term LB option. Milan concerned about Arsenal interest.", "stats_summary": {"appearances": 16, "goals": 0, "assists": 2, "minutes": 1100, "goals_per90": 0.0, "assists_per90": 0.16, "xg": 0.0, "xa": 0.0, "progressive_passes": 18, "progressive_carries": 28, "key_passes": 0, "squawka_score": 58.0, "fotmob_rating": 6.7}, "deal_structure": {"type": "Permanent Transfer", "upfront": 6.0, "installments": 4.2, "installment_years": 2, "add_ons": 1.8, "total": 12.0, "notes": "Structured as EUR 6.0m upfront + EUR 4.2m in installments + EUR 1.8m in performance add-ons."}, "risk_factors": ["Very raw", "Limited Serie A experience", "Unknown PL fit"], "recommendation_summary": "PRIORITY 2: Sign Davide Bartesaghi (LB, 19). Estimated fee: EUR 12.0m. Recommendation score: 72/100."}, {"player": "Arda Guler", "position": "AM", "age": 21, "nationality": "Turkey", "estimated_fee_m": 40.0, "estimated_wages_k": 80.0, "current_club": "Real Madrid", "contract_expiry": "2029-06-30", "priority_score": 68, "score_breakdown": {"squad_need": 50, "player_quality": 79, "financial_value": 78, "age_profile": 90, "feasibility": 55}, "competing_with": ["Martin Odegaard", "Eberechi Eze", "Ethan Nwaneri"], "reasons": ["MODERATE NEED: AM depth could be improved.", "Strength: Left foot quality", "Strength: Creativity", "Strength: Shooting", "Strength: Youth potential", "YOUTH INVESTMENT: At 21, significant development potential and resale value."], "eye_test": "Real Madrid prodigy with limited minutes. Exceptional left foot. Can play RW/AM. Summer interest more likely than January. Would add elite creativity. Loan with option to buy possible.", "stats_summary": {"appearances": 18, "goals": 4, "assists": 3, "minutes": 900, "goals_per90": 0.4, "assists_per90": 0.3, "xg": 3.5, "xa": 2.5, "progressive_passes": 22, "progressive_carries": 18, "key_passes": 16, "squawka_score": 66.0, "fotmob_rating": 7.1}, "deal_structure": {"type": "Permanent Transfer", "upfront": 20.0, "installments": 14.0, "installment_years": 2, "add_ons": 6.0, "total": 40.0, "notes": "Structured as EUR 20.0m upfront + EUR 14.0m in installments + EUR 6.0m in performance add-ons."}, "risk_factors": ["Limited senior minutes", "Physical development", "Real Madrid may not sell permanently"], "recommendation_summary": "PRIORITY 2: Sign Arda Guler (AM, 21). Estimated fee: EUR 40.0m. Recommendation score: 68/100."}, {"player": "Ayyoub Bouaddi", "position": "CM", "age": 18, "nationality": "France", "estimated_fee_m": 45.0, "estimated_wages_k": 60.0, "current_club": "LOSC Lille", "contract_expiry": "2029-06-30", "priority_score": 64, "score_breakdown": {"squad_need": 30, "player_quality": 86, "financial_value": 76, "age_profile": 90, "feasibility": 55}, "competing_with": ["Declan Rice", "Mikel Merino"], "reasons": ["Strength: Complete midfielder", "Strength: Youth and ceiling", "Strength: Progressive passing", "Strength: Defensive intelligence for age", "Strength: French market knowledge", "YOUTH INVESTMENT: At 18, significant development potential and resale value.", "HIGH PERFORMANCE: Squawka score of 72.0 indicates elite level."], "eye_test": "18-year-old Lille midfielder. Complete CM with massive potential. Valued ~43m GBP. Arsenal are in the chase. Would be a long-term Merino successor and Odegaard backup. Outstanding for his age - started nearly every Lille game.", "stats_summary": {"appearances": 28, "goals": 3, "assists": 4, "minutes": 2200, "goals_per90": 0.12, "assists_per90": 0.16, "xg": 0.0, "xa": 0.0, "progressive_passes": 55, "progressive_carries": 42, "key_passes": 22, "squawka_score": 72.0, "fotmob_rating": 7.3}, "deal_structure": {"type": "Permanent Transfer", "upfront": 22.5, "installments": 15.7, "installment_years": 2, "add_ons": 6.8, "total": 45.0, "notes": "Structured as EUR 22.5m upfront + EUR 15.7m in installments + EUR 6.8m in performance add-ons."}, "risk_factors": ["High fee for 18-year-old", "PL adaptation risk", "Competition from Man Utd, Real Madrid"], "recommendation_summary": "PRIORITY 2: Sign Ayyoub Bouaddi (CM, 18). Estimated fee: EUR 45.0m. Recommendation score: 64/100."}], "financial_summary": {"transfer_budget_m": 150.0, "projected_sale_revenue_m": 128.0, "total_available_m": 278.0, "projected_purchase_cost_m": 285.0, "net_spend_m": 157.0, "wage_savings_annual_m": 53.3, "new_wages_annual_m": 33.3, "net_wage_change_annual_m": -20.0}, "squad_report": {"overall_rating": 52, "depth_analysis": [{"position": "GK", "required_total": 2, "current_total": 2, "starters": 1, "quality_players": 1, "depth_score": 75, "status": "adequate", "players": [{"name": "David Raya", "role": "starter", "squawka": 60.0, "age": 29}, {"name": "Kepa Arrizabalaga", "role": "rotation", "squawka": 52.0, "age": 31}]}, {"position": "CB", "required_total": 4, "current_total": 3, "starters": 2, "quality_players": 2, "depth_score": 62, "status": "thin", "players": [{"name": "William Saliba", "role": "starter", "squawka": 74.0, "age": 24}, {"name": "Gabriel Magalhaes", "role": "starter", "squawka": 70.0, "age": 28}, {"name": "Cristhian Mosquera", "role": "rotation", "squawka": 62.0, "age": 20}]}, {"position": "RB", "required_total": 2, "current_total": 2, "starters": 1, "quality_players": 1, "depth_score": 75, "status": "adequate", "players": [{"name": "Jurrien Timber", "role": "starter", "squawka": 78.0, "age": 24}, {"name": "Ben White", "role": "rotation", "squawka": 55.0, "age": 28}]}, {"position": "LB", "required_total": 2, "current_total": 3, "starters": 1, "quality_players": 1, "depth_score": 100, "status": "adequate", "players": [{"name": "Riccardo Calafiori", "role": "starter", "squawka": 66.0, "age": 23}, {"name": "Piero Hincapie", "role": "rotation", "squawka": 58.0, "age": 23}, {"name": "Myles Lewis-Skelly", "role": "rotation", "squawka": 60.0, "age": 18}]}, {"position": "DM", "required_total": 2, "current_total": 2, "starters": 1, "quality_players": 1, "depth_score": 75, "status": "adequate", "players": [{"name": "Martin Zubimendi", "role": "starter", "squawka": 73.0, "age": 27}, {"name": "Christian Norgaard", "role": "backup", "squawka": 48.0, "age": 31}]}, {"position": "CM", "required_total": 2, "current_total": 2, "starters": 1, "quality_players": 2, "depth_score": 100, "status": "strong", "players": [{"name": "Declan Rice", "role": "starter", "squawka": 75.0, "age": 27}, {"name": "Mikel Merino", "role": "rotation", "squawka": 68.0, "age": 29}]}, {"position": "AM", "required_total": 2, "current_total": 3, "starters": 1, "quality_players": 2, "depth_score": 100, "status": "strong", "players": [{"name": "Martin Odegaard", "role": "starter", "squawka": 72.0, "age": 27}, {"name": "Eberechi Eze", "role": "rotation", "squawka": 65.0, "age": 27}, {"name": "Ethan Nwaneri", "role": "youth", "squawka": 58.0, "age": 18}]}, {"position": "RW", "required_total": 2, "current_total": 2, "starters": 1, "quality_players": 1, "depth_score": 75, "status": "adequate", "players": [{"name": "Bukayo Saka", "role": "starter", "squawka": 72.0, "age": 24}, {"name": "Noni Madueke", "role": "rotation", "squawka": 62.0, "age": 23}]}, {"position": "LW", "required_total": 2, "current_total": 2, "starters": 0, "quality_players": 0, "depth_score": 50, "status": "critical", "players": [{"name": "Gabriel Martinelli", "role": "rotation", "squawka": 56.0, "age": 24}, {"name": "Leandro Trossard", "role": "rotation", "squawka": 64.0, "age": 31}]}, {"position": "ST", "required_total": 2, "current_total": 2, "starters": 1, "quality_players": 0, "depth_score": 50, "status": "adequate", "players": [{"name": "Viktor Gyokeres", "role": "starter", "squawka": 58.0, "age": 27}, {"name": "Gabriel Jesus", "role": "backup", "squawka": 50.0, "age": 28}]}], "performance_gaps": [{"player": "Myles Lewis-Skelly", "position": "LB", "minutes": 780, "issues": [{"metric": "Defensive Actions", "detail": "1.2 tackles/90 (benchmark: 2.0)", "severity": "medium", "recommendation": "Defensive engagement below benchmark"}]}, {"player": "Declan Rice", "position": "CM", "minutes": 2070, "issues": [{"metric": "Progressive Passing", "detail": "2.4/90 (benchmark: 4.0/90)", "severity": "medium", "recommendation": "Below progressive passing threshold"}]}, {"player": "Mikel Merino", "position": "CM", "minutes": 1560, "issues": [{"metric": "Progressive Passing", "detail": "2.8/90 (benchmark: 4.0/90)", "severity": "medium", "recommendation": "Below progressive passing threshold"}, {"metric": "Pass Completion", "detail": "86.5% (benchmark: 88.0%)", "severity": "low", "recommendation": "Below pass completion benchmark"}]}, {"player": "Eberechi Eze", "position": "AM", "minutes": 1200, "issues": [{"metric": "Progressive Passing", "detail": "2.2/90 (benchmark: 5.0/90)", "severity": "medium", "recommendation": "Below progressive passing threshold"}]}, {"player": "Ethan Nwaneri", "position": "AM", "minutes": 640, "issues": [{"metric": "Progressive Passing", "detail": "2.5/90 (benchmark: 5.0/90)", "severity": "medium", "recommendation": "Below progressive passing threshold"}]}, {"player": "Christian Norgaard", "position": "DM", "minutes": 520, "issues": [{"metric": "Progressive Passing", "detail": "2.1/90 (benchmark: 4.0/90)", "severity": "medium", "recommendation": "Below progressive passing threshold"}, {"metric": "Pass Completion", "detail": "85.0% (benchmark: 90.0%)", "severity": "low", "recommendation": "Below pass completion benchmark"}]}, {"player": "Viktor Gyokeres", "position": "ST", "minutes": 1760, "issues": [{"metric": "xG Underperformance", "detail": "6G from 8.5xG (delta: -2.5)", "severity": "medium", "recommendation": "Finishing coaching or consider alternative"}, {"metric": "Shot Accuracy", "detail": "33.3% (elite benchmark: 45.0%)", "severity": "high", "recommendation": "Significant finishing improvement needed"}]}], "age_profile": {"average_age": 25.7, "age_groups": {"under_23": {"count": 3, "players": ["Cristhian Mosquera", "Myles Lewis-Skelly", "Ethan Nwaneri"]}, "prime_23_28": {"count": 15, "players": ["William Saliba", "Gabriel Magalhaes", "Jurrien Timber", "Ben White", "Riccardo Calafiori", "Piero Hincapie", "Martin Odegaard", "Declan Rice", "Martin Zubimendi", "Eberechi Eze", "Bukayo Saka", "Noni Madueke", "Gabriel Martinelli", "Viktor Gyokeres", "Gabriel Jesus"]}, "experienced_29_31": {"count": 5, "players": ["David Raya", "Kepa Arrizabalaga", "Mikel Merino", "Christian Norgaard", "Leandro Trossard"]}, "veteran_32_plus": {"count": 0, "players": []}}, "assessment": "Well-balanced", "sustainability_score": 34}, "contract_risks": [{"player": "Piero Hincapie", "position": "LB", "contract_expiry": "2026-06-30", "risk_level": "critical", "market_value_m": 35.0, "wage_weekly_k": 80.0, "recommendation": "Renew or let leave for free. Decision needed immediately."}, {"player": "Leandro Trossard", "position": "LW", "contract_expiry": "2026-06-30", "risk_level": "critical", "market_value_m": 20.0, "wage_weekly_k": 120.0, "recommendation": "Renew or let leave for free. Decision needed immediately."}, {"player": "Oleksandr Zinchenko", "position": "LB", "contract_expiry": "2026-06-30", "risk_level": "critical", "market_value_m": 15.0, "wage_weekly_k": 200.0, "recommendation": "Renew or let leave for free. Decision needed immediately."}, {"player": "Karl Hein", "position": "GK", "contract_expiry": "2026-06-30", "risk_level": "critical", "market_value_m": 2.0, "wage_weekly_k": 15.0, "recommendation": "Renew or let leave for free. Decision needed immediately."}, {"player": "Christian Norgaard", "position": "DM", "contract_expiry": "2027-06-30", "risk_level": "high", "market_value_m": 8.0, "wage_weekly_k": 60.0, "recommendation": "Sell this summer or renew. Last chance to get a fee."}, {"player": "Gabriel Martinelli", "position": "LW", "contract_expiry": "2027-06-30", "risk_level": "high", "market_value_m": 50.0, "wage_weekly_k": 130.0, "recommendation": "Sell this summer or renew. Last chance to get a fee."}, {"player": "Gabriel Jesus", "position": "ST", "contract_expiry": "2027-06-30", "risk_level": "high", "market_value_m": 20.0, "wage_weekly_k": 165.0, "recommendation": "Sell this summer or renew. Last chance to get a fee."}, {"player": "Reiss Nelson", "position": "RW", "contract_expiry": "2027-06-30", "risk_level": "high", "market_value_m": 8.0, "wage_weekly_k": 60.0, "recommendation": "Sell this summer or renew. Last chance to get a fee."}, {"player": "Fabio Vieira", "position": "AM", "contract_expiry": "2027-06-30", "risk_level": "high", "market_value_m": 10.0, "wage_weekly_k": 65.0, "recommendation": "Sell this summer or renew. Last chance to get a fee."}, {"player": "David Raya", "position": "GK", "contract_expiry": "2028-06-30", "risk_level": "medium", "market_value_m": 35.0, "wage_weekly_k": 150.0, "recommendation": "Monitor. Consider extension talks if key player."}, {"player": "Ben White", "position": "RB", "contract_expiry": "2028-06-30", "risk_level": "medium", "market_value_m": 30.0, "wage_weekly_k": 120.0, "recommendation": "Monitor. Consider extension talks if key player."}, {"player": "Martin Odegaard", "position": "AM", "contract_expiry": "2028-06-30", "risk_level": "medium", "market_value_m": 100.0, "wage_weekly_k": 250.0, "recommendation": "Monitor. Consider extension talks if key player."}, {"player": "Declan Rice", "position": "CM", "contract_expiry": "2028-06-30", "risk_level": "medium", "market_value_m": 110.0, "wage_weekly_k": 250.0, "recommendation": "Monitor. Consider extension talks if key player."}, {"player": "Mikel Merino", "position": "CM", "contract_expiry": "2028-06-30", "risk_level": "medium", "market_value_m": 40.0, "wage_weekly_k": 140.0, "recommendation": "Monitor. Consider extension talks if key player."}, {"player": "Jakub Kiwior", "position": "CB", "contract_expiry": "2028-06-30", "risk_level": "medium", "market_value_m": 15.0, "wage_weekly_k": 70.0, "recommendation": "Monitor. Consider extension talks if key player."}], "set_piece_analysis": {"aerial_average_per90": 1.62, "assessment": "Below average - set-piece vulnerability confirmed", "key_aerial_players": [{"name": "Gabriel Magalhaes", "aerials_won": 52}, {"name": "William Saliba", "aerials_won": 45}, {"name": "Mikel Merino", "aerials_won": 28}, {"name": "Cristhian Mosquera", "aerials_won": 18}, {"name": "Christian Norgaard", "aerials_won": 16}], "recommendation": "Arsenal's set-piece defensive record has been poor. Consider adding a physically dominant CB (e.g., Marc Guehi) and improving coaching methodology. Gabriel Magalhaes (52 aerials won) is the primary aerial threat but the team needs more presence around him."}, "critical_positions": ["LW"], "thin_positions": ["CB"], "headline_findings": ["CRITICAL: Squad depth is critically thin at: LW", "WARNING: Depth concerns at: CB", "PERFORMANCE: xG underperformance detected for: Viktor Gyokeres", "CONTRACT: Contracts expiring THIS summer: Piero Hincapie, Leandro Trossard, Oleksandr Zinchenko, Karl Hein", "CONTRACT: Last chance to sell before free (2027 expiry): Christian Norgaard, Gabriel Martinelli, Gabriel Jesus, Reiss Nelson, Fabio Vieira", "SET PIECES: Below average - set-piece vulnerability confirmed"]}, "transfer_window_strategy": {"phase_1_early_summer": {"description": "Secure priority targets before World Cup distraction", "targets": ["Jeremy Jacquet", "Marc Guehi", "Tino Livramento"], "sales": ["Oleksandr Zinchenko", "Gabriel Jesus", "Gabriel Martinelli", "Fabio Vieira", "Reiss Nelson", "Karl Hein", "Piero Hincapie", "Leandro Trossard"]}, "phase_2_mid_summer": {"description": "Complete secondary business after World Cup", "targets": ["Arda Guler", "Ayyoub Bouaddi"], "sales": ["Jakub Kiwior", "Ben White"]}, "phase_3_late_window": {"description": "Opportunistic deals and final squad trimming", "targets": [], "sales": []}, "total_priority_signings": 6, "total_sales_planned": 10}}, "financial_report": {"budget_overview": {"base_budget_m": 150.0, "sale_revenue_m": 128.0, "total_available_m": 278.0, "total_spend_m": 205.0, "remaining_m": 73.0, "net_spend_m": 77.0}, "transactions": {"purchases": [{"player": "Jeremy Jacquet", "fee_m": 20.0, "wage_annual_m": 2.08, "contract_years": 5, "annual_amortization_m": 4.0}, {"player": "Marc Guehi", "fee_m": 40.0, "wage_annual_m": 6.24, "contract_years": 5, "annual_amortization_m": 8.0}, {"player": "Tino Livramento", "fee_m": 55.0, "wage_annual_m": 5.2, "contract_years": 5, "annual_amortization_m": 11.0}, {"player": "Rodrygo", "fee_m": 90.0, "wage_annual_m": 10.4, "contract_years": 5, "annual_amortization_m": 18.0}], "sales": [{"player": "Oleksandr Zinchenko", "fee_m": 0.0, "wage_saving_annual_m": 10.4}, {"player": "Gabriel Jesus", "fee_m": 20.0, "wage_saving_annual_m": 8.58}, {"player": "Gabriel Martinelli", "fee_m": 50.0, "wage_saving_annual_m": 6.76}, {"player": "Fabio Vieira", "fee_m": 10.0, "wage_saving_annual_m": 3.38}, {"player": "Reiss Nelson", "fee_m": 8.0, "wage_saving_annual_m": 3.12}, {"player": "Karl Hein", "fee_m": 0.0, "wage_saving_annual_m": 0.78}, {"player": "Jakub Kiwior", "fee_m": 15.0, "wage_saving_annual_m": 3.64}, {"player": "Piero Hincapie", "fee_m": 0.0, "wage_saving_annual_m": 4.16}, {"player": "Leandro Trossard", "fee_m": 0.0, "wage_saving_annual_m": 6.24}, {"player": "Ben White", "fee_m": 25.0, "wage_saving_annual_m": 6.24}]}, "wage_impact": {"current_wage_bill_m": 186.0, "new_wages_added_m": 23.92, "wages_saved_m": 53.3, "net_wage_change_m": -29.38, "projected_wage_bill_m": 156.62, "current_wage_ratio": 39.0, "projected_wage_ratio": 32.6, "max_sustainable_ratio": 55.0, "wage_headroom_m": 107.38, "status": "healthy"}, "amortization": {"existing_annual_amortization_m": 80.0, "new_amortization_m": 41.0, "amortization_removed_m": 12.8, "total_projected_amortization_m": 108.2, "purchases_detail": [{"player": "Jeremy Jacquet", "fee_m": 20.0, "years": 5, "annual_amort_m": 4.0}, {"player": "Marc Guehi", "fee_m": 40.0, "years": 5, "annual_amort_m": 8.0}, {"player": "Tino Livramento", "fee_m": 55.0, "years": 5, "annual_amort_m": 11.0}, {"player": "Rodrygo", "fee_m": 90.0, "years": 5, "annual_amort_m": 18.0}]}, "psr_compliance": {"estimated_annual_revenue_m": 480.0, "estimated_annual_costs_m": 324.82, "estimated_annual_profit_m": 155.18, "psr_allowable_loss_m": 105.0, "psr_headroom_m": 260.18, "status": "compliant", "notes": "Arsenal's strong commercial revenue and CL qualification provide significant PSR headroom. The proposed transfer plan is well within sustainable limits."}}, "rivals": {"Manchester City": {"strengths": ["Depth", "Haaland", "Foden", "Rodri"], "weaknesses": ["Aging squad", "Manager uncertainty post-Guardiola era", "Stuttering form this season"], "likely_targets": ["Marc Guehi (reportedly won race)", "Florian Wirtz"], "sellable_assets": [], "pl_position": "Top 4 but behind Arsenal"}, "Liverpool": {"strengths": ["Defending champions", "Slot system embedded", "Salah/Van Dijk"], "weaknesses": ["Salah age", "Squad transition ongoing"], "likely_targets": ["Rodrygo", "Marc Guehi", "Bouaddi"], "sellable_assets": [], "pl_position": "Top 4 contender"}, "Chelsea": {"strengths": ["Young squad", "Massive investment", "Palmer"], "weaknesses": ["Managerial instability (Maresca sacked Jan 2026)", "Bloated squad", "Inconsistency"], "likely_targets": ["Various - big spenders"], "sellable_assets": [], "pl_position": "5th-ish, underperforming"}, "Manchester United": {"strengths": ["Individual talent", "Investment"], "weaknesses": ["Amorim sacked Jan 2026", "Recruitment disputes", "Underperforming significantly"], "likely_targets": ["Rebuilding mode"], "sellable_assets": [], "pl_position": "Mid-table crisis"}, "Real Madrid": {"strengths": ["Mbappe", "Vinicius", "Bellingham"], "weaknesses": ["Rodrygo unhappy", "Squad management issues"], "likely_targets": [], "sellable_assets": ["Rodrygo (wants out)", "Arda Guler (limited minutes)"], "pl_position": "N/A - La Liga"}}, "squad": [{"name": "David Raya", "age": 29, "position": "GK", "nationality": "Spain", "squad_number": 1, "market_value_m": 35.0, "wage_weekly_k": 150.0, "contract_expiry": "2028-06-30", "status": "available", "loan_club": "", "role_in_squad": "starter", "eye_test_notes": "Elite distribution, sweeper-keeper style. Occasionally shaky on crosses. Commands area well. Shot-stopping above average but not world-class.", "strengths": ["Distribution", "Sweeper-keeper", "Penalty saves", "Playing out from back"], "weaknesses": ["Aerial command in crowded box", "Occasional lapses on crosses"], "stats": {"appearances": 24, "goals": 0, "assists": 0, "minutes": 2160, "xg": 0.0, "xa": 0.0, "progressive_passes": 0, "progressive_carries": 0, "key_passes": 0, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 87.5, "clean_sheets": 11, "saves": 62, "squawka_score": 60.0, "fotmob_rating": 7.1}}, {"name": "Kepa Arrizabalaga", "age": 31, "position": "GK", "nationality": "Spain", "squad_number": 22, "market_value_m": 8.0, "wage_weekly_k": 80.0, "contract_expiry": "2029-06-30", "status": "available", "loan_club": "", "role_in_squad": "rotation", "eye_test_notes": "Solid backup GK. Good with feet. Reliable cup keeper. Not elite shot-stopper but adequate depth.", "strengths": ["Ball-playing", "Experience", "Cup competition specialist"], "weaknesses": ["Shot-stopping ceiling lower than elite", "High wages for backup"], "stats": {"appearances": 8, "goals": 0, "assists": 0, "minutes": 720, "xg": 0.0, "xa": 0.0, "progressive_passes": 0, "progressive_carries": 0, "key_passes": 0, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 84.0, "clean_sheets": 4, "saves": 22, "squawka_score": 52.0, "fotmob_rating": 6.8}}, {"name": "William Saliba", "age": 24, "position": "CB", "nationality": "France", "squad_number": 2, "market_value_m": 90.0, "wage_weekly_k": 200.0, "contract_expiry": "2029-06-30", "status": "available", "loan_club": "", "role_in_squad": "starter", "eye_test_notes": "World-class centre-back. Exceptional reading of the game, elite recovery pace. Ball-playing ability top-tier. France international and long-term pillar.", "strengths": ["Recovery pace", "Ball progression", "Aerial dominance", "1v1 defending", "Reading the game"], "weaknesses": ["Occasionally over-commits in high press"], "stats": {"appearances": 23, "goals": 1, "assists": 1, "minutes": 2070, "xg": 0.0, "xa": 0.0, "progressive_passes": 48, "progressive_carries": 22, "key_passes": 0, "tackles_won": 32, "interceptions": 28, "aerials_won": 45, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 92.1, "clean_sheets": 0, "saves": 0, "squawka_score": 74.0, "fotmob_rating": 7.4}}, {"name": "Gabriel Magalhaes", "age": 28, "position": "CB", "nationality": "Brazil", "squad_number": 6, "market_value_m": 70.0, "wage_weekly_k": 190.0, "contract_expiry": "2030-06-30", "status": "available", "loan_club": "", "role_in_squad": "starter", "eye_test_notes": "Physical monster. Set-piece threat with 3 goals from headers. Excellent aerial duel winner. Occasionally ball-watches during transitions. Strong leader.", "strengths": ["Aerial dominance", "Set-piece threat", "Physical presence", "Leadership"], "weaknesses": ["Ball-watching in transitions", "Progressive passing under pressure", "Pace against quick forwards"], "stats": {"appearances": 18, "goals": 3, "assists": 0, "minutes": 1620, "xg": 0.0, "xa": 0.0, "progressive_passes": 32, "progressive_carries": 12, "key_passes": 0, "tackles_won": 24, "interceptions": 22, "aerials_won": 52, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 89.5, "clean_sheets": 0, "saves": 0, "squawka_score": 70.0, "fotmob_rating": 7.2}}, {"name": "Cristhian Mosquera", "age": 20, "position": "CB", "nationality": "Spain", "squad_number": 25, "market_value_m": 25.0, "wage_weekly_k": 60.0, "contract_expiry": "2030-06-30", "status": "available", "loan_club": "", "role_in_squad": "rotation", "eye_test_notes": "Young, composed centre-back signed from Valencia. Excellent ball-playing for his age. Needs physical development but reads the game well. Long-term Saliba partner prospect.", "strengths": ["Ball progression", "Composure", "Youth and ceiling", "Tactical intelligence"], "weaknesses": ["Physical development needed", "Limited PL experience", "Aerial duels vs strong strikers"], "stats": {"appearances": 12, "goals": 0, "assists": 0, "minutes": 780, "xg": 0.0, "xa": 0.0, "progressive_passes": 18, "progressive_carries": 8, "key_passes": 0, "tackles_won": 16, "interceptions": 14, "aerials_won": 18, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 90.2, "clean_sheets": 0, "saves": 0, "squawka_score": 62.0, "fotmob_rating": 6.9}}, {"name": "Jurrien Timber", "age": 24, "position": "RB", "nationality": "Netherlands", "squad_number": 12, "market_value_m": 55.0, "wage_weekly_k": 140.0, "contract_expiry": "2029-06-30", "status": "available", "loan_club": "", "role_in_squad": "starter", "eye_test_notes": "Highest Squawka score for any full-back this season. Exceptional inverting full-back who transitions into midfield. Tactically elite. Strong going forward. First-choice RB.", "strengths": ["Tactical versatility", "Ball progression", "Inverting into midfield", "1v1 defending", "Goal contributions"], "weaknesses": ["Can be caught high up against quick counters"], "stats": {"appearances": 23, "goals": 2, "assists": 3, "minutes": 1980, "xg": 0.0, "xa": 0.0, "progressive_passes": 42, "progressive_carries": 55, "key_passes": 18, "tackles_won": 30, "interceptions": 20, "aerials_won": 0, "dribbles_completed": 22, "shot_accuracy_pct": 0.0, "pass_completion_pct": 88.4, "clean_sheets": 0, "saves": 0, "squawka_score": 78.0, "fotmob_rating": 7.5}}, {"name": "Ben White", "age": 28, "position": "RB", "nationality": "England", "squad_number": 4, "market_value_m": 30.0, "wage_weekly_k": 120.0, "contract_expiry": "2028-06-30", "status": "available", "loan_club": "", "role_in_squad": "rotation", "eye_test_notes": "Frustrated with lack of minutes behind Timber. Only 12 apps this season. Still a quality defender with good passing range. Can play CB. Reports suggest unhappy and open to exit.", "strengths": ["Passing range", "Tactical intelligence", "Can play CB/RB", "Composure"], "weaknesses": ["Diminished minutes", "Morale concerns", "Not as dynamic as Timber going forward"], "stats": {"appearances": 12, "goals": 0, "assists": 1, "minutes": 840, "xg": 0.0, "xa": 0.0, "progressive_passes": 22, "progressive_carries": 15, "key_passes": 0, "tackles_won": 14, "interceptions": 10, "aerials_won": 0, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 89.8, "clean_sheets": 0, "saves": 0, "squawka_score": 55.0, "fotmob_rating": 6.7}}, {"name": "Riccardo Calafiori", "age": 23, "position": "LB", "nationality": "Italy", "squad_number": 33, "market_value_m": 55.0, "wage_weekly_k": 130.0, "contract_expiry": "2029-06-30", "status": "available", "loan_club": "", "role_in_squad": "starter", "eye_test_notes": "Aggressive overlapping full-back with excellent ball-carrying. Italy international. Strong in build-up. Can also play CB. First-choice LB when fit.", "strengths": ["Ball-carrying", "Overlap/underlap runs", "Build-up play", "Versatility CB/LB"], "weaknesses": ["Defensive positioning when caught high", "Injury niggles"], "stats": {"appearances": 20, "goals": 1, "assists": 2, "minutes": 1540, "xg": 0.0, "xa": 0.0, "progressive_passes": 38, "progressive_carries": 48, "key_passes": 14, "tackles_won": 22, "interceptions": 18, "aerials_won": 0, "dribbles_completed": 16, "shot_accuracy_pct": 0.0, "pass_completion_pct": 87.8, "clean_sheets": 0, "saves": 0, "squawka_score": 66.0, "fotmob_rating": 7.1}}, {"name": "Piero Hincapie", "age": 23, "position": "LB", "nationality": "Ecuador", "squad_number": 15, "market_value_m": 35.0, "wage_weekly_k": 80.0, "contract_expiry": "2026-06-30", "status": "available", "loan_club": "Bayer Leverkusen (loan)", "role_in_squad": "rotation", "eye_test_notes": "Leverkusen loanee. Solid defensive full-back/CB hybrid. Good in a back-three. Less dynamic going forward than Calafiori. Option to buy reportedly \u00a330m.", "strengths": ["Defensive solidity", "Versatility LB/CB", "Left-footed", "Physical"], "weaknesses": ["Limited attacking output", "Not permanent yet - loan decision needed"], "stats": {"appearances": 16, "goals": 0, "assists": 1, "minutes": 1080, "xg": 0.0, "xa": 0.0, "progressive_passes": 28, "progressive_carries": 20, "key_passes": 0, "tackles_won": 18, "interceptions": 14, "aerials_won": 16, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 89.0, "clean_sheets": 0, "saves": 0, "squawka_score": 58.0, "fotmob_rating": 6.8}}, {"name": "Myles Lewis-Skelly", "age": 18, "position": "LB", "nationality": "England", "squad_number": 49, "market_value_m": 15.0, "wage_weekly_k": 30.0, "contract_expiry": "2030-06-30", "status": "available", "loan_club": "", "role_in_squad": "rotation", "eye_test_notes": "Exceptional academy talent. Originally a midfielder, now deployed at LB. Arteta plans to transition him back to midfield long-term. Outstanding ball-carrier. Needs defensive refinement.", "strengths": ["Ball-carrying", "Progressive actions", "Youth potential", "Versatility"], "weaknesses": ["Defensive positioning", "Physical development", "Decision-making under pressure"], "stats": {"appearances": 14, "goals": 0, "assists": 2, "minutes": 780, "xg": 0.0, "xa": 0.0, "progressive_passes": 22, "progressive_carries": 30, "key_passes": 8, "tackles_won": 10, "interceptions": 8, "aerials_won": 0, "dribbles_completed": 14, "shot_accuracy_pct": 0.0, "pass_completion_pct": 85.5, "clean_sheets": 0, "saves": 0, "squawka_score": 60.0, "fotmob_rating": 6.9}}, {"name": "Martin Odegaard", "age": 27, "position": "AM", "nationality": "Norway", "squad_number": 8, "market_value_m": 100.0, "wage_weekly_k": 250.0, "contract_expiry": "2028-06-30", "status": "available", "loan_club": "", "role_in_squad": "starter", "eye_test_notes": "Captain and creative heartbeat. 8 through balls in early season. Slightly injury-disrupted (missed 5 games). When fit, arguably best #10 in the PL. Drives tempo and final-third creativity.", "strengths": ["Creativity", "Through balls", "Press resistance", "Leadership", "Final third passing"], "weaknesses": ["Injury concerns (ankle)", "Defensive contribution in deep block situations"], "stats": {"appearances": 18, "goals": 2, "assists": 4, "minutes": 1440, "xg": 3.2, "xa": 5.8, "progressive_passes": 68, "progressive_carries": 35, "key_passes": 42, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 18, "shot_accuracy_pct": 0.0, "pass_completion_pct": 87.2, "clean_sheets": 0, "saves": 0, "squawka_score": 72.0, "fotmob_rating": 7.4}}, {"name": "Declan Rice", "age": 27, "position": "CM", "nationality": "England", "squad_number": 41, "market_value_m": 110.0, "wage_weekly_k": 250.0, "contract_expiry": "2028-06-30", "status": "available", "loan_club": "", "role_in_squad": "starter", "eye_test_notes": "Engine of the team. League-leading ball carrier with 145 carries, 65 progressive. Wins possession 36+ times. Box-to-box machine. 4 goals and 3 assists show his evolution. Indispensable.", "strengths": ["Ball-carrying", "Press resistance", "Goal contributions from midfield", "Winning possession", "Engine/fitness"], "weaknesses": ["Occasional over-ambitious forward runs leaving gaps"], "stats": {"appearances": 23, "goals": 4, "assists": 3, "minutes": 2070, "xg": 3.0, "xa": 2.5, "progressive_passes": 55, "progressive_carries": 145, "key_passes": 22, "tackles_won": 38, "interceptions": 26, "aerials_won": 0, "dribbles_completed": 28, "shot_accuracy_pct": 0.0, "pass_completion_pct": 89.0, "clean_sheets": 0, "saves": 0, "squawka_score": 75.0, "fotmob_rating": 7.5}}, {"name": "Martin Zubimendi", "age": 27, "position": "DM", "nationality": "Spain", "squad_number": 36, "market_value_m": 65.0, "wage_weekly_k": 180.0, "contract_expiry": "2030-06-30", "status": "available", "loan_club": "", "role_in_squad": "starter", "eye_test_notes": "The deep-lying controller Arsenal desperately needed. Elite tempo setter. 91.5% pass completion from the #6 role. Reads the game exceptionally. Surprise goal contributions (4 goals). Transformative signing.", "strengths": ["Tempo control", "Progressive passing", "Positional intelligence", "Interceptions", "Press resistance"], "weaknesses": ["Not the most physical in duels", "Pace in recovery"], "stats": {"appearances": 24, "goals": 4, "assists": 2, "minutes": 2000, "xg": 2.5, "xa": 2.0, "progressive_passes": 72, "progressive_carries": 40, "key_passes": 28, "tackles_won": 34, "interceptions": 32, "aerials_won": 0, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 91.5, "clean_sheets": 0, "saves": 0, "squawka_score": 73.0, "fotmob_rating": 7.3}}, {"name": "Mikel Merino", "age": 29, "position": "CM", "nationality": "Spain", "squad_number": 23, "market_value_m": 40.0, "wage_weekly_k": 140.0, "contract_expiry": "2028-06-30", "status": "available", "loan_club": "", "role_in_squad": "rotation", "eye_test_notes": "Excellent box-to-box option. 8 through balls early season alongside Odegaard. Physical presence and aerial ability add a different dimension. Smart rotation option but not guaranteed starter.", "strengths": ["Aerial ability", "Late runs into box", "Through balls", "Physical presence", "Versatility"], "weaknesses": ["Not as press-resistant as Odegaard/Zubimendi", "Turning 30"], "stats": {"appearances": 21, "goals": 4, "assists": 3, "minutes": 1560, "xg": 2.8, "xa": 2.5, "progressive_passes": 48, "progressive_carries": 32, "key_passes": 20, "tackles_won": 22, "interceptions": 18, "aerials_won": 28, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 86.5, "clean_sheets": 0, "saves": 0, "squawka_score": 68.0, "fotmob_rating": 7.2}}, {"name": "Eberechi Eze", "age": 27, "position": "AM", "nationality": "England", "squad_number": 20, "market_value_m": 55.0, "wage_weekly_k": 150.0, "contract_expiry": "2030-06-30", "status": "available", "loan_club": "", "role_in_squad": "rotation", "eye_test_notes": "Signed from Crystal Palace. Silky dribbler with flair. Can play AM/LW. Excellent in tight spaces. Not yet fully integrated but flashes of brilliance.", "strengths": ["Dribbling", "Ball-carrying", "Flair in tight spaces", "Set-piece delivery", "Versatility AM/LW"], "weaknesses": ["Consistency in big matches", "Defensive work rate", "Decision-making final third"], "stats": {"appearances": 19, "goals": 4, "assists": 2, "minutes": 1200, "xg": 3.5, "xa": 2.0, "progressive_passes": 30, "progressive_carries": 45, "key_passes": 22, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 28, "shot_accuracy_pct": 0.0, "pass_completion_pct": 84.0, "clean_sheets": 0, "saves": 0, "squawka_score": 65.0, "fotmob_rating": 7.0}}, {"name": "Ethan Nwaneri", "age": 18, "position": "AM", "nationality": "England", "squad_number": 53, "market_value_m": 20.0, "wage_weekly_k": 35.0, "contract_expiry": "2030-06-30", "status": "available", "loan_club": "", "role_in_squad": "youth", "eye_test_notes": "Generational English talent. Record-breaking youngest PL player. Outstanding creativity and shooting for his age. Needs more PL minutes but ceiling is immense.", "strengths": ["Creativity", "Shooting technique", "Youth ceiling", "Intelligence"], "weaknesses": ["Physical development", "Senior experience", "Defensive intensity"], "stats": {"appearances": 14, "goals": 2, "assists": 2, "minutes": 640, "xg": 1.8, "xa": 1.5, "progressive_passes": 18, "progressive_carries": 20, "key_passes": 12, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 10, "shot_accuracy_pct": 0.0, "pass_completion_pct": 82.0, "clean_sheets": 0, "saves": 0, "squawka_score": 58.0, "fotmob_rating": 6.8}}, {"name": "Christian Norgaard", "age": 31, "position": "DM", "nationality": "Denmark", "squad_number": 16, "market_value_m": 8.0, "wage_weekly_k": 60.0, "contract_expiry": "2027-06-30", "status": "available", "loan_club": "", "role_in_squad": "backup", "eye_test_notes": "Experienced DM signed as Jorginho leadership replacement. Physical presence and set-piece defending. Not a long-term solution but adds squad depth and dressing room value.", "strengths": ["Leadership", "Aerial ability", "Experience", "Set-piece defending"], "weaknesses": ["Limited on the ball", "Aging", "Not CL-quality starter"], "stats": {"appearances": 10, "goals": 0, "assists": 0, "minutes": 520, "xg": 0.0, "xa": 0.0, "progressive_passes": 12, "progressive_carries": 8, "key_passes": 0, "tackles_won": 14, "interceptions": 12, "aerials_won": 16, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 85.0, "clean_sheets": 0, "saves": 0, "squawka_score": 48.0, "fotmob_rating": 6.4}}, {"name": "Bukayo Saka", "age": 24, "position": "RW", "nationality": "England", "squad_number": 7, "market_value_m": 130.0, "wage_weekly_k": 300.0, "contract_expiry": "2029-06-30", "status": "available", "loan_club": "", "role_in_squad": "starter", "eye_test_notes": "Franchise player. 24 dribble attempts, highest at the club. Highest FotMob rating 7.54. Creates and scores consistently. Best 1v1 player in the squad. Indispensable.", "strengths": ["1v1 dribbling", "Creativity", "Goal contributions", "Big-game player", "Work rate", "Versatility RW/LW"], "weaknesses": ["Occasional over-reliance on left foot", "Workload management needed"], "stats": {"appearances": 22, "goals": 4, "assists": 3, "minutes": 1549, "xg": 5.0, "xa": 4.5, "progressive_passes": 45, "progressive_carries": 60, "key_passes": 35, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 10, "shot_accuracy_pct": 0.0, "pass_completion_pct": 82.0, "clean_sheets": 0, "saves": 0, "squawka_score": 72.0, "fotmob_rating": 7.54}}, {"name": "Noni Madueke", "age": 23, "position": "RW", "nationality": "England", "squad_number": 11, "market_value_m": 50.0, "wage_weekly_k": 120.0, "contract_expiry": "2030-06-30", "status": "available", "loan_club": "", "role_in_squad": "rotation", "eye_test_notes": "Pacy, direct winger signed from Chelsea. Good depth for Saka. Can play both wings. Strong dribbler. Needs to improve end product consistency. Good rotation option in a packed schedule.", "strengths": ["Pace", "Directness", "Dribbling", "Can play both flanks"], "weaknesses": ["End product consistency", "Decision-making in final third", "Defensive contribution"], "stats": {"appearances": 20, "goals": 3, "assists": 2, "minutes": 1100, "xg": 3.2, "xa": 2.0, "progressive_passes": 18, "progressive_carries": 35, "key_passes": 14, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 20, "shot_accuracy_pct": 0.0, "pass_completion_pct": 79.5, "clean_sheets": 0, "saves": 0, "squawka_score": 62.0, "fotmob_rating": 6.9}}, {"name": "Gabriel Martinelli", "age": 24, "position": "LW", "nationality": "Brazil", "squad_number": 10, "market_value_m": 50.0, "wage_weekly_k": 130.0, "contract_expiry": "2027-06-30", "status": "available", "loan_club": "", "role_in_squad": "rotation", "eye_test_notes": "Has plateaued since his 15-goal 2022/23 season. Inconsistent end product. High energy and pressing are assets, but final-third quality lacking. Reports suggest Arsenal are open to selling for ~50m to fund an upgrade.", "strengths": ["High pressing intensity", "Pace", "Energy", "Direct running"], "weaknesses": ["End product regression", "Decision-making", "Has hit ceiling", "Inconsistent against deep blocks"], "stats": {"appearances": 19, "goals": 3, "assists": 2, "minutes": 1080, "xg": 4.0, "xa": 1.8, "progressive_passes": 12, "progressive_carries": 32, "key_passes": 10, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 14, "shot_accuracy_pct": 0.0, "pass_completion_pct": 78.0, "clean_sheets": 0, "saves": 0, "squawka_score": 56.0, "fotmob_rating": 6.7}}, {"name": "Leandro Trossard", "age": 31, "position": "LW", "nationality": "Belgium", "squad_number": 19, "market_value_m": 20.0, "wage_weekly_k": 120.0, "contract_expiry": "2026-06-30", "status": "available", "loan_club": "", "role_in_squad": "rotation", "eye_test_notes": "Belgium veteran. Leads goal involvements (5G+4A). Clutch performer. Contract expires June 2026 - will leave for free unless renewed. 31 years old, Saudi interest reported. Excellent squad player but not the upgrade needed for title/CL push.", "strengths": ["Clutch goals", "Versatility LW/RW/AM", "Experience", "Finishing"], "weaknesses": ["Contract expiring", "Age 31", "Pace declining", "Not a starter-level upgrade"], "stats": {"appearances": 20, "goals": 5, "assists": 4, "minutes": 1200, "xg": 4.2, "xa": 3.5, "progressive_passes": 22, "progressive_carries": 25, "key_passes": 18, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 8, "shot_accuracy_pct": 0.0, "pass_completion_pct": 83.0, "clean_sheets": 0, "saves": 0, "squawka_score": 64.0, "fotmob_rating": 7.0}}, {"name": "Viktor Gyokeres", "age": 27, "position": "ST", "nationality": "Sweden", "squad_number": 14, "market_value_m": 80.0, "wage_weekly_k": 200.0, "contract_expiry": "2030-06-30", "status": "available", "loan_club": "", "role_in_squad": "starter", "eye_test_notes": "Headline signing from Sporting (65.8m). Only 6 PL goals from 8.5 xG - significant underperformance. Shot accuracy 33% is concerning. Missing 0.45 big chances per 90. Physical presence is excellent but adaptation to PL defending has been slow. Still trust he'll come good but xG gap is alarming.", "strengths": ["Physical presence", "Hold-up play", "Aerial ability", "Pressing", "xG generation"], "weaknesses": ["Shot accuracy (33%)", "xG underperformance", "PL adaptation", "Big chance conversion", "Touches in tight spaces"], "stats": {"appearances": 22, "goals": 6, "assists": 2, "minutes": 1760, "xg": 8.5, "xa": 1.8, "progressive_passes": 12, "progressive_carries": 25, "key_passes": 8, "tackles_won": 0, "interceptions": 0, "aerials_won": 32, "dribbles_completed": 12, "shot_accuracy_pct": 33.3, "pass_completion_pct": 0.0, "clean_sheets": 0, "saves": 0, "squawka_score": 58.0, "fotmob_rating": 6.9}}, {"name": "Gabriel Jesus", "age": 28, "position": "ST", "nationality": "Brazil", "squad_number": 9, "market_value_m": 20.0, "wage_weekly_k": 165.0, "contract_expiry": "2027-06-30", "status": "available", "loan_club": "", "role_in_squad": "backup", "eye_test_notes": "Injury-ravaged season. Only 9 appearances. When fit, brings excellent link-up and pressing but conversion has always been an issue. High wages for a backup. Potential sell candidate to recoup fees.", "strengths": ["Link-up play", "Pressing", "Experience", "Work rate"], "weaknesses": ["Injury prone", "Conversion rate", "High wages for role", "Confidence issues"], "stats": {"appearances": 9, "goals": 2, "assists": 1, "minutes": 420, "xg": 1.5, "xa": 0.8, "progressive_passes": 6, "progressive_carries": 10, "key_passes": 4, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 6, "shot_accuracy_pct": 0.0, "pass_completion_pct": 0.0, "clean_sheets": 0, "saves": 0, "squawka_score": 50.0, "fotmob_rating": 6.5}}, {"name": "Oleksandr Zinchenko", "age": 29, "position": "LB", "nationality": "Ukraine", "squad_number": null, "market_value_m": 15.0, "wage_weekly_k": 200.0, "contract_expiry": "2026-06-30", "status": "loaned_out", "loan_club": "Nottingham Forest -> sold to Ajax", "role_in_squad": "backup", "eye_test_notes": "Was loaned to Forest, now sold to Ajax. 200k/week wages freed up. Fell behind MLS/Calafiori in pecking order. Departure confirmed.", "strengths": ["Technical ability", "Inverted full-back play"], "weaknesses": ["Defensive liability", "Pace", "Wages"], "stats": {"appearances": 0, "goals": 0, "assists": 0, "minutes": 0, "xg": 0.0, "xa": 0.0, "progressive_passes": 0, "progressive_carries": 0, "key_passes": 0, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 0.0, "clean_sheets": 0, "saves": 0, "squawka_score": 0.0, "fotmob_rating": 0.0}}, {"name": "Jakub Kiwior", "age": 25, "position": "CB", "nationality": "Poland", "squad_number": null, "market_value_m": 15.0, "wage_weekly_k": 70.0, "contract_expiry": "2028-06-30", "status": "loaned_out", "loan_club": "FC Porto", "role_in_squad": "backup", "eye_test_notes": "On loan at Porto. Decent left-footed CB. Not good enough to start for Arsenal. Likely to be sold permanently in summer.", "strengths": ["Left-footed CB", "Ball-playing"], "weaknesses": ["Not PL starting quality", "Aerial duels", "Pace"], "stats": {"appearances": 0, "goals": 0, "assists": 0, "minutes": 0, "xg": 0.0, "xa": 0.0, "progressive_passes": 0, "progressive_carries": 0, "key_passes": 0, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 0.0, "clean_sheets": 0, "saves": 0, "squawka_score": 0.0, "fotmob_rating": 0.0}}, {"name": "Reiss Nelson", "age": 26, "position": "RW", "nationality": "England", "squad_number": null, "market_value_m": 8.0, "wage_weekly_k": 60.0, "contract_expiry": "2027-06-30", "status": "loaned_out", "loan_club": "Brentford", "role_in_squad": "backup", "eye_test_notes": "On loan at Brentford. Not Arsenal quality. Should be sold permanently.", "strengths": ["Dribbling", "Academy product"], "weaknesses": ["Not PL top-6 level", "Injuries", "End product"], "stats": {"appearances": 0, "goals": 0, "assists": 0, "minutes": 0, "xg": 0.0, "xa": 0.0, "progressive_passes": 0, "progressive_carries": 0, "key_passes": 0, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 0.0, "clean_sheets": 0, "saves": 0, "squawka_score": 0.0, "fotmob_rating": 0.0}}, {"name": "Fabio Vieira", "age": 25, "position": "AM", "nationality": "Portugal", "squad_number": null, "market_value_m": 10.0, "wage_weekly_k": 65.0, "contract_expiry": "2027-06-30", "status": "loaned_out", "loan_club": "Hamburg", "role_in_squad": "backup", "eye_test_notes": "Creative talent but too lightweight for PL. On loan at Hamburg. Should be sold permanently to recoup some of original fee.", "strengths": ["Creativity", "Set-piece delivery", "Technical ability"], "weaknesses": ["Physical weakness", "Not PL level", "Injuries"], "stats": {"appearances": 0, "goals": 0, "assists": 0, "minutes": 0, "xg": 0.0, "xa": 0.0, "progressive_passes": 0, "progressive_carries": 0, "key_passes": 0, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 0.0, "clean_sheets": 0, "saves": 0, "squawka_score": 0.0, "fotmob_rating": 0.0}}, {"name": "Karl Hein", "age": 23, "position": "GK", "nationality": "Estonia", "squad_number": null, "market_value_m": 2.0, "wage_weekly_k": 15.0, "contract_expiry": "2026-06-30", "status": "loaned_out", "loan_club": "Werder Bremen", "role_in_squad": "backup", "eye_test_notes": "On loan at Bremen. Third-choice GK. Contract expiring. Unlikely to have a future at Arsenal.", "strengths": ["Shot-stopping"], "weaknesses": ["Not top-6 level", "No PL experience"], "stats": {"appearances": 0, "goals": 0, "assists": 0, "minutes": 0, "xg": 0.0, "xa": 0.0, "progressive_passes": 0, "progressive_carries": 0, "key_passes": 0, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 0.0, "clean_sheets": 0, "saves": 0, "squawka_score": 0.0, "fotmob_rating": 0.0}}], "targets": [{"name": "Rodrygo", "age": 25, "position": "LW", "nationality": "Brazil", "squad_number": null, "market_value_m": 90.0, "wage_weekly_k": 200.0, "contract_expiry": "2028-06-30", "status": "available", "loan_club": "", "role_in_squad": "starter", "eye_test_notes": "World-class talent stuck behind Mbappe/Vinicius at Real Madrid. Unhappy and wants to leave post-World Cup. Wants to join Arsenal. Can play LW/RW/ST. Elite end product, CL-proven (scored in final). Would be a massive upgrade on Martinelli/Trossard. Fee likely 80-100m EUR.", "strengths": ["CL pedigree", "Versatility across front three", "Big-game mentality", "Finishing", "Link-up play", "1v1 ability"], "weaknesses": ["Fee will be very high", "Adaptation to PL intensity", "Competition from Liverpool/City"], "stats": {"appearances": 22, "goals": 5, "assists": 3, "minutes": 1100, "xg": 4.5, "xa": 3.0, "progressive_passes": 25, "progressive_carries": 40, "key_passes": 20, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 22, "shot_accuracy_pct": 0.0, "pass_completion_pct": 84.0, "clean_sheets": 0, "saves": 0, "squawka_score": 68.0, "fotmob_rating": 7.2}}, {"name": "Tino Livramento", "age": 23, "position": "RB", "nationality": "England", "squad_number": null, "market_value_m": 55.0, "wage_weekly_k": 100.0, "contract_expiry": "2028-06-30", "status": "available", "loan_club": "", "role_in_squad": "starter", "eye_test_notes": "Arsenal's TOP target at RB. Arteta and Berta both personally keen. Same agency as Arteta (easier personal terms). Timber-like profile but more dynamic in attack. Newcastle will demand 60m+ EUR. Contract talks stalled. Would replace Ben White and provide competition for Timber.", "strengths": ["Pace", "Attacking output", "Versatility (can play LB)", "Ball-carrying", "Young and improving"], "weaknesses": ["Newcastle won't sell cheap", "High fee for RB position", "Defensive discipline needs work"], "stats": {"appearances": 24, "goals": 2, "assists": 5, "minutes": 2100, "xg": 0.0, "xa": 0.0, "progressive_passes": 35, "progressive_carries": 65, "key_passes": 22, "tackles_won": 36, "interceptions": 24, "aerials_won": 0, "dribbles_completed": 20, "shot_accuracy_pct": 0.0, "pass_completion_pct": 84.5, "clean_sheets": 0, "saves": 0, "squawka_score": 70.0, "fotmob_rating": 7.3}}, {"name": "Marc Guehi", "age": 25, "position": "CB", "nationality": "England", "squad_number": null, "market_value_m": 40.0, "wage_weekly_k": 120.0, "contract_expiry": "2026-06-30", "status": "available", "loan_club": "", "role_in_squad": "rotation", "eye_test_notes": "Available on FREE transfer this summer (contract expires June 2026). England international. Arteta is a big fan. Reliable, consistent CB. Would provide elite depth at CB behind Saliba/Gabriel. BUT Man City reportedly won the race. Competition fierce from Liverpool, Bayern. If free, incredible value.", "strengths": ["Free transfer", "England international", "Leadership", "Consistent performer", "Ball-playing CB"], "weaknesses": ["City may have already signed him", "Not elite-tier like Saliba", "Limited aerial dominance"], "stats": {"appearances": 22, "goals": 1, "assists": 0, "minutes": 1980, "xg": 0.0, "xa": 0.0, "progressive_passes": 30, "progressive_carries": 18, "key_passes": 0, "tackles_won": 28, "interceptions": 22, "aerials_won": 38, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 88.0, "clean_sheets": 0, "saves": 0, "squawka_score": 66.0, "fotmob_rating": 7.1}}, {"name": "Ayyoub Bouaddi", "age": 18, "position": "CM", "nationality": "France", "squad_number": null, "market_value_m": 45.0, "wage_weekly_k": 60.0, "contract_expiry": "2029-06-30", "status": "available", "loan_club": "", "role_in_squad": "rotation", "eye_test_notes": "18-year-old Lille midfielder. Complete CM with massive potential. Valued ~43m GBP. Arsenal are in the chase. Would be a long-term Merino successor and Odegaard backup. Outstanding for his age - started nearly every Lille game.", "strengths": ["Complete midfielder", "Youth and ceiling", "Progressive passing", "Defensive intelligence for age", "French market knowledge"], "weaknesses": ["High fee for 18-year-old", "PL adaptation risk", "Competition from Man Utd, Real Madrid"], "stats": {"appearances": 28, "goals": 3, "assists": 4, "minutes": 2200, "xg": 0.0, "xa": 0.0, "progressive_passes": 55, "progressive_carries": 42, "key_passes": 22, "tackles_won": 28, "interceptions": 20, "aerials_won": 0, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 88.5, "clean_sheets": 0, "saves": 0, "squawka_score": 72.0, "fotmob_rating": 7.3}}, {"name": "Arda Guler", "age": 21, "position": "AM", "nationality": "Turkey", "squad_number": null, "market_value_m": 40.0, "wage_weekly_k": 80.0, "contract_expiry": "2029-06-30", "status": "available", "loan_club": "", "role_in_squad": "rotation", "eye_test_notes": "Real Madrid prodigy with limited minutes. Exceptional left foot. Can play RW/AM. Summer interest more likely than January. Would add elite creativity. Loan with option to buy possible.", "strengths": ["Left foot quality", "Creativity", "Shooting", "Youth potential"], "weaknesses": ["Limited senior minutes", "Physical development", "Real Madrid may not sell permanently"], "stats": {"appearances": 18, "goals": 4, "assists": 3, "minutes": 900, "xg": 3.5, "xa": 2.5, "progressive_passes": 22, "progressive_carries": 18, "key_passes": 16, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 14, "shot_accuracy_pct": 0.0, "pass_completion_pct": 85.0, "clean_sheets": 0, "saves": 0, "squawka_score": 66.0, "fotmob_rating": 7.1}}, {"name": "Julian Alvarez", "age": 26, "position": "ST", "nationality": "Argentina", "squad_number": null, "market_value_m": 80.0, "wage_weekly_k": 180.0, "contract_expiry": "2029-06-30", "status": "available", "loan_club": "", "role_in_squad": "starter", "eye_test_notes": "World Cup winner. Atletico Madrid forward who can play anywhere across the front line. Arsenal exploring possibility. Would give Gyokeres elite competition or allow tactical flexibility. Fee would be massive (80m+).", "strengths": ["Versatility across front 3", "Big-game mentality", "Work rate", "Link-up play", "World Cup winner"], "weaknesses": ["Atletico unlikely to sell", "Very expensive", "Would need to displace Gyokeres or adjust system"], "stats": {"appearances": 25, "goals": 10, "assists": 5, "minutes": 2000, "xg": 9.0, "xa": 4.0, "progressive_passes": 20, "progressive_carries": 35, "key_passes": 18, "tackles_won": 0, "interceptions": 0, "aerials_won": 0, "dribbles_completed": 16, "shot_accuracy_pct": 48.0, "pass_completion_pct": 0.0, "clean_sheets": 0, "saves": 0, "squawka_score": 72.0, "fotmob_rating": 7.4}}, {"name": "Jeremy Jacquet", "age": 19, "position": "CB", "nationality": "France", "squad_number": null, "market_value_m": 20.0, "wage_weekly_k": 40.0, "contract_expiry": "2029-06-30", "status": "available", "loan_club": "", "role_in_squad": "rotation", "eye_test_notes": "19-year-old Rennes CB. Arsenal made initial contact (Romano). Excellent ball-playing defender. New contract until 2029 makes him more expensive. Alternative if Guehi goes to City.", "strengths": ["Ball progression from CB", "Youth and ceiling", "Positional intelligence", "Left-footed"], "weaknesses": ["New long contract (harder to prise away)", "Physical development", "Ligue 1 to PL jump"], "stats": {"appearances": 22, "goals": 1, "assists": 0, "minutes": 1800, "xg": 0.0, "xa": 0.0, "progressive_passes": 35, "progressive_carries": 15, "key_passes": 0, "tackles_won": 30, "interceptions": 24, "aerials_won": 28, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 89.0, "clean_sheets": 0, "saves": 0, "squawka_score": 64.0, "fotmob_rating": 7.0}}, {"name": "Davide Bartesaghi", "age": 19, "position": "LB", "nationality": "Italy", "squad_number": null, "market_value_m": 12.0, "wage_weekly_k": 25.0, "contract_expiry": "2028-06-30", "status": "available", "loan_club": "", "role_in_squad": "youth", "eye_test_notes": "AC Milan LB prospect Arsenal are monitoring. Athletic, modern full-back profile. Would be a long-term LB option. Milan concerned about Arsenal interest.", "strengths": ["Athletic profile", "Youth", "Modern full-back attributes"], "weaknesses": ["Very raw", "Limited Serie A experience", "Unknown PL fit"], "stats": {"appearances": 16, "goals": 0, "assists": 2, "minutes": 1100, "xg": 0.0, "xa": 0.0, "progressive_passes": 18, "progressive_carries": 28, "key_passes": 0, "tackles_won": 16, "interceptions": 10, "aerials_won": 0, "dribbles_completed": 0, "shot_accuracy_pct": 0.0, "pass_completion_pct": 84.0, "clean_sheets": 0, "saves": 0, "squawka_score": 58.0, "fotmob_rating": 6.7}}]};
+    </script>
+    <script>
+/**
+ * Arsenal Transfer War Room - Frontend Application
+ * ==================================================
+ * Enterprise-grade transfer planning dashboard.
+ * Fetches data from Flask API and renders all dashboard views.
+ */
+
+(function () {
+    "use strict";
+
+    let DATA = null;
+    const $ = (s) => document.querySelector(s);
+    const $$ = (s) => document.querySelectorAll(s);
+
+    // ---- BUDGET SLIDER ----
+    const slider = $("#budgetSlider");
+    const display = $("#budgetDisplay");
+    slider.addEventListener("input", () => {
+        display.textContent = `\u20AC${slider.value}m`;
+    });
+    $("#refreshBtn").addEventListener("click", () => loadData(Number(slider.value)));
+
+    // ---- TABS ----
+    $$(".tab").forEach((tab) => {
+        tab.addEventListener("click", () => {
+            $$(".tab").forEach((t) => t.classList.remove("active"));
+            $$(".tab-content").forEach((tc) => tc.classList.remove("active"));
+            tab.classList.add("active");
+            const target = tab.dataset.tab;
+            $(`#tab-${target}`).classList.add("active");
+        });
+    });
+
+    // ---- MODAL ----
+    $("#modalClose").addEventListener("click", closeModal);
+    $("#playerModal").addEventListener("click", (e) => {
+        if (e.target === $("#playerModal")) closeModal();
+    });
+    function closeModal() {
+        $("#playerModal").classList.remove("show");
+    }
+    function openModal(html) {
+        $("#modalBody").innerHTML = html;
+        $("#playerModal").classList.add("show");
+    }
+
+    // ---- LOAD DATA ----
+    async function loadData(budget) {
+        const loader = $("#loadingIndicator");
+        loader.classList.remove("hidden");
+
+        // Use embedded data on first load, fetch on recalculate
+        if (!DATA && window.__INITIAL_DATA__) {
+            DATA = window.__INITIAL_DATA__;
+            render();
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/plan?budget=${budget || 150}`);
+            DATA = await res.json();
+            render();
+        } catch (err) {
+            loader.innerHTML = `<p style="color:var(--red)">Error loading data: ${err.message}</p>`;
+        }
+    }
+
+    function render() {
+        if (!DATA) return;
+        $("#loadingIndicator").classList.add("hidden");
+        renderOverview();
+        renderSquadTab();
+        renderSellTab();
+        renderBuyTab();
+        renderFinancialTab();
+        renderRivalsTab();
+        renderStrategyTab();
+    }
+
+    // ==================== OVERVIEW ====================
+    function renderOverview() {
+        const sr = DATA.squad_report;
+        const tp = DATA.transfer_plan;
+        const fin = DATA.financial_report;
+
+        // KPIs
+        $("#kpiRow").innerHTML = `
+            ${kpi(sr.overall_rating + "/100", "Squad Rating", ratingClass(sr.overall_rating))}
+            ${kpi(sr.age_profile.average_age, "Average Age", "kpi-blue")}
+            ${kpi("\u20AC" + fin.budget_overview.total_available_m + "m", "Total Budget", "kpi-green")}
+            ${kpi(tp.sell_recommendations.length, "Players OUT", "kpi-red")}
+            ${kpi(tp.buy_recommendations.filter(b => b.priority_score >= 60).length, "Priority Targets", "kpi-gold")}
+            ${kpi(sr.critical_positions.length + sr.thin_positions.length, "Positions to Address", "kpi-yellow")}
+        `;
+
+        // Headlines
+        const hl = sr.headline_findings || [];
+        $("#headlinesList").innerHTML = hl
+            .map((h) => {
+                let cls = "headline-info";
+                if (h.startsWith("CRITICAL")) cls = "headline-critical";
+                else if (h.startsWith("WARNING") || h.startsWith("PERFORMANCE") || h.startsWith("CONTRACT"))
+                    cls = "headline-warning";
+                else if (h.startsWith("SET PIECES")) cls = "headline-warning";
+                return `<li class="${cls}">${h}</li>`;
+            })
+            .join("");
+
+        // Pitch grid
+        renderPitchGrid(sr.depth_analysis);
+
+        // Quick plan
+        let sellHtml = tp.sell_recommendations
+            .map(
+                (s) =>
+                    `<div class="quick-item"><span><span class="qi-name">${s.player}</span><span class="qi-pos">${s.position}</span></span><span class="qi-fee">${s.projected_fee_m > 0 ? "\u20AC" + s.projected_fee_m + "m" : "Free / Released"}</span></div>`
+            )
+            .join("");
+        $("#quickSellList").innerHTML = sellHtml || "<p>No sales planned</p>";
+
+        let buyHtml = tp.buy_recommendations
+            .filter((b) => b.priority_score >= 55)
+            .map(
+                (b) =>
+                    `<div class="quick-item"><span><span class="qi-name">${b.player}</span><span class="qi-pos">${b.position}</span></span><span class="qi-fee">\u20AC${b.estimated_fee_m}m (Score: ${b.priority_score})</span></div>`
+            )
+            .join("");
+        $("#quickBuyList").innerHTML = buyHtml || "<p>No targets identified</p>";
+    }
+
+    function renderPitchGrid(depth) {
+        // Map positions to a 5x4 grid (football pitch layout)
+        const layout = [
+            [null, null, "ST", null, null],
+            ["LW", null, "AM", null, "RW"],
+            [null, "CM", "DM", "CM", null],
+            ["LB", "CB", "GK", "CB", "RB"],
+        ];
+        const depthMap = {};
+        depth.forEach((d) => (depthMap[d.position] = d));
+
+        // For CM we combine the single CM entry for both grid slots
+        let html = "";
+        const seen = new Set();
+        for (const row of layout) {
+            for (const pos of row) {
+                if (!pos) {
+                    html += `<div class="pitch-cell" style="visibility:hidden"></div>`;
+                    continue;
+                }
+                const d = depthMap[pos];
+                if (!d) {
+                    html += `<div class="pitch-cell" style="visibility:hidden"></div>`;
+                    continue;
+                }
+                if (pos === "CM" && seen.has("CM")) {
+                    html += `<div class="pitch-cell" style="visibility:hidden"></div>`;
+                    continue;
+                }
+                seen.add(pos);
+                const cls = `depth-${d.status}`;
+                html += `<div class="pitch-cell ${cls}" title="${pos}: ${d.current_total}/${d.required_total} players">
+                    <span class="pos-label">${pos}</span>
+                    <span class="pos-count">${d.current_total}/${d.required_total}</span>
+                </div>`;
+            }
+        }
+        $("#pitchGrid").innerHTML = html;
+    }
+
+    // ==================== SQUAD TAB ====================
+    function renderSquadTab() {
+        const sr = DATA.squad_report;
+        const squad = DATA.squad;
+
+        // Age profile
+        const ap = sr.age_profile;
+        const total = Object.values(ap.age_groups).reduce((s, g) => s + g.count, 0) || 1;
+        const groups = [
+            { key: "under_23", label: "Under 23", cls: "youth" },
+            { key: "prime_23_28", label: "Prime (23-28)", cls: "prime" },
+            { key: "experienced_29_31", label: "Experienced (29-31)", cls: "experienced" },
+            { key: "veteran_32_plus", label: "Veteran (32+)", cls: "veteran" },
+        ];
+        let ageHtml = `<div class="age-bars">`;
+        for (const g of groups) {
+            const data = ap.age_groups[g.key] || { count: 0, players: [] };
+            const pct = Math.round((data.count / total) * 100);
+            ageHtml += `<div class="age-group">
+                <span class="age-label">${g.label} (${data.count})</span>
+                <div class="age-bar-track">
+                    <div class="age-bar-fill ${g.cls}" style="width:${pct}%">${pct}%</div>
+                </div>
+            </div>`;
+        }
+        ageHtml += `</div>
+            <p style="margin-top:12px;font-size:13px;color:var(--text-secondary)">
+                Average Age: <strong>${ap.average_age}</strong> &mdash; ${ap.assessment}.
+                Sustainability Score: <strong>${ap.sustainability_score}/100</strong>
+            </p>`;
+        $("#ageProfile").innerHTML = ageHtml;
+
+        // Contract risks
+        const cr = sr.contract_risks || [];
+        let crHtml = cr
+            .map(
+                (r) => `<div class="risk-bar">
+                <div class="risk-indicator risk-${r.risk_level}"></div>
+                <span class="risk-name">${r.player}</span>
+                <span class="risk-detail">${r.position} &middot; Expires ${r.contract_expiry} &middot; \u20AC${r.market_value_m}m &middot; ${r.wage_weekly_k}k/w</span>
+                <span style="font-size:12px;color:var(--text-muted)">${r.recommendation}</span>
+            </div>`
+            )
+            .join("");
+        $("#contractRisks").innerHTML = crHtml || "<p>No contract risks detected</p>";
+
+        // Performance gaps
+        const pg = sr.performance_gaps || [];
+        let pgHtml = pg
+            .map((g) => {
+                let issuesHtml = g.issues
+                    .map(
+                        (i) => `<div class="gap-issue">
+                        <span class="severity-badge severity-${i.severity}">${i.severity}</span>
+                        <span><strong>${i.metric}:</strong> ${i.detail}</span>
+                    </div>`
+                    )
+                    .join("");
+                return `<div class="gap-card"><h4>${g.player} (${g.position}, ${g.minutes} min)</h4>${issuesHtml}</div>`;
+            })
+            .join("");
+        $("#perfGaps").innerHTML = pgHtml || "<p>No significant performance gaps detected</p>";
+
+        // Set pieces
+        const sp = sr.set_piece_analysis || {};
+        let spHtml = `<p style="margin-bottom:12px;font-size:14px"><strong>Assessment:</strong> ${sp.assessment || "N/A"}</p>`;
+        spHtml += `<p style="margin-bottom:12px;font-size:13px;color:var(--text-secondary)">${sp.recommendation || ""}</p>`;
+        if (sp.key_aerial_players) {
+            spHtml += `<div class="stats-grid">`;
+            sp.key_aerial_players.forEach((p) => {
+                spHtml += `<div class="stat-box"><div class="stat-val">${p.aerials_won}</div><div class="stat-label">${p.name}</div></div>`;
+            });
+            spHtml += `</div>`;
+        }
+        $("#setPieces").innerHTML = spHtml;
+
+        // Squad table
+        const avail = squad.filter((p) => p.status === "available");
+        avail.sort((a, b) => posOrder(a.position) - posOrder(b.position));
+        let tbHtml = avail
+            .map(
+                (p) => `<tr data-player='${encodeURIComponent(JSON.stringify(p))}'>
+                <td>${p.squad_number || "-"}</td>
+                <td>${p.name}</td>
+                <td>${p.position}</td>
+                <td>${p.age}</td>
+                <td>${p.nationality}</td>
+                <td>${p.stats.appearances}</td>
+                <td>${p.stats.goals}</td>
+                <td>${p.stats.assists}</td>
+                <td>${p.stats.minutes}</td>
+                <td>${p.stats.xg.toFixed(1)}</td>
+                <td>${p.stats.squawka_score}</td>
+                <td>${p.stats.fotmob_rating.toFixed(1)}</td>
+                <td>\u20AC${p.market_value_m}m</td>
+                <td>\u00A3${p.wage_weekly_k}k</td>
+                <td>${p.contract_expiry.substring(0, 7)}</td>
+                <td>${roleLabel(p.role_in_squad)}</td>
+            </tr>`
+            )
+            .join("");
+        $("#squadBody").innerHTML = tbHtml;
+
+        // Click to open modal
+        $$("#squadBody tr").forEach((tr) => {
+            tr.addEventListener("click", () => {
+                const p = JSON.parse(decodeURIComponent(tr.dataset.player));
+                openPlayerModal(p);
+            });
+        });
+    }
+
+    function openPlayerModal(p) {
+        let html = `
+            <h2 style="margin-bottom:4px">${p.name}</h2>
+            <p style="color:var(--text-secondary);margin-bottom:16px">${p.position} &middot; Age ${p.age} &middot; ${p.nationality} &middot; #${p.squad_number || "N/A"}</p>
+            <div class="stats-grid" style="margin-bottom:16px">
+                ${statBox(p.stats.appearances, "Apps")}
+                ${statBox(p.stats.goals, "Goals")}
+                ${statBox(p.stats.assists, "Assists")}
+                ${statBox(p.stats.minutes, "Minutes")}
+                ${statBox(p.stats.xg.toFixed(1), "xG")}
+                ${statBox(p.stats.xa.toFixed(1), "xA")}
+                ${statBox(p.stats.progressive_passes, "Prog Pass")}
+                ${statBox(p.stats.progressive_carries, "Prog Carry")}
+                ${statBox(p.stats.key_passes, "Key Pass")}
+                ${statBox(p.stats.tackles_won, "Tackles")}
+                ${statBox(p.stats.interceptions, "Intercept")}
+                ${statBox(p.stats.squawka_score, "Squawka")}
+            </div>
+            <h4 style="font-size:12px;color:var(--text-secondary);text-transform:uppercase;margin-bottom:6px">Eye Test / Scout Notes</h4>
+            <div class="eye-test-box" style="margin-bottom:14px">${p.eye_test_notes}</div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+                <div>
+                    <h4 style="font-size:12px;color:var(--text-secondary);text-transform:uppercase;margin-bottom:6px">Strengths</h4>
+                    <div class="risk-tags">${(p.strengths || []).map((s) => `<span class="strength-tag">${s}</span>`).join("")}</div>
+                </div>
+                <div>
+                    <h4 style="font-size:12px;color:var(--text-secondary);text-transform:uppercase;margin-bottom:6px">Weaknesses</h4>
+                    <div class="risk-tags">${(p.weaknesses || []).map((w) => `<span class="risk-tag">${w}</span>`).join("")}</div>
+                </div>
+            </div>
+            <div style="display:flex;gap:16px;font-size:13px;color:var(--text-secondary)">
+                <span>Value: <strong>\u20AC${p.market_value_m}m</strong></span>
+                <span>Wage: <strong>\u00A3${p.wage_weekly_k}k/wk</strong></span>
+                <span>Contract: <strong>${p.contract_expiry}</strong></span>
+                <span>Role: <strong>${roleLabel(p.role_in_squad)}</strong></span>
+            </div>
+        `;
+        openModal(html);
+    }
+
+    // ==================== SELL TAB ====================
+    function renderSellTab() {
+        const sells = DATA.transfer_plan.sell_recommendations || [];
+        const totalRev = sells.reduce((s, r) => s + r.projected_fee_m, 0);
+        const totalWage = sells.reduce((s, r) => s + r.wage_saving_annual_m, 0);
+
+        $("#sellKpi").innerHTML = `
+            ${kpi(sells.length, "Players to Sell/Release", "kpi-red")}
+            ${kpi("\u20AC" + totalRev.toFixed(1) + "m", "Projected Revenue", "kpi-green")}
+            ${kpi("\u00A3" + totalWage.toFixed(1) + "m/yr", "Wage Savings", "kpi-gold")}
+        `;
+
+        let html = "";
+        for (const s of sells) {
+            const scoreClass = s.priority_score >= 75 ? "score-high" : s.priority_score >= 50 ? "score-mid" : "score-low";
+            html += `
+            <div class="rec-card sell-card">
+                <div class="rec-header">
+                    <div class="rec-player-info">
+                        <h3>${s.player}</h3>
+                        <div class="rec-meta">
+                            <span>${s.position}</span>
+                            <span>Age ${s.age}</span>
+                            <span>Role: ${s.current_role}</span>
+                            <span>Contract: ${s.contract_expiry}</span>
+                            <span>Wage: \u00A3${s.wage_saving_weekly_k}k/wk</span>
+                        </div>
+                    </div>
+                    <div class="rec-score">
+                        <span class="priority-badge ${s.urgency === "immediate" ? "priority-1" : s.urgency === "summer" ? "priority-2" : "priority-3"}">${s.urgency}</span>
+                        <div class="score-ring ${scoreClass}">${s.priority_score}</div>
+                    </div>
+                </div>
+                <div class="rec-body">
+                    <div class="rec-section">
+                        <h4>Projected Fee</h4>
+                        <p style="font-size:20px;font-weight:700;color:var(--green)">${s.projected_fee_m > 0 ? "\u20AC" + s.projected_fee_m + "m" : "Free Agent / Release"}</p>
+                        <p style="font-size:13px;color:var(--text-secondary);margin-top:4px">Annual wage saving: \u00A3${s.wage_saving_annual_m}m</p>
+                    </div>
+                    <div class="rec-section">
+                        <h4>Reasons to Sell</h4>
+                        ${s.reasons.map((r) => `<div class="rec-reason">${r}</div>`).join("")}
+                    </div>
+                    <div class="rec-section">
+                        <h4>Scout / Eye Test Assessment</h4>
+                        <div class="eye-test-box">${s.eye_test}</div>
+                    </div>
+                    <div class="rec-section">
+                        <h4>Summary</h4>
+                        <p style="font-size:14px;font-weight:500">${s.recommendation_summary}</p>
+                    </div>
+                </div>
+            </div>`;
+        }
+        $("#sellCards").innerHTML = html;
+    }
+
+    // ==================== BUY TAB ====================
+    function renderBuyTab() {
+        const buys = DATA.transfer_plan.buy_recommendations || [];
+        let html = "";
+
+        for (const b of buys) {
+            const scoreClass = b.priority_score >= 75 ? "score-high" : b.priority_score >= 55 ? "score-mid" : "score-low";
+            const tier = b.priority_score >= 75 ? "priority-1" : b.priority_score >= 60 ? "priority-2" : "priority-3";
+            const tierLabel = b.priority_score >= 75 ? "Priority 1" : b.priority_score >= 60 ? "Priority 2" : "Priority 3";
+
+            const st = b.stats_summary || {};
+            const sb = b.score_breakdown || {};
+            const deal = b.deal_structure || {};
+
+            html += `
+            <div class="rec-card buy-card">
+                <div class="rec-header">
+                    <div class="rec-player-info">
+                        <h3>${b.player}</h3>
+                        <div class="rec-meta">
+                            <span>${b.position}</span>
+                            <span>Age ${b.age}</span>
+                            <span>${b.nationality}</span>
+                            <span>From: ${b.current_club}</span>
+                            <span>Contract: ${b.contract_expiry}</span>
+                        </div>
+                    </div>
+                    <div class="rec-score">
+                        <span class="priority-badge ${tier}">${tierLabel}</span>
+                        <div class="score-ring ${scoreClass}">${b.priority_score}</div>
+                    </div>
+                </div>
+                <div class="rec-body">
+                    <!-- SCORE BREAKDOWN -->
+                    <div class="rec-section">
+                        <h4>Score Breakdown</h4>
+                        <div class="score-breakdown">
+                            ${breakdownBar("Need", sb.squad_need)}
+                            ${breakdownBar("Quality", sb.player_quality)}
+                            ${breakdownBar("Value", sb.financial_value)}
+                            ${breakdownBar("Age", sb.age_profile)}
+                            ${breakdownBar("Feasibility", sb.feasibility)}
+                        </div>
+                    </div>
+
+                    <!-- STATS -->
+                    <div class="rec-section">
+                        <h4>2025-26 Season Stats</h4>
+                        <div class="stats-grid">
+                            ${statBox(st.appearances, "Apps")}
+                            ${statBox(st.goals, "Goals")}
+                            ${statBox(st.assists, "Assists")}
+                            ${statBox(st.minutes, "Min")}
+                            ${statBox(st.goals_per90, "G/90")}
+                            ${statBox(st.assists_per90, "A/90")}
+                            ${statBox(st.xg ? st.xg.toFixed(1) : "-", "xG")}
+                            ${statBox(st.progressive_passes, "Prog Pass")}
+                            ${statBox(st.progressive_carries, "Prog Carry")}
+                            ${statBox(st.key_passes, "Key Pass")}
+                            ${statBox(st.squawka_score, "Squawka")}
+                            ${statBox(st.fotmob_rating ? st.fotmob_rating.toFixed(1) : "-", "FotMob")}
+                        </div>
+                    </div>
+
+                    <!-- REASONS -->
+                    <div class="rec-section">
+                        <h4>Why Sign This Player</h4>
+                        ${b.reasons.map((r) => `<div class="rec-reason">${r}</div>`).join("")}
+                    </div>
+
+                    <!-- EYE TEST -->
+                    <div class="rec-section">
+                        <h4>Scout / Eye Test Assessment</h4>
+                        <div class="eye-test-box">${b.eye_test}</div>
+                    </div>
+
+                    <!-- DEAL STRUCTURE -->
+                    <div class="rec-section">
+                        <h4>Proposed Deal Structure</h4>
+                        <div class="deal-box">
+                            <div class="deal-row"><span class="deal-label">Type</span><span class="deal-val">${deal.type || "N/A"}</span></div>
+                            <div class="deal-row"><span class="deal-label">Upfront</span><span class="deal-val">\u20AC${deal.upfront || 0}m</span></div>
+                            <div class="deal-row"><span class="deal-label">Installments</span><span class="deal-val">\u20AC${deal.installments || 0}m (${deal.installment_years || 0} yrs)</span></div>
+                            <div class="deal-row"><span class="deal-label">Add-ons</span><span class="deal-val">\u20AC${deal.add_ons || 0}m</span></div>
+                            <div class="deal-row" style="border-top:1px solid var(--border);margin-top:4px;padding-top:6px"><span class="deal-label"><strong>Total</strong></span><span class="deal-val" style="color:var(--green);font-size:16px"><strong>\u20AC${deal.total || 0}m</strong></span></div>
+                            <p style="font-size:12px;color:var(--text-muted);margin-top:8px">${deal.notes || ""}</p>
+                        </div>
+                    </div>
+
+                    <!-- COMPETING WITH -->
+                    <div class="rec-section">
+                        <h4>Competes With (Current Squad)</h4>
+                        <div class="risk-tags">
+                            ${(b.competing_with || []).map((c) => `<span class="strength-tag">${c}</span>`).join("") || "<span style='color:var(--text-muted)'>No direct competition</span>"}
+                        </div>
+                    </div>
+
+                    <!-- RISK FACTORS -->
+                    <div class="rec-section">
+                        <h4>Risk Factors</h4>
+                        <div class="risk-tags">
+                            ${(b.risk_factors || []).map((r) => `<span class="risk-tag">${r}</span>`).join("")}
+                        </div>
+                    </div>
+
+                    <!-- SUMMARY -->
+                    <div class="rec-section">
+                        <h4>Recommendation</h4>
+                        <p style="font-size:14px;font-weight:600;color:var(--arsenal-gold)">${b.recommendation_summary}</p>
+                    </div>
+                </div>
+            </div>`;
+        }
+        $("#buyCards").innerHTML = html;
+    }
+
+    // ==================== FINANCIAL TAB ====================
+    function renderFinancialTab() {
+        const fin = DATA.financial_report;
+        const bo = fin.budget_overview;
+        const wi = fin.wage_impact;
+        const am = fin.amortization;
+        const psr = fin.psr_compliance;
+
+        // KPIs
+        $("#finKpi").innerHTML = `
+            ${kpi("\u20AC" + bo.base_budget_m + "m", "Base Budget", "kpi-blue")}
+            ${kpi("\u20AC" + bo.sale_revenue_m + "m", "Sale Revenue", "kpi-green")}
+            ${kpi("\u20AC" + bo.total_available_m + "m", "Total Available", "kpi-gold")}
+            ${kpi("\u20AC" + bo.total_spend_m + "m", "Projected Spend", "kpi-red")}
+            ${kpi("\u20AC" + bo.net_spend_m + "m", "Net Spend", bo.net_spend_m > 0 ? "kpi-red" : "kpi-green")}
+            ${kpi("\u20AC" + bo.remaining_m + "m", "Remaining", bo.remaining_m > 0 ? "kpi-green" : "kpi-red")}
+        `;
+
+        // Wage impact
+        let wiHtml = `
+            <div class="deal-box">
+                <div class="deal-row"><span class="deal-label">Current Wage Bill</span><span class="deal-val">\u00A3${wi.current_wage_bill_m}m/yr</span></div>
+                <div class="deal-row"><span class="deal-label">New Wages Added</span><span class="deal-val" style="color:var(--red)">+\u00A3${wi.new_wages_added_m}m/yr</span></div>
+                <div class="deal-row"><span class="deal-label">Wages Saved</span><span class="deal-val" style="color:var(--green)">-\u00A3${wi.wages_saved_m}m/yr</span></div>
+                <div class="deal-row" style="border-top:1px solid var(--border);padding-top:6px;margin-top:4px">
+                    <span class="deal-label"><strong>Projected Wage Bill</strong></span>
+                    <span class="deal-val"><strong>\u00A3${wi.projected_wage_bill_m}m/yr</strong></span>
+                </div>
+                <div class="deal-row"><span class="deal-label">Wage-to-Revenue Ratio</span><span class="deal-val">${wi.projected_wage_ratio}% (max ${wi.max_sustainable_ratio}%)</span></div>
+                <div class="deal-row"><span class="deal-label">Wage Headroom</span><span class="deal-val" style="color:var(--green)">\u00A3${wi.wage_headroom_m}m</span></div>
+                <div class="deal-row"><span class="deal-label">Status</span><span class="deal-val" style="color:${wi.status === "healthy" ? "var(--green)" : wi.status === "caution" ? "var(--yellow)" : "var(--red)"}">${wi.status.toUpperCase()}</span></div>
+            </div>
+        `;
+        $("#wageImpact").innerHTML = wiHtml;
+
+        // Amortization
+        let amHtml = `
+            <div class="deal-box" style="margin-bottom:12px">
+                <div class="deal-row"><span class="deal-label">Existing Annual Amortization</span><span class="deal-val">\u20AC${am.existing_annual_amortization_m}m</span></div>
+                <div class="deal-row"><span class="deal-label">New Amortization</span><span class="deal-val" style="color:var(--red)">+\u20AC${am.new_amortization_m}m</span></div>
+                <div class="deal-row"><span class="deal-label">Amortization Removed (Sales)</span><span class="deal-val" style="color:var(--green)">-\u20AC${am.amortization_removed_m}m</span></div>
+                <div class="deal-row" style="border-top:1px solid var(--border);padding-top:6px;margin-top:4px">
+                    <span class="deal-label"><strong>Total Annual Amortization</strong></span>
+                    <span class="deal-val"><strong>\u20AC${am.total_projected_amortization_m}m</strong></span>
+                </div>
+            </div>
+        `;
+        if (am.purchases_detail && am.purchases_detail.length) {
+            amHtml += `<table class="data-table"><thead><tr><th>Player</th><th>Fee</th><th>Contract</th><th>Annual Amort</th></tr></thead><tbody>`;
+            am.purchases_detail.forEach((p) => {
+                amHtml += `<tr><td>${p.player}</td><td>\u20AC${p.fee_m}m</td><td>${p.years} yrs</td><td>\u20AC${p.annual_amort_m}m</td></tr>`;
+            });
+            amHtml += `</tbody></table>`;
+        }
+        $("#amortization").innerHTML = amHtml;
+
+        // PSR
+        let psrHtml = `
+            <div class="psr-status ${psr.status === "compliant" ? "psr-compliant" : "psr-atrisk"}">${psr.status.toUpperCase()}</div>
+            <div class="deal-box" style="margin-top:12px">
+                <div class="deal-row"><span class="deal-label">Annual Revenue</span><span class="deal-val">\u00A3${psr.estimated_annual_revenue_m}m</span></div>
+                <div class="deal-row"><span class="deal-label">Annual Costs</span><span class="deal-val">\u00A3${psr.estimated_annual_costs_m}m</span></div>
+                <div class="deal-row"><span class="deal-label">Estimated P&L</span><span class="deal-val" style="color:${psr.estimated_annual_profit_m >= 0 ? "var(--green)" : "var(--red)"}">\u00A3${psr.estimated_annual_profit_m}m</span></div>
+                <div class="deal-row"><span class="deal-label">PSR Allowable Loss</span><span class="deal-val">\u00A3${psr.psr_allowable_loss_m}m</span></div>
+                <div class="deal-row"><span class="deal-label">PSR Headroom</span><span class="deal-val" style="color:var(--green)">\u00A3${psr.psr_headroom_m}m</span></div>
+            </div>
+            <p style="margin-top:12px;font-size:13px;color:var(--text-secondary)">${psr.notes}</p>
+        `;
+        $("#psrCheck").innerHTML = psrHtml;
+    }
+
+    // ==================== RIVALS TAB ====================
+    function renderRivalsTab() {
+        const rivals = DATA.rivals || {};
+        let html = "";
+        for (const [name, info] of Object.entries(rivals)) {
+            html += `
+            <div class="rival-card">
+                <h3>${name}</h3>
+                <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px">PL Position: ${info.pl_position}</p>
+                <div class="rival-grid">
+                    <div class="rival-section">
+                        <h4>Strengths</h4>
+                        <ul class="rival-list">${(info.strengths || []).map((s) => `<li>${s}</li>`).join("")}</ul>
+                    </div>
+                    <div class="rival-section">
+                        <h4>Weaknesses</h4>
+                        <ul class="rival-list">${(info.weaknesses || []).map((w) => `<li>${w}</li>`).join("")}</ul>
+                    </div>
+                    <div class="rival-section">
+                        <h4>Likely Targets</h4>
+                        <ul class="rival-list">${(info.likely_targets || []).map((t) => `<li>${t}</li>`).join("")}</ul>
+                    </div>
+                    <div class="rival-section">
+                        <h4>Sellable Assets</h4>
+                        <ul class="rival-list">${(info.sellable_assets || []).map((s) => `<li>${s}</li>`).join("") || "<li>None identified</li>"}</ul>
+                    </div>
+                </div>
+            </div>`;
+        }
+        $("#rivalCards").innerHTML = html;
+    }
+
+    // ==================== STRATEGY TAB ====================
+    function renderStrategyTab() {
+        const strat = DATA.transfer_plan.transfer_window_strategy || {};
+        const phases = [
+            { key: "phase_1_early_summer", title: "Phase 1: Early Summer (June)", color: "var(--red)" },
+            { key: "phase_2_mid_summer", title: "Phase 2: Mid Summer (July)", color: "var(--yellow)" },
+            { key: "phase_3_late_window", title: "Phase 3: Late Window (August)", color: "var(--blue)" },
+        ];
+
+        let html = `<div class="card"><h2>Transfer Window Strategy &amp; Timeline</h2><div class="timeline">`;
+        for (const phase of phases) {
+            const p = strat[phase.key] || {};
+            html += `
+            <div class="timeline-phase">
+                <h3 style="color:${phase.color}">${phase.title}</h3>
+                <p class="phase-desc">${p.description || ""}</p>
+                <div class="phase-items">
+                    ${(p.targets || []).map((t) => `<span class="phase-item item-in">IN: ${t}</span>`).join("")}
+                    ${(p.sales || []).map((s) => `<span class="phase-item item-out">OUT: ${s}</span>`).join("")}
+                </div>
+            </div>`;
+        }
+        html += `</div>`;
+        html += `<div style="margin-top:20px;padding:16px;background:rgba(255,255,255,0.03);border-radius:6px">
+            <p style="font-size:14px"><strong>Total Priority Signings:</strong> ${strat.total_priority_signings || 0}</p>
+            <p style="font-size:14px"><strong>Total Planned Departures:</strong> ${strat.total_sales_planned || 0}</p>
+        </div></div>`;
+        $("#strategyTimeline").innerHTML = html;
+    }
+
+    // ==================== HELPERS ====================
+    function kpi(value, label, cls) {
+        return `<div class="kpi-box ${cls}"><div class="kpi-value">${value}</div><div class="kpi-label">${label}</div></div>`;
+    }
+    function statBox(val, label) {
+        return `<div class="stat-box"><div class="stat-val">${val !== undefined && val !== null ? val : "-"}</div><div class="stat-label">${label}</div></div>`;
+    }
+    function breakdownBar(label, val) {
+        val = val || 0;
+        return `<div class="breakdown-bar">
+            <div class="bar-label">${label}</div>
+            <div style="background:rgba(255,255,255,0.08);border-radius:2px;height:4px;margin:4px 0"><div class="bar-fill" style="width:${val}%;background:${val >= 70 ? "var(--green)" : val >= 40 ? "var(--yellow)" : "var(--red)"}"></div></div>
+            <div class="bar-val">${val}</div>
+        </div>`;
+    }
+    function roleLabel(role) {
+        const map = { starter: "Starter", rotation: "Rotation", backup: "Backup", youth: "Youth" };
+        return map[role] || role;
+    }
+    function ratingClass(r) {
+        return r >= 70 ? "kpi-green" : r >= 50 ? "kpi-yellow" : "kpi-red";
+    }
+    function posOrder(pos) {
+        const order = { GK: 0, CB: 1, RB: 2, LB: 3, DM: 4, CM: 5, AM: 6, LW: 7, RW: 8, ST: 9 };
+        return order[pos] ?? 10;
+    }
+
+    // ---- INIT ----
+    loadData(150);
+})();
+    </script>
+</body>
+</html>
