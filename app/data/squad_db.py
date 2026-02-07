@@ -1,0 +1,1082 @@
+"""
+Arsenal Transfer Planner - Squad Database
+==========================================
+Complete squad data for Arsenal FC 2025-26 season.
+All stats sourced from FBref, ESPN, Squawka, Transfermarkt, Capology as of Feb 2026.
+
+Data includes: appearances, goals, assists, minutes, xG, xA, progressive actions,
+defensive actions, wages, market value, contract expiry, and scouting notes.
+"""
+
+from dataclasses import dataclass, field
+from typing import Optional
+
+
+@dataclass
+class PlayerStats:
+    appearances: int = 0
+    goals: int = 0
+    assists: int = 0
+    minutes: int = 0
+    # Advanced metrics (per 90 or season totals)
+    xg: float = 0.0
+    xa: float = 0.0
+    progressive_passes: int = 0
+    progressive_carries: int = 0
+    key_passes: int = 0
+    tackles_won: int = 0
+    interceptions: int = 0
+    aerials_won: int = 0
+    dribbles_completed: int = 0
+    shot_accuracy_pct: float = 0.0
+    pass_completion_pct: float = 0.0
+    clean_sheets: int = 0  # GK / defenders
+    saves: int = 0  # GK
+    # Squawka / scout rating (0-100)
+    squawka_score: float = 0.0
+    fotmob_rating: float = 0.0
+
+
+@dataclass
+class Player:
+    name: str
+    age: int
+    position: str  # GK, CB, LB, RB, DM, CM, AM, LW, RW, ST
+    nationality: str
+    squad_number: Optional[int] = None
+    market_value_m: float = 0.0  # in millions EUR
+    wage_weekly_k: float = 0.0  # in thousands GBP
+    contract_expiry: str = ""  # YYYY-MM-DD
+    stats: PlayerStats = field(default_factory=PlayerStats)
+    status: str = "available"  # available, injured, loaned_out, transfer_listed
+    loan_club: str = ""
+    eye_test_notes: str = ""
+    strengths: list = field(default_factory=list)
+    weaknesses: list = field(default_factory=list)
+    role_in_squad: str = ""  # starter, rotation, backup, youth
+
+
+def build_arsenal_squad() -> list[Player]:
+    """Build the complete Arsenal 2025-26 squad with real stats and scouting data."""
+
+    squad = []
+
+    # ==================== GOALKEEPERS ====================
+
+    squad.append(Player(
+        name="David Raya",
+        age=29,
+        position="GK",
+        nationality="Spain",
+        squad_number=1,
+        market_value_m=35.0,
+        wage_weekly_k=150.0,
+        contract_expiry="2028-06-30",
+        stats=PlayerStats(
+            appearances=24, goals=0, assists=0, minutes=2160,
+            clean_sheets=11, saves=62,
+            pass_completion_pct=87.5,
+            squawka_score=60.0, fotmob_rating=7.1
+        ),
+        status="available",
+        eye_test_notes="Elite distribution, sweeper-keeper style. Occasionally shaky on crosses. "
+                       "Commands area well. Shot-stopping above average but not world-class.",
+        strengths=["Distribution", "Sweeper-keeper", "Penalty saves", "Playing out from back"],
+        weaknesses=["Aerial command in crowded box", "Occasional lapses on crosses"],
+        role_in_squad="starter"
+    ))
+
+    squad.append(Player(
+        name="Kepa Arrizabalaga",
+        age=31,
+        position="GK",
+        nationality="Spain",
+        squad_number=22,
+        market_value_m=8.0,
+        wage_weekly_k=80.0,
+        contract_expiry="2029-06-30",
+        stats=PlayerStats(
+            appearances=8, goals=0, assists=0, minutes=720,
+            clean_sheets=4, saves=22,
+            pass_completion_pct=84.0,
+            squawka_score=52.0, fotmob_rating=6.8
+        ),
+        status="available",
+        eye_test_notes="Solid backup GK. Good with feet. Reliable cup keeper. "
+                       "Not elite shot-stopper but adequate depth.",
+        strengths=["Ball-playing", "Experience", "Cup competition specialist"],
+        weaknesses=["Shot-stopping ceiling lower than elite", "High wages for backup"],
+        role_in_squad="rotation"
+    ))
+
+    # ==================== CENTRE-BACKS ====================
+
+    squad.append(Player(
+        name="William Saliba",
+        age=24,
+        position="CB",
+        nationality="France",
+        squad_number=2,
+        market_value_m=90.0,
+        wage_weekly_k=200.0,
+        contract_expiry="2029-06-30",
+        stats=PlayerStats(
+            appearances=23, goals=1, assists=1, minutes=2070,
+            progressive_passes=48, progressive_carries=22,
+            tackles_won=32, interceptions=28, aerials_won=45,
+            pass_completion_pct=92.1,
+            squawka_score=74.0, fotmob_rating=7.4
+        ),
+        status="available",
+        eye_test_notes="World-class centre-back. Exceptional reading of the game, "
+                       "elite recovery pace. Ball-playing ability top-tier. "
+                       "France international and long-term pillar.",
+        strengths=["Recovery pace", "Ball progression", "Aerial dominance", "1v1 defending", "Reading the game"],
+        weaknesses=["Occasionally over-commits in high press"],
+        role_in_squad="starter"
+    ))
+
+    squad.append(Player(
+        name="Gabriel Magalhaes",
+        age=28,
+        position="CB",
+        nationality="Brazil",
+        squad_number=6,
+        market_value_m=70.0,
+        wage_weekly_k=190.0,
+        contract_expiry="2030-06-30",
+        stats=PlayerStats(
+            appearances=18, goals=3, assists=0, minutes=1620,
+            progressive_passes=32, progressive_carries=12,
+            tackles_won=24, interceptions=22, aerials_won=52,
+            pass_completion_pct=89.5,
+            squawka_score=70.0, fotmob_rating=7.2
+        ),
+        status="available",
+        eye_test_notes="Physical monster. Set-piece threat with 3 goals from headers. "
+                       "Excellent aerial duel winner. Occasionally ball-watches "
+                       "during transitions. Strong leader.",
+        strengths=["Aerial dominance", "Set-piece threat", "Physical presence", "Leadership"],
+        weaknesses=["Ball-watching in transitions", "Progressive passing under pressure", "Pace against quick forwards"],
+        role_in_squad="starter"
+    ))
+
+    squad.append(Player(
+        name="Cristhian Mosquera",
+        age=20,
+        position="CB",
+        nationality="Spain",
+        squad_number=25,
+        market_value_m=25.0,
+        wage_weekly_k=60.0,
+        contract_expiry="2030-06-30",
+        stats=PlayerStats(
+            appearances=12, goals=0, assists=0, minutes=780,
+            progressive_passes=18, progressive_carries=8,
+            tackles_won=16, interceptions=14, aerials_won=18,
+            pass_completion_pct=90.2,
+            squawka_score=62.0, fotmob_rating=6.9
+        ),
+        status="available",
+        eye_test_notes="Young, composed centre-back signed from Valencia. Excellent ball-playing "
+                       "for his age. Needs physical development but reads the game well. "
+                       "Long-term Saliba partner prospect.",
+        strengths=["Ball progression", "Composure", "Youth and ceiling", "Tactical intelligence"],
+        weaknesses=["Physical development needed", "Limited PL experience", "Aerial duels vs strong strikers"],
+        role_in_squad="rotation"
+    ))
+
+    # ==================== FULL-BACKS ====================
+
+    squad.append(Player(
+        name="Jurrien Timber",
+        age=24,
+        position="RB",
+        nationality="Netherlands",
+        squad_number=12,
+        market_value_m=55.0,
+        wage_weekly_k=140.0,
+        contract_expiry="2029-06-30",
+        stats=PlayerStats(
+            appearances=23, goals=2, assists=3, minutes=1980,
+            progressive_passes=42, progressive_carries=55,
+            key_passes=18, tackles_won=30, interceptions=20,
+            dribbles_completed=22,
+            pass_completion_pct=88.4,
+            squawka_score=78.0, fotmob_rating=7.5
+        ),
+        status="available",
+        eye_test_notes="Highest Squawka score for any full-back this season. "
+                       "Exceptional inverting full-back who transitions into midfield. "
+                       "Tactically elite. Strong going forward. First-choice RB.",
+        strengths=["Tactical versatility", "Ball progression", "Inverting into midfield",
+                   "1v1 defending", "Goal contributions"],
+        weaknesses=["Can be caught high up against quick counters"],
+        role_in_squad="starter"
+    ))
+
+    squad.append(Player(
+        name="Ben White",
+        age=28,
+        position="RB",
+        nationality="England",
+        squad_number=4,
+        market_value_m=30.0,
+        wage_weekly_k=120.0,
+        contract_expiry="2028-06-30",
+        stats=PlayerStats(
+            appearances=12, goals=0, assists=1, minutes=840,
+            progressive_passes=22, progressive_carries=15,
+            tackles_won=14, interceptions=10,
+            pass_completion_pct=89.8,
+            squawka_score=55.0, fotmob_rating=6.7
+        ),
+        status="available",
+        eye_test_notes="Frustrated with lack of minutes behind Timber. Only 12 apps this season. "
+                       "Still a quality defender with good passing range. Can play CB. "
+                       "Reports suggest unhappy and open to exit.",
+        strengths=["Passing range", "Tactical intelligence", "Can play CB/RB", "Composure"],
+        weaknesses=["Diminished minutes", "Morale concerns", "Not as dynamic as Timber going forward"],
+        role_in_squad="rotation"
+    ))
+
+    squad.append(Player(
+        name="Riccardo Calafiori",
+        age=23,
+        position="LB",
+        nationality="Italy",
+        squad_number=33,
+        market_value_m=55.0,
+        wage_weekly_k=130.0,
+        contract_expiry="2029-06-30",
+        stats=PlayerStats(
+            appearances=20, goals=1, assists=2, minutes=1540,
+            progressive_passes=38, progressive_carries=48,
+            key_passes=14, tackles_won=22, interceptions=18,
+            dribbles_completed=16,
+            pass_completion_pct=87.8,
+            squawka_score=66.0, fotmob_rating=7.1
+        ),
+        status="available",
+        eye_test_notes="Aggressive overlapping full-back with excellent ball-carrying. "
+                       "Italy international. Strong in build-up. Can also play CB. "
+                       "First-choice LB when fit.",
+        strengths=["Ball-carrying", "Overlap/underlap runs", "Build-up play", "Versatility CB/LB"],
+        weaknesses=["Defensive positioning when caught high", "Injury niggles"],
+        role_in_squad="starter"
+    ))
+
+    squad.append(Player(
+        name="Piero Hincapie",
+        age=23,
+        position="LB",
+        nationality="Ecuador",
+        squad_number=15,
+        market_value_m=35.0,
+        wage_weekly_k=80.0,
+        contract_expiry="2026-06-30",  # loan expires
+        stats=PlayerStats(
+            appearances=16, goals=0, assists=1, minutes=1080,
+            progressive_passes=28, progressive_carries=20,
+            tackles_won=18, interceptions=14, aerials_won=16,
+            pass_completion_pct=89.0,
+            squawka_score=58.0, fotmob_rating=6.8
+        ),
+        status="available",
+        loan_club="Bayer Leverkusen (loan)",
+        eye_test_notes="Leverkusen loanee. Solid defensive full-back/CB hybrid. "
+                       "Good in a back-three. Less dynamic going forward than Calafiori. "
+                       "Option to buy reportedly £30m.",
+        strengths=["Defensive solidity", "Versatility LB/CB", "Left-footed", "Physical"],
+        weaknesses=["Limited attacking output", "Not permanent yet - loan decision needed"],
+        role_in_squad="rotation"
+    ))
+
+    squad.append(Player(
+        name="Myles Lewis-Skelly",
+        age=18,
+        position="LB",
+        nationality="England",
+        squad_number=49,
+        market_value_m=15.0,
+        wage_weekly_k=30.0,
+        contract_expiry="2030-06-30",
+        stats=PlayerStats(
+            appearances=14, goals=0, assists=2, minutes=780,
+            progressive_passes=22, progressive_carries=30,
+            key_passes=8, tackles_won=10, interceptions=8,
+            dribbles_completed=14,
+            pass_completion_pct=85.5,
+            squawka_score=60.0, fotmob_rating=6.9
+        ),
+        status="available",
+        eye_test_notes="Exceptional academy talent. Originally a midfielder, now deployed at LB. "
+                       "Arteta plans to transition him back to midfield long-term. "
+                       "Outstanding ball-carrier. Needs defensive refinement.",
+        strengths=["Ball-carrying", "Progressive actions", "Youth potential", "Versatility"],
+        weaknesses=["Defensive positioning", "Physical development", "Decision-making under pressure"],
+        role_in_squad="rotation"
+    ))
+
+    # ==================== MIDFIELDERS ====================
+
+    squad.append(Player(
+        name="Martin Odegaard",
+        age=27,
+        position="AM",
+        nationality="Norway",
+        squad_number=8,
+        market_value_m=100.0,
+        wage_weekly_k=250.0,
+        contract_expiry="2028-06-30",
+        stats=PlayerStats(
+            appearances=18, goals=2, assists=4, minutes=1440,
+            xg=3.2, xa=5.8,
+            progressive_passes=68, progressive_carries=35,
+            key_passes=42,
+            dribbles_completed=18,
+            pass_completion_pct=87.2,
+            squawka_score=72.0, fotmob_rating=7.4
+        ),
+        status="available",
+        eye_test_notes="Captain and creative heartbeat. 8 through balls in early season. "
+                       "Slightly injury-disrupted (missed 5 games). When fit, arguably "
+                       "best #10 in the PL. Drives tempo and final-third creativity.",
+        strengths=["Creativity", "Through balls", "Press resistance", "Leadership",
+                   "Final third passing"],
+        weaknesses=["Injury concerns (ankle)", "Defensive contribution in deep block situations"],
+        role_in_squad="starter"
+    ))
+
+    squad.append(Player(
+        name="Declan Rice",
+        age=27,
+        position="CM",
+        nationality="England",
+        squad_number=41,
+        market_value_m=110.0,
+        wage_weekly_k=250.0,
+        contract_expiry="2028-06-30",
+        stats=PlayerStats(
+            appearances=23, goals=4, assists=3, minutes=2070,
+            xg=3.0, xa=2.5,
+            progressive_passes=55, progressive_carries=145,
+            key_passes=22,
+            tackles_won=38, interceptions=26,
+            dribbles_completed=28,
+            pass_completion_pct=89.0,
+            squawka_score=75.0, fotmob_rating=7.5
+        ),
+        status="available",
+        eye_test_notes="Engine of the team. League-leading ball carrier with 145 carries, "
+                       "65 progressive. Wins possession 36+ times. Box-to-box machine. "
+                       "4 goals and 3 assists show his evolution. Indispensable.",
+        strengths=["Ball-carrying", "Press resistance", "Goal contributions from midfield",
+                   "Winning possession", "Engine/fitness"],
+        weaknesses=["Occasional over-ambitious forward runs leaving gaps"],
+        role_in_squad="starter"
+    ))
+
+    squad.append(Player(
+        name="Martin Zubimendi",
+        age=27,
+        position="DM",
+        nationality="Spain",
+        squad_number=36,
+        market_value_m=65.0,
+        wage_weekly_k=180.0,
+        contract_expiry="2030-06-30",
+        stats=PlayerStats(
+            appearances=24, goals=4, assists=2, minutes=2000,
+            xg=2.5, xa=2.0,
+            progressive_passes=72, progressive_carries=40,
+            key_passes=28,
+            tackles_won=34, interceptions=32,
+            pass_completion_pct=91.5,
+            squawka_score=73.0, fotmob_rating=7.3
+        ),
+        status="available",
+        eye_test_notes="The deep-lying controller Arsenal desperately needed. Elite tempo setter. "
+                       "91.5% pass completion from the #6 role. Reads the game exceptionally. "
+                       "Surprise goal contributions (4 goals). Transformative signing.",
+        strengths=["Tempo control", "Progressive passing", "Positional intelligence",
+                   "Interceptions", "Press resistance"],
+        weaknesses=["Not the most physical in duels", "Pace in recovery"],
+        role_in_squad="starter"
+    ))
+
+    squad.append(Player(
+        name="Mikel Merino",
+        age=29,
+        position="CM",
+        nationality="Spain",
+        squad_number=23,
+        market_value_m=40.0,
+        wage_weekly_k=140.0,
+        contract_expiry="2028-06-30",
+        stats=PlayerStats(
+            appearances=21, goals=4, assists=3, minutes=1560,
+            xg=2.8, xa=2.5,
+            progressive_passes=48, progressive_carries=32,
+            key_passes=20,
+            tackles_won=22, interceptions=18, aerials_won=28,
+            pass_completion_pct=86.5,
+            squawka_score=68.0, fotmob_rating=7.2
+        ),
+        status="available",
+        eye_test_notes="Excellent box-to-box option. 8 through balls early season alongside Odegaard. "
+                       "Physical presence and aerial ability add a different dimension. "
+                       "Smart rotation option but not guaranteed starter.",
+        strengths=["Aerial ability", "Late runs into box", "Through balls",
+                   "Physical presence", "Versatility"],
+        weaknesses=["Not as press-resistant as Odegaard/Zubimendi", "Turning 30"],
+        role_in_squad="rotation"
+    ))
+
+    squad.append(Player(
+        name="Eberechi Eze",
+        age=27,
+        position="AM",
+        nationality="England",
+        squad_number=20,
+        market_value_m=55.0,
+        wage_weekly_k=150.0,
+        contract_expiry="2030-06-30",
+        stats=PlayerStats(
+            appearances=19, goals=4, assists=2, minutes=1200,
+            xg=3.5, xa=2.0,
+            progressive_passes=30, progressive_carries=45,
+            key_passes=22,
+            dribbles_completed=28,
+            pass_completion_pct=84.0,
+            squawka_score=65.0, fotmob_rating=7.0
+        ),
+        status="available",
+        eye_test_notes="Signed from Crystal Palace. Silky dribbler with flair. "
+                       "Can play AM/LW. Excellent in tight spaces. "
+                       "Not yet fully integrated but flashes of brilliance.",
+        strengths=["Dribbling", "Ball-carrying", "Flair in tight spaces",
+                   "Set-piece delivery", "Versatility AM/LW"],
+        weaknesses=["Consistency in big matches", "Defensive work rate", "Decision-making final third"],
+        role_in_squad="rotation"
+    ))
+
+    squad.append(Player(
+        name="Ethan Nwaneri",
+        age=18,
+        position="AM",
+        nationality="England",
+        squad_number=53,
+        market_value_m=20.0,
+        wage_weekly_k=35.0,
+        contract_expiry="2030-06-30",
+        stats=PlayerStats(
+            appearances=14, goals=2, assists=2, minutes=640,
+            xg=1.8, xa=1.5,
+            progressive_passes=18, progressive_carries=20,
+            key_passes=12,
+            dribbles_completed=10,
+            pass_completion_pct=82.0,
+            squawka_score=58.0, fotmob_rating=6.8
+        ),
+        status="available",
+        eye_test_notes="Generational English talent. Record-breaking youngest PL player. "
+                       "Outstanding creativity and shooting for his age. "
+                       "Needs more PL minutes but ceiling is immense.",
+        strengths=["Creativity", "Shooting technique", "Youth ceiling", "Intelligence"],
+        weaknesses=["Physical development", "Senior experience", "Defensive intensity"],
+        role_in_squad="youth"
+    ))
+
+    squad.append(Player(
+        name="Christian Norgaard",
+        age=31,
+        position="DM",
+        nationality="Denmark",
+        squad_number=16,
+        market_value_m=8.0,
+        wage_weekly_k=60.0,
+        contract_expiry="2027-06-30",
+        stats=PlayerStats(
+            appearances=10, goals=0, assists=0, minutes=520,
+            progressive_passes=12, progressive_carries=8,
+            tackles_won=14, interceptions=12, aerials_won=16,
+            pass_completion_pct=85.0,
+            squawka_score=48.0, fotmob_rating=6.4
+        ),
+        status="available",
+        eye_test_notes="Experienced DM signed as Jorginho leadership replacement. "
+                       "Physical presence and set-piece defending. "
+                       "Not a long-term solution but adds squad depth and dressing room value.",
+        strengths=["Leadership", "Aerial ability", "Experience", "Set-piece defending"],
+        weaknesses=["Limited on the ball", "Aging", "Not CL-quality starter"],
+        role_in_squad="backup"
+    ))
+
+    # ==================== WINGERS / FORWARDS ====================
+
+    squad.append(Player(
+        name="Bukayo Saka",
+        age=24,
+        position="RW",
+        nationality="England",
+        squad_number=7,
+        market_value_m=130.0,
+        wage_weekly_k=300.0,
+        contract_expiry="2029-06-30",
+        stats=PlayerStats(
+            appearances=22, goals=4, assists=3, minutes=1549,
+            xg=5.0, xa=4.5,
+            progressive_passes=45, progressive_carries=60,
+            key_passes=35,
+            dribbles_completed=10,
+            pass_completion_pct=82.0,
+            squawka_score=72.0, fotmob_rating=7.54
+        ),
+        status="available",
+        eye_test_notes="Franchise player. 24 dribble attempts, highest at the club. "
+                       "Highest FotMob rating 7.54. Creates and scores consistently. "
+                       "Best 1v1 player in the squad. Indispensable.",
+        strengths=["1v1 dribbling", "Creativity", "Goal contributions", "Big-game player",
+                   "Work rate", "Versatility RW/LW"],
+        weaknesses=["Occasional over-reliance on left foot", "Workload management needed"],
+        role_in_squad="starter"
+    ))
+
+    squad.append(Player(
+        name="Noni Madueke",
+        age=23,
+        position="RW",
+        nationality="England",
+        squad_number=11,
+        market_value_m=50.0,
+        wage_weekly_k=120.0,
+        contract_expiry="2030-06-30",
+        stats=PlayerStats(
+            appearances=20, goals=3, assists=2, minutes=1100,
+            xg=3.2, xa=2.0,
+            progressive_passes=18, progressive_carries=35,
+            key_passes=14,
+            dribbles_completed=20,
+            pass_completion_pct=79.5,
+            squawka_score=62.0, fotmob_rating=6.9
+        ),
+        status="available",
+        eye_test_notes="Pacy, direct winger signed from Chelsea. Good depth for Saka. "
+                       "Can play both wings. Strong dribbler. Needs to improve end product "
+                       "consistency. Good rotation option in a packed schedule.",
+        strengths=["Pace", "Directness", "Dribbling", "Can play both flanks"],
+        weaknesses=["End product consistency", "Decision-making in final third", "Defensive contribution"],
+        role_in_squad="rotation"
+    ))
+
+    squad.append(Player(
+        name="Gabriel Martinelli",
+        age=24,
+        position="LW",
+        nationality="Brazil",
+        squad_number=10,
+        market_value_m=50.0,
+        wage_weekly_k=130.0,
+        contract_expiry="2027-06-30",
+        stats=PlayerStats(
+            appearances=19, goals=3, assists=2, minutes=1080,
+            xg=4.0, xa=1.8,
+            progressive_passes=12, progressive_carries=32,
+            key_passes=10,
+            dribbles_completed=14,
+            pass_completion_pct=78.0,
+            squawka_score=56.0, fotmob_rating=6.7
+        ),
+        status="available",
+        eye_test_notes="Has plateaued since his 15-goal 2022/23 season. Inconsistent end product. "
+                       "High energy and pressing are assets, but final-third quality lacking. "
+                       "Reports suggest Arsenal are open to selling for ~50m to fund an upgrade.",
+        strengths=["High pressing intensity", "Pace", "Energy", "Direct running"],
+        weaknesses=["End product regression", "Decision-making", "Has hit ceiling",
+                   "Inconsistent against deep blocks"],
+        role_in_squad="rotation"
+    ))
+
+    squad.append(Player(
+        name="Leandro Trossard",
+        age=31,
+        position="LW",
+        nationality="Belgium",
+        squad_number=19,
+        market_value_m=20.0,
+        wage_weekly_k=120.0,
+        contract_expiry="2026-06-30",
+        stats=PlayerStats(
+            appearances=20, goals=5, assists=4, minutes=1200,
+            xg=4.2, xa=3.5,
+            progressive_passes=22, progressive_carries=25,
+            key_passes=18,
+            dribbles_completed=8,
+            pass_completion_pct=83.0,
+            squawka_score=64.0, fotmob_rating=7.0
+        ),
+        status="available",
+        eye_test_notes="Belgium veteran. Leads goal involvements (5G+4A). Clutch performer. "
+                       "Contract expires June 2026 - will leave for free unless renewed. "
+                       "31 years old, Saudi interest reported. Excellent squad player "
+                       "but not the upgrade needed for title/CL push.",
+        strengths=["Clutch goals", "Versatility LW/RW/AM", "Experience", "Finishing"],
+        weaknesses=["Contract expiring", "Age 31", "Pace declining", "Not a starter-level upgrade"],
+        role_in_squad="rotation"
+    ))
+
+    # ==================== STRIKERS ====================
+
+    squad.append(Player(
+        name="Viktor Gyokeres",
+        age=27,
+        position="ST",
+        nationality="Sweden",
+        squad_number=14,
+        market_value_m=80.0,
+        wage_weekly_k=200.0,
+        contract_expiry="2030-06-30",
+        stats=PlayerStats(
+            appearances=22, goals=6, assists=2, minutes=1760,
+            xg=8.5, xa=1.8,
+            progressive_passes=12, progressive_carries=25,
+            key_passes=8,
+            dribbles_completed=12,
+            shot_accuracy_pct=33.3,
+            aerials_won=32,
+            squawka_score=58.0, fotmob_rating=6.9
+        ),
+        status="available",
+        eye_test_notes="Headline signing from Sporting (65.8m). Only 6 PL goals from 8.5 xG - "
+                       "significant underperformance. Shot accuracy 33% is concerning. "
+                       "Missing 0.45 big chances per 90. Physical presence is excellent "
+                       "but adaptation to PL defending has been slow. "
+                       "Still trust he'll come good but xG gap is alarming.",
+        strengths=["Physical presence", "Hold-up play", "Aerial ability",
+                   "Pressing", "xG generation"],
+        weaknesses=["Shot accuracy (33%)", "xG underperformance", "PL adaptation",
+                   "Big chance conversion", "Touches in tight spaces"],
+        role_in_squad="starter"
+    ))
+
+    squad.append(Player(
+        name="Gabriel Jesus",
+        age=28,
+        position="ST",
+        nationality="Brazil",
+        squad_number=9,
+        market_value_m=20.0,
+        wage_weekly_k=165.0,
+        contract_expiry="2027-06-30",
+        stats=PlayerStats(
+            appearances=9, goals=2, assists=1, minutes=420,
+            xg=1.5, xa=0.8,
+            progressive_passes=6, progressive_carries=10,
+            key_passes=4,
+            dribbles_completed=6,
+            squawka_score=50.0, fotmob_rating=6.5
+        ),
+        status="available",
+        eye_test_notes="Injury-ravaged season. Only 9 appearances. When fit, brings "
+                       "excellent link-up and pressing but conversion has always been an issue. "
+                       "High wages for a backup. Potential sell candidate to recoup fees.",
+        strengths=["Link-up play", "Pressing", "Experience", "Work rate"],
+        weaknesses=["Injury prone", "Conversion rate", "High wages for role", "Confidence issues"],
+        role_in_squad="backup"
+    ))
+
+    # ==================== LOANED OUT PLAYERS ====================
+
+    squad.append(Player(
+        name="Oleksandr Zinchenko",
+        age=29,
+        position="LB",
+        nationality="Ukraine",
+        squad_number=None,
+        market_value_m=15.0,
+        wage_weekly_k=200.0,
+        contract_expiry="2026-06-30",
+        stats=PlayerStats(),
+        status="loaned_out",
+        loan_club="Nottingham Forest -> sold to Ajax",
+        eye_test_notes="Was loaned to Forest, now sold to Ajax. 200k/week wages freed up. "
+                       "Fell behind MLS/Calafiori in pecking order. Departure confirmed.",
+        strengths=["Technical ability", "Inverted full-back play"],
+        weaknesses=["Defensive liability", "Pace", "Wages"],
+        role_in_squad="backup"
+    ))
+
+    squad.append(Player(
+        name="Jakub Kiwior",
+        age=25,
+        position="CB",
+        nationality="Poland",
+        squad_number=None,
+        market_value_m=15.0,
+        wage_weekly_k=70.0,
+        contract_expiry="2028-06-30",
+        stats=PlayerStats(),
+        status="loaned_out",
+        loan_club="FC Porto",
+        eye_test_notes="On loan at Porto. Decent left-footed CB. Not good enough "
+                       "to start for Arsenal. Likely to be sold permanently in summer.",
+        strengths=["Left-footed CB", "Ball-playing"],
+        weaknesses=["Not PL starting quality", "Aerial duels", "Pace"],
+        role_in_squad="backup"
+    ))
+
+    squad.append(Player(
+        name="Reiss Nelson",
+        age=26,
+        position="RW",
+        nationality="England",
+        squad_number=None,
+        market_value_m=8.0,
+        wage_weekly_k=60.0,
+        contract_expiry="2027-06-30",
+        stats=PlayerStats(),
+        status="loaned_out",
+        loan_club="Brentford",
+        eye_test_notes="On loan at Brentford. Not Arsenal quality. Should be sold permanently.",
+        strengths=["Dribbling", "Academy product"],
+        weaknesses=["Not PL top-6 level", "Injuries", "End product"],
+        role_in_squad="backup"
+    ))
+
+    squad.append(Player(
+        name="Fabio Vieira",
+        age=25,
+        position="AM",
+        nationality="Portugal",
+        squad_number=None,
+        market_value_m=10.0,
+        wage_weekly_k=65.0,
+        contract_expiry="2027-06-30",
+        stats=PlayerStats(),
+        status="loaned_out",
+        loan_club="Hamburg",
+        eye_test_notes="Creative talent but too lightweight for PL. On loan at Hamburg. "
+                       "Should be sold permanently to recoup some of original fee.",
+        strengths=["Creativity", "Set-piece delivery", "Technical ability"],
+        weaknesses=["Physical weakness", "Not PL level", "Injuries"],
+        role_in_squad="backup"
+    ))
+
+    squad.append(Player(
+        name="Karl Hein",
+        age=23,
+        position="GK",
+        nationality="Estonia",
+        squad_number=None,
+        market_value_m=2.0,
+        wage_weekly_k=15.0,
+        contract_expiry="2026-06-30",
+        stats=PlayerStats(),
+        status="loaned_out",
+        loan_club="Werder Bremen",
+        eye_test_notes="On loan at Bremen. Third-choice GK. Contract expiring. "
+                       "Unlikely to have a future at Arsenal.",
+        strengths=["Shot-stopping"],
+        weaknesses=["Not top-6 level", "No PL experience"],
+        role_in_squad="backup"
+    ))
+
+    return squad
+
+
+def build_rival_squads() -> dict:
+    """Key rival squad data for context - who they might sell/who they're targeting."""
+    return {
+        "Manchester City": {
+            "strengths": ["Depth", "Haaland", "Foden", "Rodri"],
+            "weaknesses": ["Aging squad", "Manager uncertainty post-Guardiola era",
+                          "Stuttering form this season"],
+            "likely_targets": ["Marc Guehi (reportedly won race)", "Florian Wirtz"],
+            "sellable_assets": [],
+            "pl_position": "Top 4 but behind Arsenal",
+        },
+        "Liverpool": {
+            "strengths": ["Defending champions", "Slot system embedded", "Salah/Van Dijk"],
+            "weaknesses": ["Salah age", "Squad transition ongoing"],
+            "likely_targets": ["Rodrygo", "Marc Guehi", "Bouaddi"],
+            "sellable_assets": [],
+            "pl_position": "Top 4 contender",
+        },
+        "Chelsea": {
+            "strengths": ["Young squad", "Massive investment", "Palmer"],
+            "weaknesses": ["Managerial instability (Maresca sacked Jan 2026)",
+                          "Bloated squad", "Inconsistency"],
+            "likely_targets": ["Various - big spenders"],
+            "sellable_assets": [],
+            "pl_position": "5th-ish, underperforming",
+        },
+        "Manchester United": {
+            "strengths": ["Individual talent", "Investment"],
+            "weaknesses": ["Amorim sacked Jan 2026", "Recruitment disputes",
+                          "Underperforming significantly"],
+            "likely_targets": ["Rebuilding mode"],
+            "sellable_assets": [],
+            "pl_position": "Mid-table crisis",
+        },
+        "Real Madrid": {
+            "strengths": ["Mbappe", "Vinicius", "Bellingham"],
+            "weaknesses": ["Rodrygo unhappy", "Squad management issues"],
+            "likely_targets": [],
+            "sellable_assets": ["Rodrygo (wants out)", "Arda Guler (limited minutes)"],
+            "pl_position": "N/A - La Liga",
+        },
+    }
+
+
+def build_transfer_targets() -> list[Player]:
+    """Build database of realistic summer 2026 transfer targets with stats and scouting."""
+
+    targets = []
+
+    # ==================== PRIMARY TARGETS ====================
+
+    targets.append(Player(
+        name="Rodrygo",
+        age=25,
+        position="LW",
+        nationality="Brazil",
+        market_value_m=90.0,
+        wage_weekly_k=200.0,
+        contract_expiry="2028-06-30",
+        stats=PlayerStats(
+            appearances=22, goals=5, assists=3, minutes=1100,
+            xg=4.5, xa=3.0,
+            progressive_passes=25, progressive_carries=40,
+            key_passes=20,
+            dribbles_completed=22,
+            pass_completion_pct=84.0,
+            squawka_score=68.0, fotmob_rating=7.2
+        ),
+        eye_test_notes="World-class talent stuck behind Mbappe/Vinicius at Real Madrid. "
+                       "Unhappy and wants to leave post-World Cup. Wants to join Arsenal. "
+                       "Can play LW/RW/ST. Elite end product, CL-proven (scored in final). "
+                       "Would be a massive upgrade on Martinelli/Trossard. "
+                       "Fee likely 80-100m EUR.",
+        strengths=["CL pedigree", "Versatility across front three", "Big-game mentality",
+                   "Finishing", "Link-up play", "1v1 ability"],
+        weaknesses=["Fee will be very high", "Adaptation to PL intensity",
+                   "Competition from Liverpool/City"],
+        role_in_squad="starter"
+    ))
+
+    targets.append(Player(
+        name="Tino Livramento",
+        age=23,
+        position="RB",
+        nationality="England",
+        market_value_m=55.0,
+        wage_weekly_k=100.0,
+        contract_expiry="2028-06-30",
+        stats=PlayerStats(
+            appearances=24, goals=2, assists=5, minutes=2100,
+            progressive_passes=35, progressive_carries=65,
+            key_passes=22,
+            tackles_won=36, interceptions=24,
+            dribbles_completed=20,
+            pass_completion_pct=84.5,
+            squawka_score=70.0, fotmob_rating=7.3
+        ),
+        eye_test_notes="Arsenal's TOP target at RB. Arteta and Berta both personally keen. "
+                       "Same agency as Arteta (easier personal terms). "
+                       "Timber-like profile but more dynamic in attack. "
+                       "Newcastle will demand 60m+ EUR. Contract talks stalled. "
+                       "Would replace Ben White and provide competition for Timber.",
+        strengths=["Pace", "Attacking output", "Versatility (can play LB)",
+                   "Ball-carrying", "Young and improving"],
+        weaknesses=["Newcastle won't sell cheap", "High fee for RB position",
+                   "Defensive discipline needs work"],
+        role_in_squad="starter"
+    ))
+
+    targets.append(Player(
+        name="Marc Guehi",
+        age=25,
+        position="CB",
+        nationality="England",
+        market_value_m=40.0,
+        wage_weekly_k=120.0,
+        contract_expiry="2026-06-30",
+        stats=PlayerStats(
+            appearances=22, goals=1, assists=0, minutes=1980,
+            progressive_passes=30, progressive_carries=18,
+            tackles_won=28, interceptions=22, aerials_won=38,
+            pass_completion_pct=88.0,
+            squawka_score=66.0, fotmob_rating=7.1
+        ),
+        eye_test_notes="Available on FREE transfer this summer (contract expires June 2026). "
+                       "England international. Arteta is a big fan. Reliable, consistent CB. "
+                       "Would provide elite depth at CB behind Saliba/Gabriel. "
+                       "BUT Man City reportedly won the race. Competition fierce from "
+                       "Liverpool, Bayern. If free, incredible value.",
+        strengths=["Free transfer", "England international", "Leadership",
+                   "Consistent performer", "Ball-playing CB"],
+        weaknesses=["City may have already signed him", "Not elite-tier like Saliba",
+                   "Limited aerial dominance"],
+        role_in_squad="rotation"
+    ))
+
+    targets.append(Player(
+        name="Ayyoub Bouaddi",
+        age=18,
+        position="CM",
+        nationality="France",
+        market_value_m=45.0,
+        wage_weekly_k=60.0,
+        contract_expiry="2029-06-30",
+        stats=PlayerStats(
+            appearances=28, goals=3, assists=4, minutes=2200,
+            progressive_passes=55, progressive_carries=42,
+            key_passes=22,
+            tackles_won=28, interceptions=20,
+            pass_completion_pct=88.5,
+            squawka_score=72.0, fotmob_rating=7.3
+        ),
+        eye_test_notes="18-year-old Lille midfielder. Complete CM with massive potential. "
+                       "Valued ~43m GBP. Arsenal are in the chase. "
+                       "Would be a long-term Merino successor and Odegaard backup. "
+                       "Outstanding for his age - started nearly every Lille game.",
+        strengths=["Complete midfielder", "Youth and ceiling", "Progressive passing",
+                   "Defensive intelligence for age", "French market knowledge"],
+        weaknesses=["High fee for 18-year-old", "PL adaptation risk",
+                   "Competition from Man Utd, Real Madrid"],
+        role_in_squad="rotation"
+    ))
+
+    targets.append(Player(
+        name="Arda Guler",
+        age=21,
+        position="AM",
+        nationality="Turkey",
+        market_value_m=40.0,
+        wage_weekly_k=80.0,
+        contract_expiry="2029-06-30",
+        stats=PlayerStats(
+            appearances=18, goals=4, assists=3, minutes=900,
+            xg=3.5, xa=2.5,
+            progressive_passes=22, progressive_carries=18,
+            key_passes=16,
+            dribbles_completed=14,
+            pass_completion_pct=85.0,
+            squawka_score=66.0, fotmob_rating=7.1
+        ),
+        eye_test_notes="Real Madrid prodigy with limited minutes. Exceptional left foot. "
+                       "Can play RW/AM. Summer interest more likely than January. "
+                       "Would add elite creativity. Loan with option to buy possible.",
+        strengths=["Left foot quality", "Creativity", "Shooting", "Youth potential"],
+        weaknesses=["Limited senior minutes", "Physical development",
+                   "Real Madrid may not sell permanently"],
+        role_in_squad="rotation"
+    ))
+
+    targets.append(Player(
+        name="Julian Alvarez",
+        age=26,
+        position="ST",
+        nationality="Argentina",
+        market_value_m=80.0,
+        wage_weekly_k=180.0,
+        contract_expiry="2029-06-30",
+        stats=PlayerStats(
+            appearances=25, goals=10, assists=5, minutes=2000,
+            xg=9.0, xa=4.0,
+            progressive_passes=20, progressive_carries=35,
+            key_passes=18,
+            dribbles_completed=16,
+            shot_accuracy_pct=48.0,
+            squawka_score=72.0, fotmob_rating=7.4
+        ),
+        eye_test_notes="World Cup winner. Atletico Madrid forward who can play anywhere "
+                       "across the front line. Arsenal exploring possibility. "
+                       "Would give Gyokeres elite competition or allow tactical flexibility. "
+                       "Fee would be massive (80m+).",
+        strengths=["Versatility across front 3", "Big-game mentality", "Work rate",
+                   "Link-up play", "World Cup winner"],
+        weaknesses=["Atletico unlikely to sell", "Very expensive",
+                   "Would need to displace Gyokeres or adjust system"],
+        role_in_squad="starter"
+    ))
+
+    targets.append(Player(
+        name="Jeremy Jacquet",
+        age=19,
+        position="CB",
+        nationality="France",
+        market_value_m=20.0,
+        wage_weekly_k=40.0,
+        contract_expiry="2029-06-30",
+        stats=PlayerStats(
+            appearances=22, goals=1, assists=0, minutes=1800,
+            progressive_passes=35, progressive_carries=15,
+            tackles_won=30, interceptions=24, aerials_won=28,
+            pass_completion_pct=89.0,
+            squawka_score=64.0, fotmob_rating=7.0
+        ),
+        eye_test_notes="19-year-old Rennes CB. Arsenal made initial contact (Romano). "
+                       "Excellent ball-playing defender. New contract until 2029 "
+                       "makes him more expensive. Alternative if Guehi goes to City.",
+        strengths=["Ball progression from CB", "Youth and ceiling",
+                   "Positional intelligence", "Left-footed"],
+        weaknesses=["New long contract (harder to prise away)", "Physical development",
+                   "Ligue 1 to PL jump"],
+        role_in_squad="rotation"
+    ))
+
+    targets.append(Player(
+        name="Davide Bartesaghi",
+        age=19,
+        position="LB",
+        nationality="Italy",
+        market_value_m=12.0,
+        wage_weekly_k=25.0,
+        contract_expiry="2028-06-30",
+        stats=PlayerStats(
+            appearances=16, goals=0, assists=2, minutes=1100,
+            progressive_passes=18, progressive_carries=28,
+            tackles_won=16, interceptions=10,
+            pass_completion_pct=84.0,
+            squawka_score=58.0, fotmob_rating=6.7
+        ),
+        eye_test_notes="AC Milan LB prospect Arsenal are monitoring. Athletic, "
+                       "modern full-back profile. Would be a long-term LB option. "
+                       "Milan concerned about Arsenal interest.",
+        strengths=["Athletic profile", "Youth", "Modern full-back attributes"],
+        weaknesses=["Very raw", "Limited Serie A experience", "Unknown PL fit"],
+        role_in_squad="youth"
+    ))
+
+    return targets
+
+
+# Contracts expiring in summer 2026
+EXPIRING_CONTRACTS_2026 = [
+    "Leandro Trossard",  # Will leave for free or renewed
+    "Karl Hein",  # Will leave
+]
+
+# Players likely to be sold
+SELL_CANDIDATES = [
+    "Gabriel Martinelli",    # ~50m, plateaued
+    "Ben White",             # ~25m, unhappy with minutes
+    "Gabriel Jesus",         # ~20m, injury-prone, high wages
+    "Jakub Kiwior",          # ~15m, not good enough
+    "Reiss Nelson",          # ~8m, not Arsenal level
+    "Fabio Vieira",          # ~10m, not PL level
+]
+
+# Revenue projections from sales
+PROJECTED_SALE_REVENUE = {
+    "Gabriel Martinelli": 50.0,
+    "Ben White": 25.0,
+    "Gabriel Jesus": 20.0,
+    "Jakub Kiwior": 15.0,
+    "Reiss Nelson": 8.0,
+    "Fabio Vieira": 10.0,
+    "Leandro Trossard": 0.0,  # free agent departure
+    "Karl Hein": 0.0,  # free agent departure
+}

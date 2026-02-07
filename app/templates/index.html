@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arsenal FC - Transfer War Room 2026</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <header class="top-bar">
+        <div class="logo-area">
+            <div class="cannon-icon">&#9650;</div>
+            <div>
+                <h1>Arsenal FC &mdash; Transfer War Room</h1>
+                <span class="subtitle">Summer 2026 Window Planning &middot; Sporting Director Console</span>
+            </div>
+        </div>
+        <div class="budget-control">
+            <label for="budgetSlider">Transfer Budget (EUR m):</label>
+            <input type="range" id="budgetSlider" min="80" max="300" value="150" step="10">
+            <span id="budgetDisplay" class="budget-val">&euro;150m</span>
+            <button id="refreshBtn" class="btn-refresh">Recalculate</button>
+        </div>
+    </header>
+
+    <!-- TABS -->
+    <nav class="tab-bar">
+        <button class="tab active" data-tab="overview">Executive Summary</button>
+        <button class="tab" data-tab="squad">Squad Analysis</button>
+        <button class="tab" data-tab="sell">Sell Recommendations</button>
+        <button class="tab" data-tab="buy">Buy Recommendations</button>
+        <button class="tab" data-tab="financial">Financial Model</button>
+        <button class="tab" data-tab="rivals">Rival Intel</button>
+        <button class="tab" data-tab="strategy">Window Strategy</button>
+    </nav>
+
+    <main id="app">
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p>Analyzing squad data &amp; generating recommendations&hellip;</p>
+        </div>
+
+        <!-- ============ EXECUTIVE SUMMARY ============ -->
+        <section id="tab-overview" class="tab-content active">
+            <div class="kpi-row" id="kpiRow"></div>
+            <div class="grid-2">
+                <div class="card" id="headlinesCard">
+                    <h2>Key Findings</h2>
+                    <ul id="headlinesList"></ul>
+                </div>
+                <div class="card" id="depthHeatmap">
+                    <h2>Positional Depth Heatmap</h2>
+                    <div class="pitch-grid" id="pitchGrid"></div>
+                </div>
+            </div>
+            <div class="card" id="quickPlan">
+                <h2>Transfer Plan at a Glance</h2>
+                <div class="grid-2">
+                    <div>
+                        <h3 class="section-sell">Players OUT</h3>
+                        <div id="quickSellList"></div>
+                    </div>
+                    <div>
+                        <h3 class="section-buy">Players IN</h3>
+                        <div id="quickBuyList"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ SQUAD ANALYSIS ============ -->
+        <section id="tab-squad" class="tab-content">
+            <div class="grid-2">
+                <div class="card">
+                    <h2>Age Profile</h2>
+                    <div id="ageProfile"></div>
+                </div>
+                <div class="card">
+                    <h2>Contract Risk Matrix</h2>
+                    <div id="contractRisks"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>Performance Gap Analysis</h2>
+                <div id="perfGaps"></div>
+            </div>
+            <div class="card">
+                <h2>Set-Piece Vulnerability Assessment</h2>
+                <div id="setPieces"></div>
+            </div>
+            <div class="card">
+                <h2>Full Squad Roster</h2>
+                <table class="data-table" id="squadTable">
+                    <thead>
+                        <tr>
+                            <th>#</th><th>Player</th><th>Pos</th><th>Age</th><th>Nation</th>
+                            <th>Apps</th><th>G</th><th>A</th><th>Min</th>
+                            <th>xG</th><th>Squawka</th><th>FotMob</th>
+                            <th>Value (m)</th><th>Wage (k/w)</th><th>Contract</th><th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody id="squadBody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ============ SELL RECOMMENDATIONS ============ -->
+        <section id="tab-sell" class="tab-content">
+            <div class="card">
+                <h2>Sale Revenue Projection</h2>
+                <div class="kpi-row" id="sellKpi"></div>
+            </div>
+            <div id="sellCards"></div>
+        </section>
+
+        <!-- ============ BUY RECOMMENDATIONS ============ -->
+        <section id="tab-buy" class="tab-content">
+            <div id="buyCards"></div>
+        </section>
+
+        <!-- ============ FINANCIAL MODEL ============ -->
+        <section id="tab-financial" class="tab-content">
+            <div class="kpi-row" id="finKpi"></div>
+            <div class="grid-2">
+                <div class="card">
+                    <h2>Wage Bill Impact</h2>
+                    <div id="wageImpact"></div>
+                </div>
+                <div class="card">
+                    <h2>Amortization Schedule</h2>
+                    <div id="amortization"></div>
+                </div>
+            </div>
+            <div class="card">
+                <h2>PSR Compliance Check</h2>
+                <div id="psrCheck"></div>
+            </div>
+        </section>
+
+        <!-- ============ RIVAL INTEL ============ -->
+        <section id="tab-rivals" class="tab-content">
+            <div id="rivalCards"></div>
+        </section>
+
+        <!-- ============ WINDOW STRATEGY ============ -->
+        <section id="tab-strategy" class="tab-content">
+            <div id="strategyTimeline"></div>
+        </section>
+    </main>
+
+    <!-- PLAYER DETAIL MODAL -->
+    <div class="modal-overlay" id="playerModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>Arsenal Transfer War Room &copy; 2026 &middot; Data sourced from FBref, Squawka, FotMob, Transfermarkt &middot; Last updated: Feb 7 2026</p>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
