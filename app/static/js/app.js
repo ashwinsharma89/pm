@@ -988,19 +988,112 @@
         return order[pos] ?? 10;
     }
 
+    // ---- COMMENTS PERSISTENCE ----
+    function loadCommentsFromStorage() {
+        try {
+            const saved = localStorage.getItem("arsenal_comments");
+            if (saved) {
+                const el = document.getElementById("userComments");
+                if (el) el.value = saved;
+            }
+        } catch (e) { /* ignore */ }
+    }
+    function saveCommentsToStorage() {
+        try {
+            const el = document.getElementById("userComments");
+            if (el) localStorage.setItem("arsenal_comments", el.value);
+        } catch (e) { /* ignore */ }
+    }
+
+    // ---- EXPORT GENERATOR ----
+    function generateExport() {
+        const lines = [];
+        const ts = new Date().toLocaleString();
+        lines.push("=== ARSENAL TRANSFER WAR ROOM - INTEL EXPORT ===");
+        lines.push(`Generated: ${ts}`);
+        lines.push(`Current Budget: \u20AC${slider.value}m`);
+        lines.push("");
+
+        // Intel updates
+        const hasUpdates = Object.keys(INTEL_UPDATES).length > 0;
+        if (hasUpdates) {
+            lines.push("--- TARGET STATUS CHANGES ---");
+            for (const [player, intel] of Object.entries(INTEL_UPDATES)) {
+                const parts = [`  ${player}:`];
+                if (intel.status && intel.status !== "available") {
+                    if (intel.status === "signed_by_rival") {
+                        parts.push(`SIGNED BY ${(intel.rival || "unknown rival").toUpperCase()}`);
+                    } else if (intel.status === "priced_out") {
+                        parts.push("PRICED OUT");
+                    }
+                }
+                if (intel.fee !== undefined) parts.push(`Fee: \u20AC${intel.fee}m`);
+                if (intel.notes) parts.push(`Note: "${intel.notes}"`);
+                lines.push(parts.join(" | "));
+            }
+            lines.push("");
+        }
+
+        // Current plan snapshot after intel applied
+        if (DATA && DATA.transfer_plan) {
+            lines.push("--- CURRENT BUY RECOMMENDATIONS (after intel applied) ---");
+            const buys = DATA.transfer_plan.buy_recommendations || [];
+            if (buys.length) {
+                buys.forEach((b, i) => {
+                    lines.push(`  ${i + 1}. ${b.player} (${b.position}, ${b.age}) - Score: ${b.priority_score}/100 - Fee: \u20AC${b.estimated_fee_m}m`);
+                });
+            } else {
+                lines.push("  (no remaining targets)");
+            }
+            lines.push("");
+
+            lines.push("--- SELL RECOMMENDATIONS ---");
+            const sells = DATA.transfer_plan.sell_recommendations || [];
+            sells.forEach((s, i) => {
+                lines.push(`  ${i + 1}. ${s.player} - Projected fee: \u20AC${s.projected_fee_m}m - Urgency: ${s.urgency}`);
+            });
+            lines.push("");
+        }
+
+        // Financial snapshot
+        if (DATA && DATA.financial_report) {
+            const bo = DATA.financial_report.budget_overview;
+            lines.push("--- FINANCIAL SNAPSHOT ---");
+            lines.push(`  Budget: \u20AC${bo.base_budget_m}m | Sales: \u20AC${bo.sale_revenue_m}m | Available: \u20AC${bo.total_available_m}m`);
+            lines.push(`  Spend: \u20AC${bo.total_spend_m}m | Remaining: \u20AC${bo.remaining_m}m | Net: \u20AC${bo.net_spend_m}m`);
+            lines.push("");
+        }
+
+        // User comments
+        const comments = (document.getElementById("userComments") || {}).value || "";
+        if (comments.trim()) {
+            lines.push("--- MY COMMENTS / REQUESTS ---");
+            lines.push(comments.trim());
+            lines.push("");
+        }
+
+        lines.push("=== END EXPORT ===");
+        lines.push("Paste this into your Claude Code session for processing.");
+        return lines.join("\n");
+    }
+
     // ---- INTEL BUTTONS ----
     document.addEventListener("DOMContentLoaded", () => {
         const applyBtn = document.getElementById("intelApplyBtn");
         const resetBtn = document.getElementById("intelResetBtn");
+        const exportBtn = document.getElementById("exportBtn");
+        const copyBtn = document.getElementById("copyExportBtn");
+        const commentsBox = document.getElementById("userComments");
+
         if (applyBtn) {
             applyBtn.addEventListener("click", () => {
                 // Log the changes
                 const now = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
                 for (const [player, intel] of Object.entries(INTEL_UPDATES)) {
                     if (intel.status === "signed_by_rival") {
-                        INTEL_LOG.push({ time: now, type: "removal", message: `${player} marked as SIGNED BY ${(intel.rival || "rival").toUpperCase()} — removed from recommendations` });
+                        INTEL_LOG.push({ time: now, type: "removal", message: `${player} marked as SIGNED BY ${(intel.rival || "rival").toUpperCase()} \u2014 removed from recommendations` });
                     } else if (intel.status === "priced_out") {
-                        INTEL_LOG.push({ time: now, type: "removal", message: `${player} marked as PRICED OUT — removed from recommendations` });
+                        INTEL_LOG.push({ time: now, type: "removal", message: `${player} marked as PRICED OUT \u2014 removed from recommendations` });
                     }
                     if (intel.fee !== undefined) {
                         INTEL_LOG.push({ time: now, type: "fee", message: `${player} fee updated to \u20AC${intel.fee}m` });
@@ -1027,6 +1120,61 @@
                 render();
             });
         }
+
+        // Export button
+        if (exportBtn) {
+            exportBtn.addEventListener("click", () => {
+                const text = generateExport();
+                const outputDiv = document.getElementById("exportOutput");
+                const outputPre = document.getElementById("exportText");
+                if (outputDiv && outputPre) {
+                    outputPre.textContent = text;
+                    outputDiv.style.display = "block";
+                    outputDiv.scrollIntoView({ behavior: "smooth", block: "nearest" });
+                }
+            });
+        }
+
+        // Copy to clipboard button
+        if (copyBtn) {
+            copyBtn.addEventListener("click", () => {
+                // Generate fresh export if not already displayed
+                const outputPre = document.getElementById("exportText");
+                let text = outputPre ? outputPre.textContent : "";
+                if (!text) {
+                    text = generateExport();
+                    const outputDiv = document.getElementById("exportOutput");
+                    if (outputDiv && outputPre) {
+                        outputPre.textContent = text;
+                        outputDiv.style.display = "block";
+                    }
+                }
+                navigator.clipboard.writeText(text).then(() => {
+                    const orig = copyBtn.textContent;
+                    copyBtn.textContent = "Copied!";
+                    copyBtn.style.background = "var(--green)";
+                    setTimeout(() => {
+                        copyBtn.textContent = orig;
+                        copyBtn.style.background = "var(--blue)";
+                    }, 2000);
+                }).catch(() => {
+                    // Fallback: select the pre text
+                    const range = document.createRange();
+                    range.selectNodeContents(outputPre);
+                    const sel = window.getSelection();
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                });
+            });
+        }
+
+        // Auto-save comments on input
+        if (commentsBox) {
+            commentsBox.addEventListener("input", saveCommentsToStorage);
+        }
+
+        // Load saved comments
+        loadCommentsFromStorage();
     });
 
     // ---- INIT ----

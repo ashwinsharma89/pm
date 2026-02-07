@@ -167,6 +167,23 @@
                 <button id="intelApplyBtn" class="btn-refresh" style="background:var(--green);padding:10px 24px;font-size:14px">Apply Changes &amp; Recalculate</button>
                 <button id="intelResetBtn" class="btn-refresh" style="background:var(--red);padding:10px 24px;font-size:14px">Reset All Intel</button>
             </div>
+            <div class="card" style="margin-top:20px">
+                <h2>Feedback for Claude Code</h2>
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">
+                    Type any comments, requests, or intel here. Then click <strong>&ldquo;Export for Claude Code&rdquo;</strong>
+                    to generate a summary you can paste back into the Claude Code session. Your feedback is saved in the browser.
+                </p>
+                <textarea id="userComments" rows="6" placeholder="e.g. Guehi signed with Man City for &euro;70m. Jacquet went to Liverpool. Can you find a replacement CB under 24? Also increase budget to &euro;200m and re-evaluate Rodrygo deal..."
+                    style="width:100%;background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:12px;font-family:inherit;font-size:14px;resize:vertical;line-height:1.6"></textarea>
+                <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
+                    <button id="exportBtn" class="btn-refresh" style="background:var(--arsenal-gold);padding:10px 24px;font-size:14px;font-weight:700">Export for Claude Code</button>
+                    <button id="copyExportBtn" class="btn-refresh" style="background:var(--blue);padding:10px 24px;font-size:14px">Copy to Clipboard</button>
+                </div>
+                <div id="exportOutput" style="display:none;margin-top:16px">
+                    <label style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Generated Export (copy &amp; paste into Claude Code):</label>
+                    <pre id="exportText" style="background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:6px;padding:14px;font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;margin-top:6px;max-height:400px;overflow-y:auto;color:var(--text-primary);cursor:text;user-select:all"></pre>
+                </div>
+            </div>
         </section>
     </main>
 
