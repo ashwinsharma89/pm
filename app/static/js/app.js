@@ -988,6 +988,150 @@
         return order[pos] ?? 10;
     }
 
+    // ==================== WEBSOCKET BRIDGE ====================
+    let WS = null;
+    let WS_RECONNECT_TIMER = null;
+    const BRIDGE_URL = "ws://localhost:8765";
+
+    function connectBridge() {
+        if (WS && WS.readyState === WebSocket.OPEN) return;
+        try {
+            WS = new WebSocket(BRIDGE_URL);
+        } catch (e) {
+            updateBridgeStatus(false);
+            return;
+        }
+
+        WS.onopen = () => {
+            updateBridgeStatus(true);
+            appendChat("system", "Connected to Claude Code bridge. You can now send messages directly.");
+            if (WS_RECONNECT_TIMER) { clearInterval(WS_RECONNECT_TIMER); WS_RECONNECT_TIMER = null; }
+        };
+
+        WS.onclose = () => {
+            updateBridgeStatus(false);
+            if (!WS_RECONNECT_TIMER) {
+                WS_RECONNECT_TIMER = setInterval(() => connectBridge(), 5000);
+            }
+        };
+
+        WS.onerror = () => {
+            updateBridgeStatus(false);
+        };
+
+        WS.onmessage = (event) => {
+            try {
+                const msg = JSON.parse(event.data);
+                if (msg.type === "ack") {
+                    appendChat("system", msg.message);
+                } else if (msg.type === "response") {
+                    appendChat("claude", msg.message);
+                    if (msg.updated_data) {
+                        window.__INITIAL_DATA__ = msg.updated_data;
+                        BASELINE = JSON.parse(JSON.stringify(msg.updated_data));
+                        const budget = Number(slider.value) || 150;
+                        DATA = recalcWithBudget(budget);
+                        render();
+                        appendChat("system", "Dashboard updated with new data from Claude Code.");
+                    }
+                } else if (msg.type === "status") {
+                    appendChat("system", msg.message);
+                }
+            } catch (e) {
+                appendChat("claude", event.data);
+            }
+        };
+    }
+
+    function updateBridgeStatus(connected) {
+        const el = document.getElementById("bridgeStatus");
+        if (!el) return;
+        if (connected) {
+            el.textContent = "Connected";
+            el.style.background = "rgba(63,185,80,0.15)";
+            el.style.color = "var(--green)";
+        } else {
+            el.textContent = "Disconnected";
+            el.style.background = "rgba(248,81,73,0.15)";
+            el.style.color = "var(--red)";
+        }
+    }
+
+    function sendToBridge(message) {
+        const payload = {
+            type: "intel_update",
+            message: message,
+            intel: INTEL_UPDATES,
+            intel_log: INTEL_LOG,
+            budget: Number(slider.value) || 150,
+            timestamp: new Date().toISOString(),
+            current_buy_recs: DATA ? (DATA.transfer_plan.buy_recommendations || []).map(b => ({
+                player: b.player, position: b.position, score: b.priority_score, fee: b.estimated_fee_m,
+            })) : [],
+            current_sell_recs: DATA ? (DATA.transfer_plan.sell_recommendations || []).map(s => ({
+                player: s.player, fee: s.projected_fee_m, urgency: s.urgency,
+            })) : [],
+        };
+
+        if (WS && WS.readyState === WebSocket.OPEN) {
+            WS.send(JSON.stringify(payload));
+            appendChat("user", message);
+        } else {
+            appendChat("system", "Bridge not connected. Start the bridge server: python3 bridge.py");
+            connectBridge();
+        }
+    }
+
+    function appendChat(role, text) {
+        const container = document.getElementById("chatMessages");
+        if (!container) return;
+        const div = document.createElement("div");
+        div.style.marginBottom = "8px";
+        div.style.padding = "6px 10px";
+        div.style.borderRadius = "4px";
+
+        if (role === "user") {
+            div.style.background = "rgba(156,130,74,0.15)";
+            div.style.borderLeft = "3px solid var(--arsenal-gold)";
+            div.innerHTML = `<span style="font-size:10px;color:var(--arsenal-gold);text-transform:uppercase;font-weight:700">You</span><br>${escapeHtml(text)}`;
+        } else if (role === "claude") {
+            div.style.background = "rgba(63,185,80,0.1)";
+            div.style.borderLeft = "3px solid var(--green)";
+            div.innerHTML = `<span style="font-size:10px;color:var(--green);text-transform:uppercase;font-weight:700">Claude Code</span><br>${escapeHtml(text)}`;
+        } else {
+            div.style.background = "rgba(88,166,255,0.08)";
+            div.style.color = "var(--text-muted)";
+            div.style.fontStyle = "italic";
+            div.style.fontSize = "12px";
+            div.textContent = text;
+        }
+
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+
+        try {
+            const history = JSON.parse(localStorage.getItem("arsenal_chat") || "[]");
+            history.push({ role, text, time: Date.now() });
+            if (history.length > 50) history.splice(0, history.length - 50);
+            localStorage.setItem("arsenal_chat", JSON.stringify(history));
+        } catch (e) { /* ignore */ }
+    }
+
+    function loadChatHistory() {
+        try {
+            const history = JSON.parse(localStorage.getItem("arsenal_chat") || "[]");
+            for (const entry of history) {
+                appendChat(entry.role, entry.text);
+            }
+        } catch (e) { /* ignore */ }
+    }
+
+    function escapeHtml(str) {
+        const div = document.createElement("div");
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
     // ---- COMMENTS PERSISTENCE ----
     function loadCommentsFromStorage() {
         try {
@@ -1175,6 +1319,37 @@
 
         // Load saved comments
         loadCommentsFromStorage();
+
+        // ---- CHAT / BRIDGE ----
+        const chatSendBtn = document.getElementById("chatSendBtn");
+        const chatInput = document.getElementById("chatInput");
+
+        if (chatSendBtn && chatInput) {
+            chatSendBtn.addEventListener("click", () => {
+                const msg = chatInput.value.trim();
+                if (!msg) return;
+                sendToBridge(msg);
+                chatInput.value = "";
+            });
+            chatInput.addEventListener("keydown", (e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    chatSendBtn.click();
+                }
+            });
+        }
+
+        // Quick message buttons
+        document.querySelectorAll(".quick-msg-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const msg = btn.dataset.msg;
+                if (msg) sendToBridge(msg);
+            });
+        });
+
+        // Load chat history and connect to bridge
+        loadChatHistory();
+        connectBridge();
     });
 
     // ---- INIT ----

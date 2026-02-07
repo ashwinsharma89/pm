@@ -168,12 +168,36 @@
                 <button id="intelResetBtn" class="btn-refresh" style="background:var(--red);padding:10px 24px;font-size:14px">Reset All Intel</button>
             </div>
             <div class="card" style="margin-top:20px">
-                <h2>Feedback for Claude Code</h2>
+                <h2>
+                    Direct Link to Claude Code
+                    <span id="bridgeStatus" style="font-size:12px;font-weight:400;margin-left:12px;padding:3px 10px;border-radius:10px;background:rgba(248,81,73,0.15);color:var(--red)">Disconnected</span>
+                </h2>
                 <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">
-                    Type any comments, requests, or intel here. Then click <strong>&ldquo;Export for Claude Code&rdquo;</strong>
-                    to generate a summary you can paste back into the Claude Code session. Your feedback is saved in the browser.
+                    Send messages directly to Claude Code. Type your intel, requests, or questions below and hit <strong>Send</strong>.
+                    Claude Code will process your message and respond right here.
+                    <br><span style="font-size:11px;color:var(--text-muted)">Requires bridge server: <code>python3 bridge.py</code></span>
                 </p>
-                <textarea id="userComments" rows="6" placeholder="e.g. Guehi signed with Man City for &euro;70m. Jacquet went to Liverpool. Can you find a replacement CB under 24? Also increase budget to &euro;200m and re-evaluate Rodrygo deal..."
+                <div id="chatMessages" style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:6px;padding:12px;min-height:120px;max-height:360px;overflow-y:auto;margin-bottom:12px;font-size:13px;line-height:1.7"></div>
+                <div style="display:flex;gap:10px">
+                    <textarea id="chatInput" rows="2" placeholder="e.g. Guehi signed with Man City. Find a replacement CB under 24 and under &euro;50m..."
+                        style="flex:1;background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:10px;font-family:inherit;font-size:14px;resize:none"></textarea>
+                    <div style="display:flex;flex-direction:column;gap:6px">
+                        <button id="chatSendBtn" class="btn-refresh" style="background:var(--arsenal-gold);padding:10px 20px;font-size:14px;font-weight:700;height:100%">Send to<br>Claude Code</button>
+                    </div>
+                </div>
+                <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+                    <button class="quick-msg-btn btn-refresh" data-msg="Process my intel updates and rebuild the plan" style="font-size:11px;padding:4px 10px;background:rgba(255,255,255,0.08)">Process Intel</button>
+                    <button class="quick-msg-btn btn-refresh" data-msg="Find replacement targets for players marked unavailable" style="font-size:11px;padding:4px 10px;background:rgba(255,255,255,0.08)">Find Replacements</button>
+                    <button class="quick-msg-btn btn-refresh" data-msg="Re-evaluate the entire plan with current intel and push updated HTML" style="font-size:11px;padding:4px 10px;background:rgba(255,255,255,0.08)">Full Re-eval &amp; Push</button>
+                    <button class="quick-msg-btn btn-refresh" data-msg="What are the best CB options now that Guehi is gone?" style="font-size:11px;padding:4px 10px;background:rgba(255,255,255,0.08)">Ask: CB Options</button>
+                </div>
+            </div>
+            <div class="card" style="margin-top:20px">
+                <h2>Manual Export (Fallback)</h2>
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">
+                    If the bridge isn't running, use this to export and copy-paste into Claude Code manually.
+                </p>
+                <textarea id="userComments" rows="4" placeholder="Additional comments..."
                     style="width:100%;background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:12px;font-family:inherit;font-size:14px;resize:vertical;line-height:1.6"></textarea>
                 <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
                     <button id="exportBtn" class="btn-refresh" style="background:var(--arsenal-gold);padding:10px 24px;font-size:14px;font-weight:700">Export for Claude Code</button>
