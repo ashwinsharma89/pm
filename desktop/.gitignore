@@ -1,0 +1,6 @@
+node_modules/
+dist/
+app.html
+*.icns
+icon.iconset/
+icon_1024.png

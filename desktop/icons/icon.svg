@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#EF0107"/>
+      <stop offset="60%" style="stop-color:#9b0106"/>
+      <stop offset="100%" style="stop-color:#063672"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37"/>
+      <stop offset="100%" style="stop-color:#9C824A"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1024" height="1024" rx="200" fill="url(#bg)"/>
+  <!-- Gold border accent -->
+  <rect x="20" y="20" width="984" height="984" rx="185" fill="none" stroke="url(#gold)" stroke-width="8" opacity="0.6"/>
+  <!-- Cannon (Arsenal symbol) -->
+  <g transform="translate(512, 440) rotate(-30)">
+    <!-- Barrel -->
+    <rect x="-180" y="-28" width="360" height="56" rx="28" fill="url(#gold)"/>
+    <!-- Barrel tip -->
+    <rect x="160" y="-35" width="40" height="70" rx="8" fill="url(#gold)"/>
+    <!-- Wheel -->
+    <circle cx="-120" cy="50" r="65" fill="none" stroke="url(#gold)" stroke-width="12"/>
+    <circle cx="-120" cy="50" r="20" fill="url(#gold)"/>
+    <!-- Spokes -->
+    <line x1="-120" y1="-15" x2="-120" y2="115" stroke="url(#gold)" stroke-width="6"/>
+    <line x1="-185" y1="50" x2="-55" y2="50" stroke="url(#gold)" stroke-width="6"/>
+    <line x1="-166" y1="4" x2="-74" y2="96" stroke="url(#gold)" stroke-width="6"/>
+    <line x1="-166" y1="96" x2="-74" y2="4" stroke="url(#gold)" stroke-width="6"/>
+  </g>
+  <!-- Text: WAR ROOM -->
+  <text x="512" y="720" text-anchor="middle" font-family="-apple-system, Helvetica, Arial, sans-serif" font-size="80" font-weight="800" fill="white" letter-spacing="8">WAR ROOM</text>
+  <!-- Subtitle -->
+  <text x="512" y="790" text-anchor="middle" font-family="-apple-system, Helvetica, Arial, sans-serif" font-size="36" font-weight="400" fill="rgba(255,255,255,0.7)" letter-spacing="4">TRANSFER PLANNING</text>
+</svg>

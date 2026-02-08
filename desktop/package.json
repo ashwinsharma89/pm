@@ -1,0 +1,46 @@
+{
+  "name": "arsenal-transfer-warroom",
+  "productName": "Arsenal Transfer War Room",
+  "version": "1.0.0",
+  "description": "Enterprise-grade transfer planning dashboard for Arsenal FC — Summer 2026",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "node build.js && electron-builder --mac",
+    "build:html": "node build.js",
+    "pack": "electron-builder --mac --dir",
+    "dist": "node build.js && electron-builder --mac"
+  },
+  "author": "Arsenal Sporting Director",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "com.arsenal.transferwarroom",
+    "productName": "Arsenal Transfer War Room",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "app.html"
+    ],
+    "mac": {
+      "category": "public.app-category.sports",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["universal"]
+        }
+      ],
+      "icon": "icons/icon.icns",
+      "darkModeSupport": true
+    },
+    "dmg": {
+      "title": "Arsenal Transfer War Room",
+      "backgroundColor": "#0d1117"
+    }
+  }
+}
