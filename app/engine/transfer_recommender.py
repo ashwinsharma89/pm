@@ -371,14 +371,14 @@ def _suggest_deal_structure(target: Player, budget_m: float) -> dict:
 def _infer_club(target: Player) -> str:
     """Infer the current club from eye test notes."""
     club_map = {
-        "Rodrygo": "Real Madrid",
         "Tino Livramento": "Newcastle United",
-        "Marc Guehi": "Crystal Palace (free agent)",
         "Ayyoub Bouaddi": "LOSC Lille",
         "Arda Guler": "Real Madrid",
         "Julian Alvarez": "Atletico Madrid",
-        "Jeremy Jacquet": "Stade Rennais",
         "Davide Bartesaghi": "AC Milan",
+        "Konstantinos Koulierakis": "VfL Wolfsburg",
+        "Giorgio Scalvini": "Atalanta BC",
+        "Karim Adeyemi": "Borussia Dortmund",
     }
     return club_map.get(target.name, "Unknown")
 

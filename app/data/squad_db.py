@@ -836,34 +836,8 @@ def build_transfer_targets() -> list[Player]:
 
     # ==================== PRIMARY TARGETS ====================
 
-    targets.append(Player(
-        name="Rodrygo",
-        age=25,
-        position="LW",
-        nationality="Brazil",
-        market_value_m=90.0,
-        wage_weekly_k=200.0,
-        contract_expiry="2028-06-30",
-        stats=PlayerStats(
-            appearances=22, goals=5, assists=3, minutes=1100,
-            xg=4.5, xa=3.0,
-            progressive_passes=25, progressive_carries=40,
-            key_passes=20,
-            dribbles_completed=22,
-            pass_completion_pct=84.0,
-            squawka_score=68.0, fotmob_rating=7.2
-        ),
-        eye_test_notes="World-class talent stuck behind Mbappe/Vinicius at Real Madrid. "
-                       "Unhappy and wants to leave post-World Cup. Wants to join Arsenal. "
-                       "Can play LW/RW/ST. Elite end product, CL-proven (scored in final). "
-                       "Would be a massive upgrade on Martinelli/Trossard. "
-                       "Fee likely 80-100m EUR.",
-        strengths=["CL pedigree", "Versatility across front three", "Big-game mentality",
-                   "Finishing", "Link-up play", "1v1 ability"],
-        weaknesses=["Fee will be very high", "Adaptation to PL intensity",
-                   "Competition from Liverpool/City"],
-        role_in_squad="starter"
-    ))
+    # NOTE: Rodrygo (PRICED OUT by Real Madrid), Marc Guehi (SIGNED by Man City),
+    # and Jeremy Jacquet (SIGNED by Liverpool) have been removed per intel updates.
 
     targets.append(Player(
         name="Tino Livramento",
@@ -892,33 +866,6 @@ def build_transfer_targets() -> list[Player]:
         weaknesses=["Newcastle won't sell cheap", "High fee for RB position",
                    "Defensive discipline needs work"],
         role_in_squad="starter"
-    ))
-
-    targets.append(Player(
-        name="Marc Guehi",
-        age=25,
-        position="CB",
-        nationality="England",
-        market_value_m=40.0,
-        wage_weekly_k=120.0,
-        contract_expiry="2026-06-30",
-        stats=PlayerStats(
-            appearances=22, goals=1, assists=0, minutes=1980,
-            progressive_passes=30, progressive_carries=18,
-            tackles_won=28, interceptions=22, aerials_won=38,
-            pass_completion_pct=88.0,
-            squawka_score=66.0, fotmob_rating=7.1
-        ),
-        eye_test_notes="Available on FREE transfer this summer (contract expires June 2026). "
-                       "England international. Arteta is a big fan. Reliable, consistent CB. "
-                       "Would provide elite depth at CB behind Saliba/Gabriel. "
-                       "BUT Man City reportedly won the race. Competition fierce from "
-                       "Liverpool, Bayern. If free, incredible value.",
-        strengths=["Free transfer", "England international", "Leadership",
-                   "Consistent performer", "Ball-playing CB"],
-        weaknesses=["City may have already signed him", "Not elite-tier like Saliba",
-                   "Limited aerial dominance"],
-        role_in_squad="rotation"
     ))
 
     targets.append(Player(
@@ -1002,29 +949,95 @@ def build_transfer_targets() -> list[Player]:
         role_in_squad="starter"
     ))
 
+    # ==================== REPLACEMENT TARGETS (Feb 2026 Intel Update) ====================
+
     targets.append(Player(
-        name="Jeremy Jacquet",
-        age=19,
+        name="Konstantinos Koulierakis",
+        age=22,
         position="CB",
-        nationality="France",
-        market_value_m=20.0,
-        wage_weekly_k=40.0,
+        nationality="Greece",
+        market_value_m=35.0,
+        wage_weekly_k=70.0,
         contract_expiry="2029-06-30",
         stats=PlayerStats(
-            appearances=22, goals=1, assists=0, minutes=1800,
-            progressive_passes=35, progressive_carries=15,
-            tackles_won=30, interceptions=24, aerials_won=28,
-            pass_completion_pct=89.0,
-            squawka_score=64.0, fotmob_rating=7.0
+            appearances=17, goals=0, assists=0, minutes=1485,
+            progressive_passes=28, progressive_carries=15,
+            tackles_won=32, interceptions=26, aerials_won=42,
+            pass_completion_pct=85.5,
+            squawka_score=67.0, fotmob_rating=7.1
         ),
-        eye_test_notes="19-year-old Rennes CB. Arsenal made initial contact (Romano). "
-                       "Excellent ball-playing defender. New contract until 2029 "
-                       "makes him more expensive. Alternative if Guehi goes to City.",
-        strengths=["Ball progression from CB", "Youth and ceiling",
-                   "Positional intelligence", "Left-footed"],
-        weaknesses=["New long contract (harder to prise away)", "Physical development",
-                   "Ligue 1 to PL jump"],
+        eye_test_notes="22-year-old Wolfsburg CB. LEFT-FOOTED — ideal to partner Saliba. "
+                       "Signed from PAOK for just 12m in 2024. Nominated for Bundesliga "
+                       "Rookie of the Month 3 times. Physically imposing (1.88m) with "
+                       "excellent recovery pace. Strong in the air and technically solid "
+                       "in build-up. Wolfsburg are a selling club — 35-40m realistic. "
+                       "Top replacement for Guehi (City) and Jacquet (Liverpool).",
+        strengths=["Left-footed CB", "Aerial dominance", "Recovery pace",
+                   "Ball-playing ability", "Affordable", "Selling club"],
+        weaknesses=["Ball progression under high press needs work",
+                   "Interest from Liverpool, Spurs, Inter, Juve",
+                   "Bundesliga to PL adaptation"],
         role_in_squad="rotation"
+    ))
+
+    targets.append(Player(
+        name="Giorgio Scalvini",
+        age=22,
+        position="CB",
+        nationality="Italy",
+        market_value_m=50.0,
+        wage_weekly_k=90.0,
+        contract_expiry="2028-06-30",
+        stats=PlayerStats(
+            appearances=14, goals=2, assists=0, minutes=733,
+            progressive_passes=22, progressive_carries=20,
+            tackles_won=18, interceptions=14, aerials_won=30,
+            pass_completion_pct=87.0,
+            squawka_score=69.0, fotmob_rating=7.3
+        ),
+        eye_test_notes="Atalanta's CB/DM hybrid. Europa League winner at 20. Full Italian "
+                       "international. The 'dream modern CB' — 1.94m, elite on the ball, "
+                       "progressive carries, line-breaking passes. Can step into midfield. "
+                       "ACL tear (June 2024) and muscle injuries keep price at 45-55m — "
+                       "when fit, he's a 70m+ player. Medical assessment critical. "
+                       "Newcastle have scouted for 2+ years. Higher ceiling than Koulierakis.",
+        strengths=["Ball-playing ability (elite)", "CB/DM versatility", "Aerial dominance (1.94m)",
+                   "CL experience", "Progressive carrying", "Full international"],
+        weaknesses=["ACL tear history (June 2024)", "Muscle injuries in 2025",
+                   "Medical risk premium", "Newcastle and Man Utd also interested"],
+        role_in_squad="starter"
+    ))
+
+    targets.append(Player(
+        name="Karim Adeyemi",
+        age=24,
+        position="LW",
+        nationality="Germany",
+        market_value_m=65.0,
+        wage_weekly_k=130.0,
+        contract_expiry="2027-06-30",
+        stats=PlayerStats(
+            appearances=16, goals=5, assists=5, minutes=1200,
+            xg=4.2, xa=4.0,
+            progressive_passes=18, progressive_carries=48,
+            key_passes=20,
+            dribbles_completed=28,
+            pass_completion_pct=80.0,
+            squawka_score=71.0, fotmob_rating=7.3
+        ),
+        eye_test_notes="Dortmund's explosive attacker. WANTS ARSENAL — told BVB he prefers "
+                       "London over Manchester. Same reports say 'his reps prefer Arsenal.' "
+                       "Elite pace, direct, versatile (LW/RW/CF). Contract expires 2027 "
+                       "so Dortmund under pressure to sell. Extension talks stalled — "
+                       "Adeyemi only extends with release clause (BVB refused). "
+                       "Asking price 60-70m EUR. Player preference gives Arsenal huge leverage. "
+                       "Replaces Rodrygo's intended role — pace, directness, creativity.",
+        strengths=["Elite pace (one of fastest in Bundesliga)", "Player wants Arsenal",
+                   "1v1 dribbling", "Versatility across front line",
+                   "Contract leverage (2027)", "Goal threat and creation"],
+        weaknesses=["Fee still 60-70m", "Man Utd, Chelsea, Liverpool also interested",
+                   "Injury history at Dortmund", "PL physicality adaptation"],
+        role_in_squad="starter"
     ))
 
     targets.append(Player(
