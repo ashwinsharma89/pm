@@ -13,6 +13,10 @@
   },
   "author": "Arsenal Sporting Director",
   "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "electron-store": "^8.1.0"
+  },
   "devDependencies": {
     "electron": "^33.0.0",
     "electron-builder": "^25.0.0"

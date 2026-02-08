@@ -169,43 +169,64 @@
             </div>
             <div class="card" style="margin-top:20px">
                 <h2>
-                    Direct Link to Claude Code
-                    <span id="bridgeStatus" style="font-size:12px;font-weight:400;margin-left:12px;padding:3px 10px;border-radius:10px;background:rgba(248,81,73,0.15);color:var(--red)">Disconnected</span>
+                    Ask Claude AI
+                    <span id="claudeStatus" style="font-size:12px;font-weight:400;margin-left:12px;padding:3px 10px;border-radius:10px;background:rgba(248,81,73,0.15);color:var(--red)">No API Key</span>
+                    <button id="apiKeyModalTrigger" style="float:right;background:none;border:1px solid var(--border);color:var(--text-secondary);padding:4px 12px;border-radius:4px;font-size:12px;cursor:pointer" title="Configure API Key">&#128273; API Key</button>
                 </h2>
                 <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">
-                    Send messages directly to Claude Code. Type your intel, requests, or questions below and hit <strong>Send</strong>.
-                    Claude Code will process your message and respond right here.
-                    <br><span style="font-size:11px;color:var(--text-muted)">Requires bridge server: <code>python3 bridge.py</code></span>
+                    Chat with Claude directly inside the app. Ask for transfer advice, player analysis, new targets, or data changes.
+                    Claude will update the dashboard automatically when appropriate.
                 </p>
-                <div id="chatMessages" style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:6px;padding:12px;min-height:120px;max-height:360px;overflow-y:auto;margin-bottom:12px;font-size:13px;line-height:1.7"></div>
+                <div id="chatMessages" style="background:rgba(0,0,0,0.3);border:1px solid var(--border);border-radius:6px;padding:12px;min-height:150px;max-height:400px;overflow-y:auto;margin-bottom:12px;font-size:13px;line-height:1.7"></div>
                 <div style="display:flex;gap:10px">
-                    <textarea id="chatInput" rows="2" placeholder="e.g. Guehi signed with Man City. Find a replacement CB under 24 and under &euro;50m..."
+                    <textarea id="chatInput" rows="2" placeholder="e.g. Find me a left-footed CB under 25 from Serie A. Budget max &euro;45m..."
                         style="flex:1;background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:10px;font-family:inherit;font-size:14px;resize:none"></textarea>
                     <div style="display:flex;flex-direction:column;gap:6px">
-                        <button id="chatSendBtn" class="btn-refresh" style="background:var(--arsenal-gold);padding:10px 20px;font-size:14px;font-weight:700;height:100%">Send to<br>Claude Code</button>
+                        <button id="chatSendBtn" class="btn-refresh" style="background:var(--arsenal-gold);padding:10px 20px;font-size:14px;font-weight:700;height:100%">Send to<br>Claude</button>
                     </div>
                 </div>
                 <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
-                    <button class="quick-msg-btn btn-refresh" data-msg="Process my intel updates and rebuild the plan" style="font-size:11px;padding:4px 10px;background:rgba(255,255,255,0.08)">Process Intel</button>
-                    <button class="quick-msg-btn btn-refresh" data-msg="Find replacement targets for players marked unavailable" style="font-size:11px;padding:4px 10px;background:rgba(255,255,255,0.08)">Find Replacements</button>
-                    <button class="quick-msg-btn btn-refresh" data-msg="Re-evaluate the entire plan with current intel and push updated HTML" style="font-size:11px;padding:4px 10px;background:rgba(255,255,255,0.08)">Full Re-eval &amp; Push</button>
-                    <button class="quick-msg-btn btn-refresh" data-msg="What are the best CB options now that Guehi is gone?" style="font-size:11px;padding:4px 10px;background:rgba(255,255,255,0.08)">Ask: CB Options</button>
+                    <button class="quick-msg-btn btn-refresh" data-msg="Analyze the current squad weaknesses and suggest the 3 most impactful signings we can make" style="font-size:11px;padding:4px 10px;background:rgba(255,255,255,0.08)">Top 3 Signings</button>
+                    <button class="quick-msg-btn btn-refresh" data-msg="Find replacement targets for players I've marked as unavailable" style="font-size:11px;padding:4px 10px;background:rgba(255,255,255,0.08)">Find Replacements</button>
+                    <button class="quick-msg-btn btn-refresh" data-msg="What are the best CB options available under 50m?" style="font-size:11px;padding:4px 10px;background:rgba(255,255,255,0.08)">CB Options</button>
+                    <button class="quick-msg-btn btn-refresh" data-msg="Are we PSR compliant with the current plan? What's the maximum we can still spend?" style="font-size:11px;padding:4px 10px;background:rgba(255,255,255,0.08)">PSR Check</button>
+                    <button id="clearChatBtn" class="btn-refresh" data-msg="" style="font-size:11px;padding:4px 10px;background:rgba(248,81,73,0.15);color:var(--red)">Clear Chat</button>
                 </div>
             </div>
             <div class="card" style="margin-top:20px">
                 <h2>Manual Export (Fallback)</h2>
                 <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px">
-                    If the bridge isn't running, use this to export and copy-paste into Claude Code manually.
+                    Export intel as text to share or paste elsewhere.
                 </p>
                 <textarea id="userComments" rows="4" placeholder="Additional comments..."
                     style="width:100%;background:var(--bg-card);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:12px;font-family:inherit;font-size:14px;resize:vertical;line-height:1.6"></textarea>
                 <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap">
-                    <button id="exportBtn" class="btn-refresh" style="background:var(--arsenal-gold);padding:10px 24px;font-size:14px;font-weight:700">Export for Claude Code</button>
+                    <button id="exportBtn" class="btn-refresh" style="background:var(--arsenal-gold);padding:10px 24px;font-size:14px;font-weight:700">Export Report</button>
                     <button id="copyExportBtn" class="btn-refresh" style="background:var(--blue);padding:10px 24px;font-size:14px">Copy to Clipboard</button>
                 </div>
                 <div id="exportOutput" style="display:none;margin-top:16px">
-                    <label style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Generated Export (copy &amp; paste into Claude Code):</label>
+                    <label style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px">Generated Export:</label>
                     <pre id="exportText" style="background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:6px;padding:14px;font-size:13px;line-height:1.6;white-space:pre-wrap;word-break:break-word;margin-top:6px;max-height:400px;overflow-y:auto;color:var(--text-primary);cursor:text;user-select:all"></pre>
+                </div>
+            </div>
+
+            <!-- API KEY MODAL -->
+            <div id="apiKeyModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:2000;align-items:center;justify-content:center">
+                <div style="background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:24px;max-width:500px;width:90%">
+                    <h3 style="margin-bottom:12px">Anthropic API Key</h3>
+                    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px">
+                        Enter your Anthropic API key to enable the Claude AI chat. Your key is stored securely on your machine and never sent anywhere except the Anthropic API.
+                        <br><br>
+                        Get a key at: <a href="#" id="apiKeyLink" style="color:var(--blue)">console.anthropic.com</a>
+                    </p>
+                    <input id="apiKeyInput" type="password" placeholder="sk-ant-api03-..."
+                        style="width:100%;background:var(--bg-primary);color:var(--text-primary);border:1px solid var(--border);border-radius:4px;padding:10px;font-family:monospace;font-size:14px;margin-bottom:12px">
+                    <div style="display:flex;gap:10px;justify-content:flex-end">
+                        <button id="apiKeyRemoveBtn" class="btn-refresh" style="background:var(--red);padding:8px 16px;font-size:13px">Remove Key</button>
+                        <button id="apiKeyCancelBtn" class="btn-refresh" style="background:rgba(255,255,255,0.08);padding:8px 16px;font-size:13px">Cancel</button>
+                        <button id="apiKeySaveBtn" class="btn-refresh" style="background:var(--green);padding:8px 16px;font-size:13px;font-weight:700">Save Key</button>
+                    </div>
+                    <p id="apiKeyStatus" style="font-size:12px;margin-top:8px;color:var(--text-muted)"></p>
                 </div>
             </div>
         </section>

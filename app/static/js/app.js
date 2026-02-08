@@ -988,97 +988,154 @@
         return order[pos] ?? 10;
     }
 
-    // ==================== WEBSOCKET BRIDGE ====================
-    let WS = null;
-    let WS_RECONNECT_TIMER = null;
-    const BRIDGE_URL = "ws://localhost:8765";
+    // ==================== CLAUDE AI CHAT ====================
+    const IS_ELECTRON = !!(window.electronAPI && window.electronAPI.isElectron);
+    let chatSending = false;
 
-    function connectBridge() {
-        if (WS && WS.readyState === WebSocket.OPEN) return;
-        try {
-            WS = new WebSocket(BRIDGE_URL);
-        } catch (e) {
-            updateBridgeStatus(false);
-            return;
-        }
-
-        WS.onopen = () => {
-            updateBridgeStatus(true);
-            appendChat("system", "Connected to Claude Code bridge. You can now send messages directly.");
-            if (WS_RECONNECT_TIMER) { clearInterval(WS_RECONNECT_TIMER); WS_RECONNECT_TIMER = null; }
-        };
-
-        WS.onclose = () => {
-            updateBridgeStatus(false);
-            if (!WS_RECONNECT_TIMER) {
-                WS_RECONNECT_TIMER = setInterval(() => connectBridge(), 5000);
-            }
-        };
-
-        WS.onerror = () => {
-            updateBridgeStatus(false);
-        };
-
-        WS.onmessage = (event) => {
-            try {
-                const msg = JSON.parse(event.data);
-                if (msg.type === "ack") {
-                    appendChat("system", msg.message);
-                } else if (msg.type === "response") {
-                    appendChat("claude", msg.message);
-                    if (msg.updated_data) {
-                        window.__INITIAL_DATA__ = msg.updated_data;
-                        BASELINE = JSON.parse(JSON.stringify(msg.updated_data));
-                        const budget = Number(slider.value) || 150;
-                        DATA = recalcWithBudget(budget);
-                        render();
-                        appendChat("system", "Dashboard updated with new data from Claude Code.");
-                    }
-                } else if (msg.type === "status") {
-                    appendChat("system", msg.message);
-                }
-            } catch (e) {
-                appendChat("claude", event.data);
-            }
-        };
-    }
-
-    function updateBridgeStatus(connected) {
-        const el = document.getElementById("bridgeStatus");
+    function updateClaudeStatus(ready) {
+        const el = document.getElementById("claudeStatus");
         if (!el) return;
-        if (connected) {
-            el.textContent = "Connected";
+        if (ready) {
+            el.textContent = "Ready";
             el.style.background = "rgba(63,185,80,0.15)";
             el.style.color = "var(--green)";
         } else {
-            el.textContent = "Disconnected";
+            el.textContent = "No API Key";
             el.style.background = "rgba(248,81,73,0.15)";
             el.style.color = "var(--red)";
         }
     }
 
-    function sendToBridge(message) {
-        const payload = {
-            type: "intel_update",
-            message: message,
-            intel: INTEL_UPDATES,
-            intel_log: INTEL_LOG,
-            budget: Number(slider.value) || 150,
-            timestamp: new Date().toISOString(),
-            current_buy_recs: DATA ? (DATA.transfer_plan.buy_recommendations || []).map(b => ({
-                player: b.player, position: b.position, score: b.priority_score, fee: b.estimated_fee_m,
-            })) : [],
-            current_sell_recs: DATA ? (DATA.transfer_plan.sell_recommendations || []).map(s => ({
-                player: s.player, fee: s.projected_fee_m, urgency: s.urgency,
-            })) : [],
-        };
+    // Called by Electron main process when API key is ready
+    window.__claudeReady = function(ready) {
+        updateClaudeStatus(ready);
+        if (ready) appendChat("system", "Claude AI connected. You can now chat directly.");
+    };
 
-        if (WS && WS.readyState === WebSocket.OPEN) {
-            WS.send(JSON.stringify(payload));
-            appendChat("user", message);
-        } else {
-            appendChat("system", "Bridge not connected. Start the bridge server: python3 bridge.py");
-            connectBridge();
+    async function sendToClaudeAPI(message) {
+        if (!IS_ELECTRON) {
+            appendChat("system", "Claude AI chat requires the desktop app. Use the Manual Export section below to copy/paste intel.");
+            return;
+        }
+        if (chatSending) return;
+
+        const hasKey = await window.electronAPI.claude.hasApiKey();
+        if (!hasKey) {
+            appendChat("system", "No API key configured. Click the key icon above to add your Anthropic API key.");
+            return;
+        }
+
+        chatSending = true;
+        appendChat("user", message);
+        appendChat("system", "Thinking...");
+
+        try {
+            const resp = await window.electronAPI.claude.chat(message, DATA);
+            // Remove "Thinking..." message
+            const chatContainer = document.getElementById("chatMessages");
+            if (chatContainer && chatContainer.lastChild) chatContainer.removeChild(chatContainer.lastChild);
+
+            if (resp.error) {
+                appendChat("system", "Error: " + resp.error);
+            } else if (resp.result) {
+                const result = resp.result;
+                appendChat("claude", result.message || "(no response)");
+
+                // Apply data updates if present
+                if (result.data_updates) {
+                    applyClaudeDataUpdates(result.data_updates);
+                }
+            }
+        } catch (err) {
+            appendChat("system", "Error: " + err.message);
+        } finally {
+            chatSending = false;
+        }
+    }
+
+    function applyClaudeDataUpdates(updates) {
+        if (!updates || !BASELINE) return;
+        let changed = false;
+
+        // Remove targets
+        if (updates.remove_targets && updates.remove_targets.length) {
+            for (const name of updates.remove_targets) {
+                BASELINE.transfer_plan.buy_recommendations =
+                    BASELINE.transfer_plan.buy_recommendations.filter(b => b.player !== name);
+            }
+            appendChat("system", `Removed targets: ${updates.remove_targets.join(", ")}`);
+            changed = true;
+        }
+
+        // Add new targets
+        if (updates.add_targets && updates.add_targets.length) {
+            for (const t of updates.add_targets) {
+                const newRec = {
+                    player: t.name,
+                    age: t.age,
+                    position: t.position,
+                    nationality: t.nationality,
+                    current_club: t.current_club || "Unknown",
+                    estimated_fee_m: t.estimated_fee_m || t.market_value_m || 0,
+                    estimated_wages_k: t.wage_weekly_k || 80,
+                    priority_score: t.priority_score || 65,
+                    score_breakdown: {
+                        squad_need: 70, player_quality: 70, financial_value: 70,
+                        age_profile: 70, feasibility: 70,
+                    },
+                    reasons: t.strengths || [],
+                    risk_factors: t.weaknesses || [],
+                    eye_test: t.eye_test || "",
+                    competing_with: [],
+                    recommendation_summary: `Sign ${t.name} (${t.position}, ${t.age}). Fee: EUR ${t.estimated_fee_m || t.market_value_m}m.`,
+                    deal_structure: {
+                        type: "Permanent", total: t.estimated_fee_m || t.market_value_m || 0,
+                        upfront: Math.round((t.estimated_fee_m || 0) * 0.6),
+                        installments: Math.round((t.estimated_fee_m || 0) * 0.3),
+                        add_ons: Math.round((t.estimated_fee_m || 0) * 0.1),
+                        installment_years: 3, notes: "Claude AI suggested deal structure",
+                    },
+                    stats: t.stats || {},
+                    strengths: t.strengths || [],
+                    weaknesses: t.weaknesses || [],
+                    role: t.role || "rotation",
+                };
+                BASELINE.transfer_plan.buy_recommendations.push(newRec);
+            }
+            appendChat("system", `Added targets: ${updates.add_targets.map(t => t.name).join(", ")}`);
+            changed = true;
+        }
+
+        // Update existing targets
+        if (updates.update_targets && updates.update_targets.length) {
+            for (const upd of updates.update_targets) {
+                const rec = BASELINE.transfer_plan.buy_recommendations.find(b => b.player === upd.name);
+                if (rec && upd.updates) {
+                    if (upd.updates.market_value_m !== undefined) rec.estimated_fee_m = upd.updates.market_value_m;
+                    if (upd.updates.priority_score !== undefined) rec.priority_score = upd.updates.priority_score;
+                    if (upd.updates.status === "signed_by_rival" || upd.updates.status === "priced_out") {
+                        BASELINE.transfer_plan.buy_recommendations =
+                            BASELINE.transfer_plan.buy_recommendations.filter(b => b.player !== upd.name);
+                        appendChat("system", `${upd.name} removed (${upd.updates.status.replace("_", " ")}${upd.updates.rival ? " by " + upd.updates.rival : ""})`);
+                    }
+                }
+            }
+            changed = true;
+        }
+
+        // Update budget
+        if (updates.update_budget) {
+            slider.value = updates.update_budget;
+            display.textContent = `\u20AC${updates.update_budget}m`;
+            appendChat("system", `Budget updated to \u20AC${updates.update_budget}m`);
+            changed = true;
+        }
+
+        if (changed) {
+            const budget = Number(slider.value) || 150;
+            DATA = recalcWithBudget(budget);
+            render();
+            appendChat("system", "Dashboard updated with Claude's recommendations.");
         }
     }
 
@@ -1320,7 +1377,7 @@
         // Load saved comments
         loadCommentsFromStorage();
 
-        // ---- CHAT / BRIDGE ----
+        // ---- CLAUDE AI CHAT ----
         const chatSendBtn = document.getElementById("chatSendBtn");
         const chatInput = document.getElementById("chatInput");
 
@@ -1328,7 +1385,7 @@
             chatSendBtn.addEventListener("click", () => {
                 const msg = chatInput.value.trim();
                 if (!msg) return;
-                sendToBridge(msg);
+                sendToClaudeAPI(msg);
                 chatInput.value = "";
             });
             chatInput.addEventListener("keydown", (e) => {
@@ -1343,13 +1400,97 @@
         document.querySelectorAll(".quick-msg-btn").forEach(btn => {
             btn.addEventListener("click", () => {
                 const msg = btn.dataset.msg;
-                if (msg) sendToBridge(msg);
+                if (msg) sendToClaudeAPI(msg);
             });
         });
 
-        // Load chat history and connect to bridge
+        // Clear chat button
+        const clearChatBtn = document.getElementById("clearChatBtn");
+        if (clearChatBtn) {
+            clearChatBtn.addEventListener("click", () => {
+                const chatContainer = document.getElementById("chatMessages");
+                if (chatContainer) chatContainer.innerHTML = "";
+                localStorage.removeItem("arsenal_chat");
+                if (IS_ELECTRON) window.electronAPI.claude.clearHistory();
+                appendChat("system", "Chat cleared.");
+            });
+        }
+
+        // ---- API KEY MODAL ----
+        const apiKeyTrigger = document.getElementById("apiKeyModalTrigger");
+        const apiKeyModal = document.getElementById("apiKeyModal");
+        const apiKeySaveBtn = document.getElementById("apiKeySaveBtn");
+        const apiKeyCancelBtn = document.getElementById("apiKeyCancelBtn");
+        const apiKeyRemoveBtn = document.getElementById("apiKeyRemoveBtn");
+        const apiKeyInput = document.getElementById("apiKeyInput");
+        const apiKeyStatus = document.getElementById("apiKeyStatus");
+        const apiKeyLink = document.getElementById("apiKeyLink");
+
+        if (apiKeyTrigger && apiKeyModal) {
+            apiKeyTrigger.addEventListener("click", () => {
+                apiKeyModal.style.display = "flex";
+            });
+            apiKeyCancelBtn.addEventListener("click", () => {
+                apiKeyModal.style.display = "none";
+            });
+            apiKeyModal.addEventListener("click", (e) => {
+                if (e.target === apiKeyModal) apiKeyModal.style.display = "none";
+            });
+            if (apiKeyLink) {
+                apiKeyLink.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    if (IS_ELECTRON) {
+                        // Open in default browser via shell
+                    }
+                });
+            }
+            apiKeySaveBtn.addEventListener("click", async () => {
+                const key = apiKeyInput.value.trim();
+                if (!key) {
+                    apiKeyStatus.textContent = "Please enter an API key.";
+                    apiKeyStatus.style.color = "var(--red)";
+                    return;
+                }
+                if (IS_ELECTRON) {
+                    const result = await window.electronAPI.claude.setApiKey(key);
+                    if (result.success) {
+                        apiKeyStatus.textContent = "API key saved successfully!";
+                        apiKeyStatus.style.color = "var(--green)";
+                        updateClaudeStatus(true);
+                        setTimeout(() => { apiKeyModal.style.display = "none"; }, 1000);
+                    } else {
+                        apiKeyStatus.textContent = "Error: " + result.error;
+                        apiKeyStatus.style.color = "var(--red)";
+                    }
+                } else {
+                    // Non-Electron: store in localStorage as fallback
+                    try {
+                        localStorage.setItem("anthropic_api_key", key);
+                        apiKeyStatus.textContent = "Key saved locally. Note: Claude AI chat only works in the desktop app.";
+                        apiKeyStatus.style.color = "var(--yellow)";
+                    } catch (e) {
+                        apiKeyStatus.textContent = "Error saving key.";
+                        apiKeyStatus.style.color = "var(--red)";
+                    }
+                }
+                apiKeyInput.value = "";
+            });
+            apiKeyRemoveBtn.addEventListener("click", async () => {
+                if (IS_ELECTRON) {
+                    await window.electronAPI.claude.removeApiKey();
+                }
+                localStorage.removeItem("anthropic_api_key");
+                updateClaudeStatus(false);
+                apiKeyStatus.textContent = "API key removed.";
+                apiKeyStatus.style.color = "var(--yellow)";
+            });
+        }
+
+        // Load chat history and check API key status
         loadChatHistory();
-        connectBridge();
+        if (IS_ELECTRON) {
+            window.electronAPI.claude.hasApiKey().then(has => updateClaudeStatus(has));
+        }
     });
 
     // ---- INIT ----
