@@ -1063,6 +1063,407 @@ def build_transfer_targets() -> list[Player]:
         role_in_squad="youth"
     ))
 
+    # ==================== ADDITIONAL OPTIONS (3 per position) ====================
+
+    # --- CB Option 3 ---
+    targets.append(Player(
+        name="Castello Lukeba",
+        age=22,
+        position="CB",
+        nationality="France",
+        market_value_m=48.0,
+        wage_weekly_k=85.0,
+        contract_expiry="2029-06-30",
+        stats=PlayerStats(
+            appearances=20, goals=1, assists=1, minutes=1750,
+            progressive_passes=38, progressive_carries=22,
+            tackles_won=26, interceptions=20, aerials_won=32,
+            pass_completion_pct=90.5,
+            squawka_score=70.0, fotmob_rating=7.2
+        ),
+        eye_test_notes="RB Leipzig's French CB. LEFT-FOOTED, elite passer from the back. "
+                       "Former Lyon academy product, France U21 captain turned senior call-up. "
+                       "One of the best ball-playing CBs in Bundesliga — top 5% progressive "
+                       "passes among CBs. Quick for his size, reads the game superbly. "
+                       "Leipzig will sell at the right price (50m range). "
+                       "More polished on the ball than Koulierakis, slightly less physical.",
+        strengths=["Left-footed", "Elite passing range", "Pace for a CB",
+                   "France international pedigree", "Reading of the game"],
+        weaknesses=["Leipzig will want 50m+", "Not the most dominant aerially",
+                   "Competition from Bayern, Barcelona"],
+        role_in_squad="starter"
+    ))
+
+    # --- RB Option 2 ---
+    targets.append(Player(
+        name="Lutsharel Geertruida",
+        age=24,
+        position="RB",
+        nationality="Netherlands",
+        market_value_m=32.0,
+        wage_weekly_k=75.0,
+        contract_expiry="2028-06-30",
+        stats=PlayerStats(
+            appearances=22, goals=3, assists=4, minutes=1900,
+            progressive_passes=32, progressive_carries=40,
+            key_passes=18,
+            tackles_won=30, interceptions=22,
+            dribbles_completed=12,
+            pass_completion_pct=87.0,
+            squawka_score=68.0, fotmob_rating=7.1
+        ),
+        eye_test_notes="RB Leipzig's versatile Dutch defender. Can play RB, CB, and DM — "
+                       "Arteta would love his positional flexibility (inverting fullback). "
+                       "Former Feyenoord star, Eredivisie champion. Strong in build-up, "
+                       "composed under pressure. More defensive than Livramento but smarter "
+                       "positionally. Cheaper option at 30-35m.",
+        strengths=["Positional versatility (RB/CB/DM)", "Tactical intelligence",
+                   "Build-up play", "Affordable", "Dutch international"],
+        weaknesses=["Not as dynamic going forward as Livramento",
+                   "Limited top-level CL experience",
+                   "Not a pace merchant"],
+        role_in_squad="rotation"
+    ))
+
+    # --- RB Option 3 ---
+    targets.append(Player(
+        name="Vanderson",
+        age=23,
+        position="RB",
+        nationality="Brazil",
+        market_value_m=28.0,
+        wage_weekly_k=65.0,
+        contract_expiry="2028-06-30",
+        stats=PlayerStats(
+            appearances=23, goals=1, assists=6, minutes=1950,
+            progressive_passes=28, progressive_carries=55,
+            key_passes=20,
+            tackles_won=24, interceptions=16,
+            dribbles_completed=26,
+            pass_completion_pct=82.0,
+            squawka_score=67.0, fotmob_rating=7.0
+        ),
+        eye_test_notes="Monaco's Brazilian RB. Electric going forward — among top RBs in "
+                       "Ligue 1 for dribbles and progressive carries. Reminiscent of Dani Alves "
+                       "in his attacking instincts. Defensive work has improved under Huetter. "
+                       "Monaco are a selling club and 25-30m is realistic. "
+                       "Would provide a completely different profile to Timber — pure attack.",
+        strengths=["Explosive attacking runs", "Dribbling", "Crossing quality",
+                   "Youth", "Selling club = cheaper"],
+        weaknesses=["Defensive positioning still developing",
+                   "Ligue 1 to PL jump is significant",
+                   "Not PL proven"],
+        role_in_squad="rotation"
+    ))
+
+    # --- LB Option 2 ---
+    targets.append(Player(
+        name="Milos Kerkez",
+        age=22,
+        position="LB",
+        nationality="Hungary",
+        market_value_m=35.0,
+        wage_weekly_k=70.0,
+        contract_expiry="2028-06-30",
+        stats=PlayerStats(
+            appearances=24, goals=1, assists=4, minutes=2100,
+            progressive_passes=30, progressive_carries=52,
+            key_passes=16,
+            tackles_won=32, interceptions=18,
+            dribbles_completed=18,
+            pass_completion_pct=82.5,
+            squawka_score=69.0, fotmob_rating=7.1
+        ),
+        eye_test_notes="Bournemouth's Hungarian LB. ALREADY PL-PROVEN — huge advantage. "
+                       "Athletic, aggressive, brilliant in transition. Arsenal have been "
+                       "linked repeatedly. Fills the Zinchenko hole with a completely "
+                       "different profile — more dynamic and defensively solid. "
+                       "Bournemouth will sell for 35m. Best value LB on the market.",
+        strengths=["PL proven", "Athleticism and pace", "Defensive solidity",
+                   "Transition play", "Reasonable price"],
+        weaknesses=["Technical ceiling not as high as elite LBs",
+                   "Crossing accuracy inconsistent",
+                   "Multiple PL clubs interested"],
+        role_in_squad="starter"
+    ))
+
+    # --- LB Option 3 ---
+    targets.append(Player(
+        name="Alejandro Balde",
+        age=22,
+        position="LB",
+        nationality="Spain",
+        market_value_m=38.0,
+        wage_weekly_k=80.0,
+        contract_expiry="2028-06-30",
+        stats=PlayerStats(
+            appearances=20, goals=0, assists=3, minutes=1600,
+            progressive_passes=25, progressive_carries=48,
+            key_passes=14,
+            tackles_won=20, interceptions=12,
+            dribbles_completed=22,
+            pass_completion_pct=86.0,
+            squawka_score=66.0, fotmob_rating=7.0
+        ),
+        eye_test_notes="Barcelona's Spanish LB. Barca may need to sell for FFP compliance. "
+                       "Extremely quick, technically excellent, La Masia product. "
+                       "Has played in CL knockouts for Barca. Spain international. "
+                       "Recovered well from ACL injury in 2024. If Barcelona need cash, "
+                       "35-40m could be enough. High ceiling if he stays fit.",
+        strengths=["Elite pace", "Technical ability (La Masia)", "Spain international",
+                   "CL experience", "Only 22"],
+        weaknesses=["ACL injury history (2024)", "Barcelona may not sell",
+                   "Defensive positioning needs improvement"],
+        role_in_squad="starter"
+    ))
+
+    # --- CM Option 2 ---
+    targets.append(Player(
+        name="Adam Wharton",
+        age=22,
+        position="CM",
+        nationality="England",
+        market_value_m=42.0,
+        wage_weekly_k=75.0,
+        contract_expiry="2029-06-30",
+        stats=PlayerStats(
+            appearances=22, goals=1, assists=3, minutes=1800,
+            progressive_passes=48, progressive_carries=20,
+            key_passes=24,
+            tackles_won=22, interceptions=18,
+            pass_completion_pct=91.0,
+            squawka_score=70.0, fotmob_rating=7.2
+        ),
+        eye_test_notes="Crystal Palace's English CM. Deep-lying playmaker with absurd "
+                       "passing accuracy (91%+). England international at 21. PL PROVEN. "
+                       "Controls tempo like a young Jorginho but with more mobility. "
+                       "Would be the ideal Zubimendi partner — one progresses, one dictates. "
+                       "Palace will demand 40-50m. Homegrown quota advantage.",
+        strengths=["PL proven", "Elite passing accuracy", "England international",
+                   "Homegrown", "Tempo control", "Young"],
+        weaknesses=["Palace will demand premium", "Not a goal threat",
+                   "Needs to add physicality for top level"],
+        role_in_squad="rotation"
+    ))
+
+    # --- CM Option 3 ---
+    targets.append(Player(
+        name="Ederson",
+        age=26,
+        position="CM",
+        nationality="Brazil",
+        market_value_m=50.0,
+        wage_weekly_k=100.0,
+        contract_expiry="2029-06-30",
+        stats=PlayerStats(
+            appearances=24, goals=4, assists=3, minutes=2000,
+            progressive_passes=40, progressive_carries=38,
+            key_passes=16,
+            tackles_won=42, interceptions=28,
+            aerials_won=18,
+            pass_completion_pct=87.0,
+            squawka_score=71.0, fotmob_rating=7.3
+        ),
+        eye_test_notes="Atalanta's Brazilian B2B midfielder. Europa League winner. "
+                       "Dominant ball-winner who also carries forward — a Declan Rice "
+                       "comparison is fair. Physical, tireless, CL-proven. "
+                       "26 is peak age for a CM signing. Atalanta will sell at 50m. "
+                       "More mature and ready-made than Bouaddi. Less ceiling, more floor.",
+        strengths=["Ball-winning ability (elite)", "Box-to-box engine", "CL proven",
+                   "Physical presence", "Goals from midfield"],
+        weaknesses=["Atalanta will want 50m+", "Already 26 (limited resale)",
+                   "Serie A to PL adaptation"],
+        role_in_squad="starter"
+    ))
+
+    # --- AM Option 2 ---
+    targets.append(Player(
+        name="Desire Doue",
+        age=21,
+        position="AM",
+        nationality="France",
+        market_value_m=38.0,
+        wage_weekly_k=70.0,
+        contract_expiry="2029-06-30",
+        stats=PlayerStats(
+            appearances=22, goals=3, assists=4, minutes=1400,
+            xg=2.8, xa=3.5,
+            progressive_passes=20, progressive_carries=35,
+            key_passes=22,
+            dribbles_completed=24,
+            pass_completion_pct=83.0,
+            squawka_score=66.0, fotmob_rating=7.0
+        ),
+        eye_test_notes="PSG's young French attacker. Versatile — plays AM, LW, RW. "
+                       "Olympic gold medalist with France at Paris 2024. Silky dribbler, "
+                       "creative passer, can unlock defences in tight spaces. "
+                       "May struggle for minutes at PSG behind Dembele/Barcola. "
+                       "A loan with option to buy could be possible. "
+                       "High ceiling — reminiscent of a young Bernardo Silva.",
+        strengths=["Versatility (AM/LW/RW)", "Dribbling in tight spaces",
+                   "France international", "Olympic gold medalist", "Creative vision"],
+        weaknesses=["PSG may not sell permanently", "Needs more end product",
+                   "Physical development for PL"],
+        role_in_squad="rotation"
+    ))
+
+    # --- AM Option 3 ---
+    targets.append(Player(
+        name="Takefusa Kubo",
+        age=24,
+        position="AM",
+        nationality="Japan",
+        market_value_m=35.0,
+        wage_weekly_k=75.0,
+        contract_expiry="2029-06-30",
+        stats=PlayerStats(
+            appearances=24, goals=6, assists=5, minutes=1900,
+            xg=5.0, xa=4.5,
+            progressive_passes=28, progressive_carries=42,
+            key_passes=30,
+            dribbles_completed=32,
+            pass_completion_pct=82.0,
+            squawka_score=70.0, fotmob_rating=7.2
+        ),
+        eye_test_notes="Real Sociedad's Japanese creator. Former Barca/Real Madrid youth. "
+                       "Outstanding dribbler and chance creator — La Liga's hidden gem. "
+                       "Can play RW or AM. Release clause around 60m but Sociedad would "
+                       "likely accept 35-40m. Arsenal scouted extensively in 2025. "
+                       "Would add flair and unpredictability. Excellent in 1v1 situations.",
+        strengths=["1v1 dribbling (elite)", "Chance creation", "La Liga proven",
+                   "Release clause available", "Versatile attacker"],
+        weaknesses=["Physical stature (1.73m)", "PL intensity is different",
+                   "Defensive contribution limited"],
+        role_in_squad="rotation"
+    ))
+
+    # --- ST Option 2 ---
+    targets.append(Player(
+        name="Benjamin Sesko",
+        age=23,
+        position="ST",
+        nationality="Slovenia",
+        market_value_m=65.0,
+        wage_weekly_k=120.0,
+        contract_expiry="2029-06-30",
+        stats=PlayerStats(
+            appearances=24, goals=14, assists=3, minutes=2000,
+            xg=12.0, xa=2.5,
+            progressive_passes=15, progressive_carries=30,
+            key_passes=10,
+            dribbles_completed=14,
+            shot_accuracy_pct=52.0, aerials_won=28,
+            squawka_score=73.0, fotmob_rating=7.4
+        ),
+        eye_test_notes="RB Leipzig's Slovenian striker. 1.95m powerhouse with genuine pace — "
+                       "a rare combination. 14 goals in 24 apps this season. Arsenal were "
+                       "very close to signing him in 2024 before he renewed. Release clause "
+                       "reportedly 65m. Different profile to Gyokeres — more physical, "
+                       "better in the air. Could form a devastating partnership or rotation.",
+        strengths=["Pace + power combination (rare)", "Aerial threat (1.95m)",
+                   "Release clause available", "Young with huge ceiling",
+                   "Arsenal already have relationship"],
+        weaknesses=["Release clause is 65m", "Link-up play still developing",
+                   "Big club move might affect form"],
+        role_in_squad="starter"
+    ))
+
+    # --- ST Option 3 ---
+    targets.append(Player(
+        name="Jonathan David",
+        age=26,
+        position="ST",
+        nationality="Canada",
+        market_value_m=0.0,  # FREE AGENT
+        wage_weekly_k=140.0,
+        contract_expiry="2026-06-30",
+        stats=PlayerStats(
+            appearances=26, goals=15, assists=4, minutes=2200,
+            xg=13.5, xa=3.0,
+            progressive_passes=18, progressive_carries=22,
+            key_passes=14,
+            dribbles_completed=12,
+            shot_accuracy_pct=50.0,
+            squawka_score=72.0, fotmob_rating=7.3
+        ),
+        eye_test_notes="LOSC Lille's Canadian striker. AVAILABLE ON FREE TRANSFER — "
+                       "contract expires June 2026. Prolific scorer — 15+ goals per season "
+                       "for 5 consecutive years. Smart movement, clinical finisher, "
+                       "works hard pressing from the front. At zero fee, this is incredible "
+                       "value even as a rotation striker. Links to Barcelona and Man Utd.",
+        strengths=["FREE TRANSFER", "Proven prolific scorer", "Clinical finishing",
+                   "Smart movement", "High pressing work rate"],
+        weaknesses=["Massive wage demands (free agent premium)",
+                   "Competition from Barca, Man Utd, Juventus",
+                   "Not the most physically imposing"],
+        role_in_squad="rotation"
+    ))
+
+    # --- LW Option 2 ---
+    targets.append(Player(
+        name="Nico Williams",
+        age=24,
+        position="LW",
+        nationality="Spain",
+        market_value_m=58.0,
+        wage_weekly_k=120.0,
+        contract_expiry="2028-06-30",
+        stats=PlayerStats(
+            appearances=24, goals=7, assists=8, minutes=2000,
+            xg=5.5, xa=6.0,
+            progressive_passes=22, progressive_carries=55,
+            key_passes=26,
+            dribbles_completed=36,
+            pass_completion_pct=79.0,
+            squawka_score=74.0, fotmob_rating=7.5
+        ),
+        eye_test_notes="Athletic Bilbao's Spanish winger. Euro 2024 star alongside Yamal. "
+                       "Explosive, direct, brilliant in 1v1. Release clause around 58m. "
+                       "Barcelona tried and failed in 2024. The most complete winger option — "
+                       "can score, create, and beat any defender. PL physicality would "
+                       "suit him. The dream LW signing if Adeyemi falls through.",
+        strengths=["Elite pace and directness", "Spain international (Euro 2024 star)",
+                   "Release clause available (58m)", "Goal and assist threat",
+                   "1v1 ability among best in Europe"],
+        weaknesses=["Release clause is firm — no negotiation",
+                   "Athletic Bilbao emotional attachment",
+                   "High wage demands"],
+        role_in_squad="starter"
+    ))
+
+    # --- LW Option 3 ---
+    targets.append(Player(
+        name="Johan Bakayoko",
+        age=22,
+        position="LW",
+        nationality="Belgium",
+        market_value_m=42.0,
+        wage_weekly_k=70.0,
+        contract_expiry="2027-06-30",
+        stats=PlayerStats(
+            appearances=22, goals=8, assists=6, minutes=1800,
+            xg=6.5, xa=5.0,
+            progressive_passes=20, progressive_carries=45,
+            key_passes=24,
+            dribbles_completed=30,
+            pass_completion_pct=81.0,
+            squawka_score=71.0, fotmob_rating=7.3
+        ),
+        eye_test_notes="PSV Eindhoven's Belgian winger. Breakout star of the Eredivisie. "
+                       "Right-footed playing on the left — loves to cut inside and shoot. "
+                       "8 goals and 6 assists in 22 games. Belgium international. "
+                       "Contract runs to 2027 so PSV under pressure to sell. "
+                       "Cheaper alternative to Adeyemi/Williams at 40-45m. "
+                       "Raw but incredibly exciting — huge ceiling.",
+        strengths=["Goal threat from LW (cuts inside)", "Exciting dribbler",
+                   "Contract leverage (2027)", "Young with high ceiling",
+                   "Most affordable LW option"],
+        weaknesses=["Eredivisie to PL is a big jump",
+                   "Defensive effort inconsistent",
+                   "Decision-making still maturing"],
+        role_in_squad="rotation"
+    ))
+
     return targets
 
 

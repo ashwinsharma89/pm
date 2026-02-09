@@ -379,6 +379,19 @@ def _infer_club(target: Player) -> str:
         "Konstantinos Koulierakis": "VfL Wolfsburg",
         "Giorgio Scalvini": "Atalanta BC",
         "Karim Adeyemi": "Borussia Dortmund",
+        "Castello Lukeba": "RB Leipzig",
+        "Lutsharel Geertruida": "RB Leipzig",
+        "Vanderson": "AS Monaco",
+        "Milos Kerkez": "AFC Bournemouth",
+        "Alejandro Balde": "FC Barcelona",
+        "Adam Wharton": "Crystal Palace",
+        "Ederson": "Atalanta BC",
+        "Desire Doue": "Paris Saint-Germain",
+        "Takefusa Kubo": "Real Sociedad",
+        "Benjamin Sesko": "RB Leipzig",
+        "Jonathan David": "LOSC Lille",
+        "Nico Williams": "Athletic Bilbao",
+        "Johan Bakayoko": "PSV Eindhoven",
     }
     return club_map.get(target.name, "Unknown")
 
