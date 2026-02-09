@@ -921,6 +921,81 @@ footer {
 }
 .pos-card-expand:hover { border-color: var(--arsenal-gold); color: var(--arsenal-gold); }
 
+/* ---- Card verdict teasers ---- */
+.pos-card-verdict {
+    font-size: 11px;
+    line-height: 1.4;
+    padding: 5px 8px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+}
+.pos-card-verdict .verdict-icon {
+    font-weight: 800;
+    flex-shrink: 0;
+    font-size: 12px;
+}
+.verdict-works {
+    background: rgba(63,185,80,0.08);
+    border-left: 3px solid var(--green);
+    color: var(--text-secondary);
+}
+.verdict-works .verdict-icon { color: var(--green); }
+.verdict-wont {
+    background: rgba(248,81,73,0.08);
+    border-left: 3px solid var(--red);
+    color: var(--text-secondary);
+}
+.verdict-wont .verdict-icon { color: var(--red); }
+
+/* ---- Full analysis sections (modal) ---- */
+.analysis-section { margin-bottom: 16px; }
+.analysis-works-title {
+    color: var(--green) !important;
+    font-size: 13px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.analysis-wont-title {
+    color: var(--red) !important;
+    font-size: 13px !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.analysis-box {
+    border-radius: 6px;
+    padding: 14px;
+}
+.analysis-works {
+    background: rgba(63,185,80,0.06);
+    border: 1px solid rgba(63,185,80,0.2);
+}
+.analysis-wont {
+    background: rgba(248,81,73,0.06);
+    border: 1px solid rgba(248,81,73,0.2);
+}
+.analysis-point {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+.analysis-point:last-child { border-bottom: none; }
+.analysis-bullet {
+    font-size: 14px;
+    font-weight: 800;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+.works-bullet { color: var(--green); }
+.wont-bullet { color: var(--red); }
+
 /* Buy tab KPI row */
 .buy-kpi-row {
     display: flex;

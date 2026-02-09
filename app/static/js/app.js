@@ -707,6 +707,8 @@
                         ${miniStat(st.fotmob_rating ? st.fotmob_rating.toFixed(1) : "-", "FotMob")}
                     </div>
                     <div class="pos-card-eye">${b.eye_test || ""}</div>
+                    ${(b.why_works && b.why_works.length) ? `<div class="pos-card-verdict verdict-works"><span class="verdict-icon">&#10003;</span> ${b.why_works[0].length > 120 ? b.why_works[0].substring(0, 118) + '...' : b.why_works[0]}</div>` : ''}
+                    ${(b.why_wont_work && b.why_wont_work.length) ? `<div class="pos-card-verdict verdict-wont"><span class="verdict-icon">&#10007;</span> ${b.why_wont_work[0].length > 120 ? b.why_wont_work[0].substring(0, 118) + '...' : b.why_wont_work[0]}</div>` : ''}
                     <div class="pos-card-deal">
                         <div>
                             <span class="deal-fee">${b.estimated_fee_m === 0 ? "FREE" : "\u20AC" + b.estimated_fee_m + "m"}</span>
@@ -799,6 +801,20 @@
                 <h4>Why Sign This Player</h4>
                 ${(b.reasons || []).map((r) => `<div class="rec-reason">${r}</div>`).join("")}
             </div>
+            ${(b.why_works && b.why_works.length) ? `
+            <div class="rec-section analysis-section">
+                <h4 class="analysis-works-title">Why This Signing WORKS at Arsenal</h4>
+                <div class="analysis-box analysis-works">
+                    ${b.why_works.map((w) => `<div class="analysis-point"><span class="analysis-bullet works-bullet">&#10003;</span><span>${w}</span></div>`).join("")}
+                </div>
+            </div>` : ''}
+            ${(b.why_wont_work && b.why_wont_work.length) ? `
+            <div class="rec-section analysis-section">
+                <h4 class="analysis-wont-title">Why This Signing WON'T WORK at Arsenal</h4>
+                <div class="analysis-box analysis-wont">
+                    ${b.why_wont_work.map((w) => `<div class="analysis-point"><span class="analysis-bullet wont-bullet">&#10007;</span><span>${w}</span></div>`).join("")}
+                </div>
+            </div>` : ''}
             <div class="rec-section">
                 <h4>Scout / Eye Test Assessment</h4>
                 <div class="eye-test-box">${b.eye_test || ""}</div>

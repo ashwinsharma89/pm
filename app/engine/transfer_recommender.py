@@ -240,6 +240,8 @@ def _build_buy_recommendation(target: Player, squad: list[Player],
         "stats_summary": _build_stats_summary(target),
         "deal_structure": _suggest_deal_structure(target, budget_m),
         "risk_factors": target.weaknesses,
+        "why_works": target.why_works,
+        "why_wont_work": target.why_wont_work,
         "recommendation_summary": _build_buy_summary(target, priority_score),
     }
 

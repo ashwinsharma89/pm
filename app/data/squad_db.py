@@ -54,6 +54,8 @@ class Player:
     strengths: list = field(default_factory=list)
     weaknesses: list = field(default_factory=list)
     role_in_squad: str = ""  # starter, rotation, backup, youth
+    why_works: list = field(default_factory=list)
+    why_wont_work: list = field(default_factory=list)
 
 
 def build_arsenal_squad() -> list[Player]:
@@ -865,7 +867,33 @@ def build_transfer_targets() -> list[Player]:
                    "Ball-carrying", "Young and improving"],
         weaknesses=["Newcastle won't sell cheap", "High fee for RB position",
                    "Defensive discipline needs work"],
-        role_in_squad="starter"
+        role_in_squad="starter",
+        why_works=[
+            "The perfect Timber complement. While Timber inverts brilliantly into midfield, "
+            "Livramento offers something different — explosive overlapping runs that stretch "
+            "defences. When teams double up on Saka, the overlapping RB creates the 2v1 that "
+            "unlocks the right side. That's 5+ extra chances per game Arsenal currently leave on the table.",
+            "Already PL-proven at Newcastle in a system demanding defensive discipline AND attacking "
+            "output. No adaptation period. His 65 progressive carries are outstanding — he can be the "
+            "right-side outlet when Arsenal need to break the low blocks they face in 70% of games.",
+            "Same agency as Arteta = faster deal completion, easier personal terms. At 23, he's about "
+            "to enter his prime. Fills the Ben White-shaped hole with a genuine upgrade in dynamism.",
+            "English and homegrown — crucial for squad registration. Newcastle's contract talks have "
+            "stalled, giving Arsenal a genuine window to prise him away."
+        ],
+        why_wont_work=[
+            "55m+ for a RB when Timber is already your starter and scored 78 Squawka is a LOT of "
+            "capital for what could end up being squad depth. If Timber stays fit and dominant, "
+            "Livramento might be unhappy as rotation — that's an expensive ego problem.",
+            "Newcastle will play hardball. They don't need to sell, and the asking price could balloon "
+            "to 70m in a negotiation war. At that price, the opportunity cost is brutal — you could "
+            "get a starting CB AND a CM rotation option for the same money.",
+            "His defensive discipline is still developing. At Newcastle, Trippier and the system cover "
+            "for him. In Arteta's high defensive line, one positional error against elite wingers "
+            "(Son, Diaz, Grealish) means a 1v1 with Raya. PL fine margins don't forgive that.",
+            "The 84.5% pass completion is below what Arteta demands from his fullbacks in possession. "
+            "Timber is at 88.4% — that gap matters in Arteta's build-up."
+        ],
     ))
 
     targets.append(Player(
@@ -892,7 +920,34 @@ def build_transfer_targets() -> list[Player]:
                    "Defensive intelligence for age", "French market knowledge"],
         weaknesses=["High fee for 18-year-old", "PL adaptation risk",
                    "Competition from Man Utd, Real Madrid"],
-        role_in_squad="rotation"
+        role_in_squad="rotation",
+        why_works=[
+            "Generational talent. At 18, starting every game for Lille in Ligue 1 AND Champions "
+            "League — that's absurd maturity. His 55 progressive passes and 42 progressive carries "
+            "mean he can do BOTH sides of the Arteta midfield game: progress AND carry.",
+            "The perfect succession plan. Odegaard is 27 with ankle issues, Merino is turning 30. "
+            "Bouaddi can learn behind them for a season, then gradually take over the #8 role. "
+            "His trajectory mirrors Saliba's path — France youth captain to senior, develop at Arsenal, "
+            "become world-class by 22. Arsenal KNOW this French market pathway.",
+            "His defensive intelligence at 18 (28 tackles, 20 interceptions) is remarkable — Arteta's "
+            "midfield demands defensive contribution and Bouaddi already has it instinctively. "
+            "At 45m, if he becomes what the data projects, this is a 150m+ asset in 4 years.",
+            "88.5% pass completion at 18 — already close to Arsenal's midfield standards. His decision-making "
+            "under pressure is beyond his years."
+        ],
+        why_wont_work=[
+            "He's 18. In the PREMIER LEAGUE. The midfield physicality of Rice, Rodri, Bruno, Caicedo — "
+            "these are grown men in their physical prime. Bouaddi is 5'11 and still developing. The risk "
+            "of a Gavi-type burnout (played too much too young, ACL at 19) is genuinely frightening.",
+            "45m for a teenager is an enormous gamble when Arsenal are trying to win the league NOW, not "
+            "in 3 years. If Bouaddi needs a year to adapt (highly likely), that's 45m of budget sitting "
+            "on the bench while other positions go unaddressed.",
+            "Ligue 1 to PL is historically the hardest jump for midfielders. Ndombele, Lo Celso, "
+            "Sangare — the list of French midfield stars who flopped in England is long. The intensity, "
+            "the physicality, the speed of play — it's a different sport.",
+            "Competition from Real Madrid and Man Utd could price Arsenal out or mean he simply doesn't "
+            "choose London. If he picks Madrid, we've wasted months of negotiation capital."
+        ],
     ))
 
     targets.append(Player(
@@ -918,7 +973,36 @@ def build_transfer_targets() -> list[Player]:
         strengths=["Left foot quality", "Creativity", "Shooting", "Youth potential"],
         weaknesses=["Limited senior minutes", "Physical development",
                    "Real Madrid may not sell permanently"],
-        role_in_squad="rotation"
+        role_in_squad="rotation",
+        why_works=[
+            "The most technically gifted AM option. That left foot is special — Real Madrid signed "
+            "him at 18 because they saw the next Mesut Ozil. His 4 goals in just 900 minutes (one "
+            "every 225 min) is elite. He can play RW behind Saka or as #10 backup to Odegaard — "
+            "tactical flexibility Arteta craves.",
+            "A loan with option to buy completely de-risks the deal. Arsenal get a full season to "
+            "evaluate him in the PL before committing 40m. Real Madrid's failure to give him minutes "
+            "means he's desperate to play — motivated players adapt faster.",
+            "His shooting technique is outstanding for an AM — Arteta's system creates half-spaces "
+            "for the #10 to shoot from. Odegaard thrives there; Guler's left foot in those pockets "
+            "would be equally dangerous. He'd give Arsenal a genuine creative threat from the right "
+            "when Saka is rested.",
+            "At 21, the ceiling is enormous. If he even becomes 80% of what Madrid thought he'd be, "
+            "Arsenal have a generational creative player at a fraction of open-market value."
+        ],
+        why_wont_work=[
+            "900 minutes in a full season at 21 tells you something troubling. Ancelotti (and whoever "
+            "followed) didn't trust him enough to play regularly. The suspicion: his off-the-ball work "
+            "and physical output aren't PL-grade. Arteta's press demands EVERYONE works — Ozil was "
+            "the cautionary tale. Guler has that exact same risk profile.",
+            "Physical development is genuinely concerning for the PL. At 1.80m, he's not small, but "
+            "his body hasn't filled out yet. The Caicedos, Bissoumas, and Ndidis of the PL would "
+            "physically overwhelm him in midfield. This isn't La Liga where referees protect technical players.",
+            "Real Madrid may not sell permanently — just a loan. That leaves Arsenal without a permanent "
+            "asset and another summer negotiation headache. Limited competitive minutes means he hasn't "
+            "been tested in must-win, high-pressure situations. The PL doesn't give you time to find your feet.",
+            "His 85% pass completion is below Odegaard's from the same position. If the backup #10 "
+            "loses the ball more than the starter, the drop-off when Odegaard rests becomes a problem."
+        ],
     ))
 
     targets.append(Player(
@@ -946,7 +1030,35 @@ def build_transfer_targets() -> list[Player]:
                    "Link-up play", "World Cup winner"],
         weaknesses=["Atletico unlikely to sell", "Very expensive",
                    "Would need to displace Gyokeres or adjust system"],
-        role_in_squad="starter"
+        role_in_squad="starter",
+        why_works=[
+            "World Cup winner. Champions League winner. You're getting a player who has WON at the "
+            "absolute highest level. His versatility (anywhere across the front line) gives Arteta "
+            "options he's never had — Alvarez behind Gyokeres, as a false 9, dropping deep as a "
+            "link-up man. Mid-game tactical shifts without substitutions.",
+            "His work rate is exceptional — he presses like a midfielder, which Arteta's system demands. "
+            "Under Simeone's defensive structure at Atletico, he's had to work harder off the ball than "
+            "at City. Imagine what he'd do with Saka, Odegaard, and Rice creating for him.",
+            "He'd make Gyokeres better through competition. Arsenal's striker position has no genuine "
+            "internal competition (Jesus is injured, done). Alvarez arriving would push Gyokeres to "
+            "sharpen his finishing — that xG underperformance disappears when your spot isn't guaranteed.",
+            "His big-game mentality is PROVEN under the most intense pressure — World Cup final, "
+            "CL knockout rounds, Atletico derbies. Arsenal need players who step UP in April/May."
+        ],
+        why_wont_work=[
+            "80m+ is INSANE money for a player who may not start. If Gyokeres hits form (the quality "
+            "IS there — 8.5 xG doesn't lie), where does Alvarez play? You don't pay 80m for rotation. "
+            "This deal would eat OVER HALF the transfer budget on ONE player when Arsenal need 4-5 signings.",
+            "Atletico are under zero pressure to sell. Simeone loves him, the fans love him, he's their "
+            "talisman. Arsenal would need to trigger astronomical release clauses or overpay. "
+            "Meanwhile, that 80m buys you two impact signings elsewhere (e.g. Adeyemi + Koulierakis).",
+            "His Atletico output (10 goals in 25 games) is good but not elite 20-goal-a-season level. "
+            "For 80m, you need a player who transforms your attack. Alvarez improves it; he doesn't "
+            "transform it. The pragmatic move is to trust Gyokeres and spend the money across the squad.",
+            "Potential dressing room politics. Two 80m+ strikers (Gyokeres cost 65.8m) fighting for one "
+            "shirt creates tension. The player who doesn't play makes headlines, agents get involved, "
+            "morale suffers. Arsenal's harmony is a competitive advantage — this could disrupt it."
+        ],
     ))
 
     # ==================== REPLACEMENT TARGETS (Feb 2026 Intel Update) ====================
@@ -977,7 +1089,35 @@ def build_transfer_targets() -> list[Player]:
         weaknesses=["Ball progression under high press needs work",
                    "Interest from Liverpool, Spurs, Inter, Juve",
                    "Bundesliga to PL adaptation"],
-        role_in_squad="rotation"
+        role_in_squad="rotation",
+        why_works=[
+            "LEFT-FOOTED. Cannot overstate this. Arteta's build-up needs a left-footed LCB to open "
+            "natural passing angles — diagonal balls to the LW, switches to Saka, progressive passes "
+            "into Zubimendi's feet. Gabriel does this with his right foot; a natural lefty does it 0.3 "
+            "seconds faster. At PL level, that's the difference between beating the press and getting caught.",
+            "His aerial dominance (42 aerials won) directly replaces Gabriel's set-piece threat — Arsenal's "
+            "set-piece edge is a 10+ goal advantage per season. 1.88m with excellent timing means he "
+            "slots into the near-post routine immediately.",
+            "Recovery pace means he can play Arteta's HIGH defensive line. When Rice and Timber push "
+            "forward, the CBs are exposed in transition. Koulierakis has the legs to recover — that's "
+            "non-negotiable against Salah, Haaland, and Isak.",
+            "Wolfsburg are a selling club — 35-40m is realistic, leaving budget for LW and CM. "
+            "At 22, he grows alongside Saliba for 8+ years as a partnership. The value proposition "
+            "is outstanding."
+        ],
+        why_wont_work=[
+            "Bundesliga to PL is the hardest jump for centre-backs. The tactical demand, physical "
+            "intensity, and speed of transitions are completely different. His 85.5% pass completion "
+            "is OK for Wolfsburg but Arsenal's CBs need 90%+ (Saliba: 92.1%, Gabriel: 89.5%). "
+            "Under PL pressing, that gap could widen alarmingly.",
+            "His ball progression UNDER HIGH PRESS is the specific concern. When Liverpool or City "
+            "press high and aggressive, can he play through it? Wolfsburg face that kind of press "
+            "maybe 3-4 times a season. At Arsenal it's every other week.",
+            "Interest from Liverpool, Spurs, Inter, and Juve means a bidding war could push the price "
+            "to 45-50m, eroding the value advantage. If it goes to auction, the selling club leverage disappears.",
+            "Not CL-proven at the highest level. Wolfsburg's European experience is Europa Conference — "
+            "a completely different intensity to CL knockout rounds against Real Madrid or Bayern."
+        ],
     ))
 
     targets.append(Player(
@@ -1005,7 +1145,36 @@ def build_transfer_targets() -> list[Player]:
                    "CL experience", "Progressive carrying", "Full international"],
         weaknesses=["ACL tear history (June 2024)", "Muscle injuries in 2025",
                    "Medical risk premium", "Newcastle and Man Utd also interested"],
-        role_in_squad="starter"
+        role_in_squad="starter",
+        why_works=[
+            "The most ARTETA-FRIENDLY CB profile on the market. At 1.94m with elite ball-playing, "
+            "he's what Arteta dreamed of — a CB who steps into midfield in possession and dominates "
+            "the box out of it. His ability to carry the ball out of defence AND play line-breaking "
+            "passes is vanishingly rare. He'd transform Arsenal's build-up from the left.",
+            "Gasperini's Atalanta system drills man-marking and defensive aggression — that's directly "
+            "transferable to Arteta's high press. Scalvini already knows how to press a striker, "
+            "step into midfield, and recover his position. Europa League winner = big-game mentality.",
+            "CB/DM versatility is gold. If Zubimendi gets injured, Scalvini can cover the #6 role "
+            "without buying a separate backup. That's squad depth worth 30m you don't have to spend. "
+            "Full Italian international at 22 — the pedigree is undeniable.",
+            "When fit, he's a 70m+ player available for 45-55m because of injury discount. That's "
+            "the kind of market inefficiency elite clubs exploit. If Arsenal's medical team clears him, "
+            "this is the best pure CB signing available in Europe."
+        ],
+        why_wont_work=[
+            "The ACL tear in June 2024 is a RED FLAG. Arsenal have been burned by injury-prone signings "
+            "before. You CANNOT build a title challenge around a player with a compromised knee. "
+            "His muscle injuries in 2025 suggest the body is compensating — that's a cascading injury risk.",
+            "At 50m+ with medical risk, the ROI could be catastrophic if he breaks down again. A player "
+            "who misses 15+ games defeats the purpose of signing a CB for depth and competition. "
+            "Arsenal need availability above all else — 60 games across all competitions demand durability.",
+            "Atalanta's man-marking system is FUNDAMENTALLY different from Arteta's zonal/positional "
+            "setup. The tactical re-grooving takes time — he's used to following a man, not holding a line. "
+            "That transition period could cost Arsenal in the early season title race.",
+            "Newcastle and Man Utd are also interested. If it goes to auction, Arsenal could overpay for "
+            "a player whose medical could fail. The scouting time and negotiation capital wasted on a "
+            "deal that collapses is a hidden cost clubs underestimate."
+        ],
     ))
 
     targets.append(Player(
@@ -1037,7 +1206,36 @@ def build_transfer_targets() -> list[Player]:
                    "Contract leverage (2027)", "Goal threat and creation"],
         weaknesses=["Fee still 60-70m", "Man Utd, Chelsea, Liverpool also interested",
                    "Injury history at Dortmund", "PL physicality adaptation"],
-        role_in_squad="starter"
+        role_in_squad="starter",
+        why_works=[
+            "HE WANTS TO COME. In transfers, player willingness is 50% of the battle. When a player "
+            "desperately wants to play for your club, the adaptation, the commitment, the extra yard — "
+            "it all follows. Adeyemi told Dortmund he prefers London over Manchester. His reps prefer Arsenal.",
+            "Against deep blocks — Arsenal's biggest tactical challenge — having someone who can beat a man "
+            "1v1 and create chaos is priceless. Martinelli has plateaued; Adeyemi is the direct upgrade. "
+            "His 28 dribbles completed in just 16 games is elite. 5G + 5A while missing games to injury "
+            "projects to 12G + 12A over a full season.",
+            "Arteta's left side demands the LW to cut inside while Calafiori overlaps — Adeyemi's pace "
+            "and directness driving at the centre-back creates the space for Calafiori's overlaps AND "
+            "opens the switch to Saka isolated 1v1 on the right. The system unlocks.",
+            "Dortmund's 2027 contract means they MUST sell or lose him cheap next year. The 60-65m "
+            "price is fair market, not inflated. His versatility (LW/RW/CF) also covers Saka injury risk."
+        ],
+        why_wont_work=[
+            "Injury history at Dortmund is genuinely concerning — he's missed significant chunks of "
+            "EVERY season. Arsenal play 60 games/season across 4 competitions. If the LW plays 25, "
+            "you've spent 65m on half a season. Martinelli's availability (19 apps so far) was already "
+            "a problem — replacing one unavailable LW with another is madness.",
+            "PL physicality is VERY different to Bundesliga. Van Dijk, Saliba, Dias — these defenders "
+            "deal with pace differently. They don't dive in; they show you wide and use their body. "
+            "Adeyemi's Bundesliga success is partly because defenders commit — PL defenders don't.",
+            "65m on a LW when you also need a CB, CM, and RB means this signing could starve other "
+            "positions of budget. Arsenal's squad has 4-5 gaps; filling one at the expense of others "
+            "is how you end up with one world-class flank and a paper-thin bench elsewhere.",
+            "His decision-making in the final third needs improvement. At Dortmund, he's given freedom "
+            "to try and fail. In Arteta's structured system, that freedom vanishes — every possession "
+            "must be purposeful. Can he adapt from instinct to structure?"
+        ],
     ))
 
     targets.append(Player(
@@ -1060,7 +1258,29 @@ def build_transfer_targets() -> list[Player]:
                        "Milan concerned about Arsenal interest.",
         strengths=["Athletic profile", "Youth", "Modern full-back attributes"],
         weaknesses=["Very raw", "Limited Serie A experience", "Unknown PL fit"],
-        role_in_squad="youth"
+        role_in_squad="youth",
+        why_works=[
+            "Pure upside play at 12m. Arsenal's academy model works — Saka, Lewis-Skelly, Nwaneri prove "
+            "that investing in young talent and developing them in-house creates both squad value and "
+            "culture. Bartesaghi has the athletic profile Arteta's system demands from a modern fullback.",
+            "Milan are worried about losing him — that internal concern tells you how highly they rate "
+            "him. Italian football develops tactically disciplined defenders — his positional education "
+            "under Pioli and Fonseca's systems is elite for his age.",
+            "At 12m, even if he takes 2 years to develop, the value proposition is enormous. He could "
+            "be the long-term Calafiori competition/successor. If he becomes a starter, Arsenal have "
+            "a 60m+ asset for 12m invested. Risk-reward is heavily skewed."
+        ],
+        why_wont_work=[
+            "Way too raw for a title challenge. Arsenal aren't building for 2029 — they need to win NOW. "
+            "16 Serie A appearances and zero European experience is nowhere near the quality needed "
+            "to compete for PL, CL, and FA Cup simultaneously.",
+            "Lewis-Skelly (18) already fills the 'young LB development project' slot. Adding another "
+            "creates a positional traffic jam: Calafiori (starter), Hincapie (rotation), MLS (youth), "
+            "and now Bartesaghi? That's 4 LBs and none of the newcomers improve the first XI.",
+            "The PL is unforgiving for young fullbacks. Could easily be a Tavares situation — the talent "
+            "is there but the PL's intensity, physicality, and speed chews him up before he's ready. "
+            "At 19, he's a project, not a solution."
+        ],
     ))
 
     # ==================== ADDITIONAL OPTIONS (3 per position) ====================
@@ -1091,7 +1311,35 @@ def build_transfer_targets() -> list[Player]:
                    "France international pedigree", "Reading of the game"],
         weaknesses=["Leipzig will want 50m+", "Not the most dominant aerially",
                    "Competition from Bayern, Barcelona"],
-        role_in_squad="starter"
+        role_in_squad="starter",
+        why_works=[
+            "The most progressive passer of all three CB options — top 5% among Bundesliga CBs. "
+            "Left-footed, which Arsenal NEED. His 90.5% pass completion is ALREADY at Arsenal-level "
+            "(Saliba: 92.1%). He'd slot into the build-up immediately without any technical adaptation.",
+            "Played under Rose at Leipzig in a pressing, high-line system that mirrors what Arteta "
+            "demands. The tactical transition would be minimal compared to Koulierakis (Wolfsburg) "
+            "or Scalvini (Atalanta's man-marking). He already understands positional play.",
+            "France international pedigree means he handles pressure and big stages. Quick for a CB — "
+            "perfect for Arsenal's high defensive line. More technically polished than Koulierakis right now, "
+            "which means fewer build-up errors in the crucial early-season period.",
+            "His reading of the game compensates for any aerial limitations. He intercepts rather than "
+            "challenges — 20 interceptions shows elite anticipation. In Arteta's system, intelligence "
+            "matters more than raw physicality."
+        ],
+        why_wont_work=[
+            "Not the most physical CB — against PL strikers like Haaland, Watkins, Isak, aerial "
+            "dominance matters MORE than in the Bundesliga. 32 aerials won is decent but not dominant. "
+            "Arsenal's set-piece advantage needs an aerial weapon at CB — Lukeba may not provide that.",
+            "Leipzig's defensive system protects CBs with a deep DM shield. At Arsenal, the defensive "
+            "line is more exposed because fullbacks push incredibly high. When Timber inverts and "
+            "Calafiori overlaps, the CBs are the last line — Lukeba hasn't been tested in that isolation.",
+            "Competition from Bayern and Barcelona means Arsenal might get into a bidding war that "
+            "pushes the price to 55-60m. At that point, the value proposition weakens significantly "
+            "compared to Koulierakis at 35-40m.",
+            "He hasn't been tested in the PL's unique physicality + pace blend. Bundesliga is fast "
+            "but not as physical; La Liga is technical but not as quick. The PL combines ALL of it, "
+            "and many excellent Bundesliga CBs have struggled (Upamecano-style errors)."
+        ],
     ))
 
     # --- RB Option 2 ---
@@ -1122,7 +1370,36 @@ def build_transfer_targets() -> list[Player]:
         weaknesses=["Not as dynamic going forward as Livramento",
                    "Limited top-level CL experience",
                    "Not a pace merchant"],
-        role_in_squad="rotation"
+        role_in_squad="rotation",
+        why_works=[
+            "The ULTIMATE Arteta fullback. Can play RB, CB, AND DM — this is literally what Arteta's "
+            "system demands. The inverting fullback role that Timber plays? Geertruida does it naturally "
+            "from his Feyenoord days under Slot (now at Liverpool). The tactical adaptation is zero.",
+            "At 32m, he's nearly HALF the price of Livramento with arguably better tactical fit. "
+            "His positional intelligence is his superpower — he always knows where to be. In a 60-game "
+            "season, having a player who can cover 3 positions without drop-off is worth 30m in depth "
+            "you don't have to buy separately.",
+            "Dutch international alongside Timber means national team chemistry already exists on the "
+            "right side. His 87% pass completion and 32 progressive passes from RB are strong for "
+            "a defender — he'd maintain Arsenal's build-up quality from the right.",
+            "Feyenoord under Slot played a system VERY similar to Arteta's — positional play, high press, "
+            "build from the back. Geertruida was the best player in that system. Direct translation."
+        ],
+        why_wont_work=[
+            "He's NOT a pace merchant. Against Luis Diaz, Son, Grealish — rapid wingers who run in "
+            "behind — Geertruida could get exposed in transition. Arsenal's high line DEMANDS recovery "
+            "pace. This is his one clear and potentially fatal limitation at PL level.",
+            "His attacking output (3 goals, 4 assists) is solid but not game-changing. He won't create "
+            "moments of individual magic the way Livramento or Vanderson might. Against deep blocks, "
+            "Arsenal need fullbacks who can produce from open play — Geertruida is more functional "
+            "than spectacular.",
+            "Leipzig's Bundesliga system is slower-paced than the PL. The intensity jump, the physical "
+            "battles in wide areas, the speed of counter-attacks — all significantly higher in England. "
+            "Smart positioning compensates for some of that, but not all.",
+            "If Timber stays fit (which he has this season — 23 apps), Geertruida might never start "
+            "in the PL. Spending 32m on a player who's primarily your cup/rotation RB is a lot when "
+            "Ben White is still at the club doing exactly that role."
+        ],
     ))
 
     # --- RB Option 3 ---
@@ -1153,7 +1430,32 @@ def build_transfer_targets() -> list[Player]:
         weaknesses=["Defensive positioning still developing",
                    "Ligue 1 to PL jump is significant",
                    "Not PL proven"],
-        role_in_squad="rotation"
+        role_in_squad="rotation",
+        why_works=[
+            "Pure chaos on the right flank. When Arsenal face deep blocks (70% of their games), they "
+            "need someone who can dribble past players and create something from nothing. 26 dribbles "
+            "completed and 55 progressive carries make him an elite ball-progressor from fullback.",
+            "At 28m from a selling club, the financial risk is minimal. He's only 23 — massive "
+            "development runway. His 6 assists show end product, not just empty dribbles. His attacking "
+            "profile gives Arteta a tactical option he currently lacks: a fullback who STAYS WIDE and "
+            "overlaps rather than inverts. Against certain opponents, that width is devastating.",
+            "Different profile to Timber — when opposition prepare for the inverting fullback all week "
+            "and Arsenal switch to Vanderson's overlapping runs, it's a tactical curveball. Arteta "
+            "loves having multiple systems available."
+        ],
+        why_wont_work=[
+            "Ligue 1 to PL is a HUGE jump for a defender. The defensive intensity, physicality, and "
+            "speed of transition in the PL would be a culture shock. His defensive positioning is still "
+            "raw — at Monaco, he gets away with it in a lower-quality league. Against Salah, Palmer, "
+            "Saka-level wingers, his 1v1 defending would be brutally exposed.",
+            "82% pass completion is BELOW Arsenal's standards for a fullback in possession. Arteta's "
+            "build-up demands precision — when the RB receives under pressure, every pass must find "
+            "its target. Vanderson's technique is attack-first, defend/pass-second. That's backwards "
+            "for Arteta.",
+            "Could be a liability in big games where defensive solidity matters more than attacking "
+            "flair. Imagine Arsenal 1-0 up at Anfield with 10 minutes left — do you trust Vanderson "
+            "to defend that lead? That's the question Arteta would ask."
+        ],
     ))
 
     # --- LB Option 2 ---
@@ -1184,7 +1486,36 @@ def build_transfer_targets() -> list[Player]:
         weaknesses=["Technical ceiling not as high as elite LBs",
                    "Crossing accuracy inconsistent",
                    "Multiple PL clubs interested"],
-        role_in_squad="starter"
+        role_in_squad="starter",
+        why_works=[
+            "ALREADY PL-PROVEN. This cannot be overstated — he knows what it takes to defend against "
+            "Salah, Palmer, Saka EVERY WEEK. Zero adaptation period. His transition play is exactly what "
+            "Arteta wants from a LB when Arsenal counter — explosive forward runs that turn defence into "
+            "attack in 3 seconds.",
+            "The anti-Zinchenko. Where Zinchenko was silky on the ball but a liability defending, "
+            "Kerkez is reliable at the back AND dynamic going forward. 32 tackles won shows he relishes "
+            "the physical battle. He'd give Calafiori genuine competition AND cover his injury niggles.",
+            "The Calafiori-Kerkez rotation gives Arsenal two different LB profiles — one for possession "
+            "dominance (Calafiori: technically superior, inverts), one for transitions and defensive "
+            "solidity (Kerkez: pace, aggression, direct). That tactical flexibility is worth 35m alone.",
+            "At 35m from Bournemouth, this is a clean, realistic deal with no bidding war drama. "
+            "Bournemouth sell to big clubs regularly — the pathway is smooth."
+        ],
+        why_wont_work=[
+            "His technical ceiling worries you. Arteta's LB needs to play intricate combinations in "
+            "tight spaces — Kerkez is more of a 'get it and drive' player. His crossing accuracy is "
+            "inconsistent, which matters when Arsenal's left-side overloads demand precise final balls.",
+            "At Bournemouth he has freedom to bomb forward. At Arsenal, the LB role is more structured "
+            "and positionally complex — when to overlap, when to invert, when to hold the half-space. "
+            "Can he handle Arteta's tactical demands? Bournemouth's system asks him to run; "
+            "Arsenal's system asks him to THINK and run.",
+            "Multiple PL clubs interested means the price could inflate to 40-45m, where the value "
+            "proposition weakens. At 35m he's a great deal; at 45m you start questioning whether "
+            "you're overpaying for a player who isn't a clear upgrade on Calafiori.",
+            "His 82.5% pass completion is the lowest of any LB Arsenal would consider. In Arteta's "
+            "build-up, the LB is critical to ball progression — if Kerkez misplaces passes under "
+            "press, it disrupts the entire left-side structure."
+        ],
     ))
 
     # --- LB Option 3 ---
@@ -1214,7 +1545,36 @@ def build_transfer_targets() -> list[Player]:
                    "CL experience", "Only 22"],
         weaknesses=["ACL injury history (2024)", "Barcelona may not sell",
                    "Defensive positioning needs improvement"],
-        role_in_squad="starter"
+        role_in_squad="starter",
+        why_works=[
+            "La Masia pedigree means the technical ability is INNATE. He's been drilled in Barcelona's "
+            "positional play since childhood — and Arteta's system IS positional play, descended from "
+            "the Cruyff/Guardiola/Barca tree. Balde already understands half-spaces, third-man "
+            "combinations, positional rotations. The tactical language is shared.",
+            "His pace is elite (one of the fastest LBs in Europe) — perfect for Arsenal's high-line "
+            "recovery. Spain international at 22 means he handles the biggest stages. If Barcelona "
+            "NEED to sell for FFP, Arsenal could get a 55m+ player for 38m — the kind of market "
+            "inefficiency smart sporting directors exploit.",
+            "CL knockout experience at 22 for Barcelona — he's played in the cauldron. Arsenal's "
+            "ambition is to WIN the Champions League. You need players who've been there before.",
+            "His combination of pace + technique is extremely rare at LB. He can overlap at speed AND "
+            "play intricate combinations when he arrives in the final third. That's both dimensions "
+            "of Arteta's LB role covered in one player."
+        ],
+        why_wont_work=[
+            "ACL in 2024. Full stop. Arsenal already have Calafiori and Timber who've had injury issues. "
+            "Building a squad on players with serious injury histories at 22 is reckless. The medical "
+            "risk alone should give the recruitment team sleepless nights.",
+            "His defensive positioning is genuinely POOR. At Barcelona, the fullbacks are protected by "
+            "the midfield structure. At Arsenal, when Rice carries forward, the LB is often the last "
+            "line of defence. Balde gets beaten too easily in 1v1 defensive situations — the PL's "
+            "elite wingers would feast on that.",
+            "Barcelona might NOT sell. They might find FFP workarounds, leaving Arsenal having wasted "
+            "an entire summer in negotiations while Kerkez signs for Liverpool. The opportunity cost "
+            "of a collapsed deal is months of lost time and missed alternatives.",
+            "38m for a player with an ACL history and defensive positioning issues is a gamble. Kerkez "
+            "at 35m with PL-proven defensive solidity and no injury concerns is objectively safer."
+        ],
     ))
 
     # --- CM Option 2 ---
@@ -1243,7 +1603,35 @@ def build_transfer_targets() -> list[Player]:
                    "Homegrown", "Tempo control", "Young"],
         weaknesses=["Palace will demand premium", "Not a goal threat",
                    "Needs to add physicality for top level"],
-        role_in_squad="rotation"
+        role_in_squad="rotation",
+        why_works=[
+            "The most underrated midfielder in England. 91% pass completion from a deep-lying role — "
+            "that's ZUBIMENDI territory. PL proven, English (homegrown quota), and he ALREADY understands "
+            "the intensity of English football. Zero adaptation risk. Zero settling-in period.",
+            "His metronomic passing would give Arsenal a different midfield option — when Zubimendi is "
+            "rested, Wharton steps in and the system doesn't lose tempo. Palace under Glasner play a "
+            "system that demands their #6 to be press-resistant — that's directly transferable to Arteta.",
+            "At 42m, he's cheaper than Bouaddi with significantly less risk. The homegrown advantage "
+            "shouldn't be underestimated — Arsenal need to balance their foreign player quota for CL "
+            "and PL registration. An English CM solves a regulatory problem AND a football problem.",
+            "At 22, his development arc is still steep. He's not the finished article — but he's already "
+            "playing at a level that would be immediately useful. The gap between his current level "
+            "and Arsenal's requirement is small enough to close within one season."
+        ],
+        why_wont_work=[
+            "ZERO goal threat. 1 goal in 22 games. Arteta's midfielders are expected to arrive in "
+            "the box — Rice has 4 goals, Zubimendi has 4, Merino has 4. Against deep blocks, you need "
+            "midfielders who crash the box as an extra body. Wharton doesn't have that in his game.",
+            "His physicality is a concern at the very top level. The Caicedos, Rices, and Bissoumas "
+            "of the PL would physically bully him in duels. The step up from Palace-level midfield "
+            "battles to Arsenal-level (where you face City's and Liverpool's press) is enormous.",
+            "Palace is not Arsenal — the step up in expectation, pressure, tactical complexity, and "
+            "scrutiny is massive. He's never played in Europe. And 42m is a lot for a backup who "
+            "doesn't start over Zubimendi, Rice, or Odegaard on current form.",
+            "His progressive carrying (20) is limited compared to what Arsenal demand. Rice carries "
+            "the ball 145 times — Wharton's game is pass-first. In the PL, sometimes you need to "
+            "carry through the press, not just pass through it."
+        ],
     ))
 
     # --- CM Option 3 ---
@@ -1273,7 +1661,37 @@ def build_transfer_targets() -> list[Player]:
                    "Physical presence", "Goals from midfield"],
         weaknesses=["Atalanta will want 50m+", "Already 26 (limited resale)",
                    "Serie A to PL adaptation"],
-        role_in_squad="starter"
+        role_in_squad="starter",
+        why_works=[
+            "The most 'ready-made' CM option. At 26, peak age, zero development needed. His ball-winning "
+            "(42 tackles, 28 interceptions) is ELITE. In games where Arsenal need to be combative — "
+            "NLD, away at Anfield, CL knockout legs — Ederson adds a physical dimension the midfield "
+            "sometimes lacks. Think of the Rice-Ederson double pivot for big away games.",
+            "He's basically a Declan Rice clone. Arteta could deploy a Rice-Ederson double pivot in "
+            "tough away games while pushing Odegaard higher as a free #10. That tactical flexibility "
+            "— to go from 4-3-3 to a 4-2-3-1 mid-game — is something Arsenal currently can't do "
+            "without losing midfield quality.",
+            "Europa League winner with Atalanta. Gasperini's system demands insane physical output "
+            "from every midfielder — 12km+ per game. He's built for the PL's physical demands. "
+            "His 4 goals from CM shows he's not just a destroyer — he arrives in the box.",
+            "At 26, he's immediately impactful. No waiting, no development, no risk of PL shock. "
+            "Arsenal buy him in June, he starts in August. That certainty has value."
+        ],
+        why_wont_work=[
+            "50m for a 26-year-old CM with limited resale value is fiscally irresponsible when you "
+            "could spend that on Bouaddi (who has 10x the resale potential at 18). Arsenal's model "
+            "should be buying assets that appreciate, not peak-age players who depreciate from day one.",
+            "His passing (87% completion) ISN'T at the level Arsenal demand from their midfielders. "
+            "Zubimendi is 91.5%, Wharton is 91%. In Arteta's possession system, every midfielder must "
+            "be press-resistant and technically precise — Ederson is more 'win it and give it simple'. "
+            "That works at Atalanta; it might not at Arsenal.",
+            "He DUPLICATES what Arsenal already have in Rice. Do you really need TWO ball-carrying "
+            "physical CMs? The system needs creativity and tempo control more than combativeness. "
+            "Buying another Rice is solving a problem Arsenal don't have.",
+            "Serie A to PL adaptation is unpredictable. The speed of play, the intensity of pressing, "
+            "the aerial challenge in midfield — all significantly higher in England. Many excellent "
+            "Serie A midfielders have taken 6-12 months to adjust. Arsenal can't afford that in a title race."
+        ],
     ))
 
     # --- AM Option 2 ---
@@ -1304,7 +1722,35 @@ def build_transfer_targets() -> list[Player]:
                    "France international", "Olympic gold medalist", "Creative vision"],
         weaknesses=["PSG may not sell permanently", "Needs more end product",
                    "Physical development for PL"],
-        role_in_squad="rotation"
+        role_in_squad="rotation",
+        why_works=[
+            "The most versatile of the AM options — AM, LW, RW. Arteta craves multi-positional players "
+            "because it allows mid-game tactical shifts WITHOUT substitutions. Need to rest Saka on "
+            "the right? Doue covers. Odegaard cramps at 70min? Doue drops into the #10. That flexibility "
+            "across a 60-game season is invaluable.",
+            "His dribbling in tight spaces is reminiscent of a young Bernardo Silva — and Arteta knows "
+            "EXACTLY what Bernardo brings from his City days. Against packed defences, players who can "
+            "receive, turn, and create in 2 square metres are golden. Doue has that.",
+            "Olympic gold medalist at 20 shows mentality and big-game nerve. At PSG, he's learning "
+            "from Dembele, one of the best dribblers in the world. If PSG don't give him minutes, "
+            "a loan with option is possible — low-risk, high-reward structure.",
+            "French market pathway that Arsenal know well. Their scouting network in France (Saliba, "
+            "Bouaddi links) means they have detailed intelligence on Doue's character, training habits, "
+            "and adaptability. No blind spots."
+        ],
+        why_wont_work=[
+            "End product. 3 goals and 4 assists in 22 games is NOT enough for a creative player at "
+            "Arsenal's level. Eze has similar numbers and he's been inconsistent. In the PL, you need "
+            "decisive moments in tight games — Doue hasn't shown he can produce them yet.",
+            "Physical development for the PL is a genuine concern. Ligue 1 and PL are different planets "
+            "physically. The midfield combat zone in England — where tackles fly in, shirts are pulled, "
+            "and referees let it go — would be a shock to a player who's been protected in France.",
+            "PSG may not sell permanently, and a loan doesn't build squad equity. At 38m as a permanent "
+            "deal, the risk-reward is worse than Guler (more talented, loan option) and Kubo (more "
+            "proven output, cheaper). Doue falls in an awkward middle ground.",
+            "Could easily be another Pepe — technically skilled French winger who can't adapt to PL "
+            "intensity. Arsenal paid 72m for that lesson. The parallels are uncomfortable."
+        ],
     ))
 
     # --- AM Option 3 ---
@@ -1334,7 +1780,36 @@ def build_transfer_targets() -> list[Player]:
                    "Release clause available", "Versatile attacker"],
         weaknesses=["Physical stature (1.73m)", "PL intensity is different",
                    "Defensive contribution limited"],
-        role_in_squad="rotation"
+        role_in_squad="rotation",
+        why_works=[
+            "The most PROVEN of the three AM options. 6 goals, 5 assists in 24 games at Real Sociedad — "
+            "he's performing NOW, not in potential. His 32 dribbles completed and 30 key passes are the "
+            "BEST of any AM target by a distance. This isn't projection — it's output.",
+            "At 35m, he's the cheapest AM option while arguably being the most productive. Arsenal scouted "
+            "him extensively in 2025 — they know exactly what he brings. Former Barca/Real Madrid youth "
+            "means he understands elite environments and handles pressure.",
+            "His work rate has improved significantly at Sociedad under Imanol's pressing system — "
+            "this directly addresses the 'defensive contribution' concern. He's not the lazy luxury "
+            "player people assume. The pressing data backs it up.",
+            "Can play RW or AM, giving backup to both Saka and Odegaard — the two most important "
+            "attacking players in the squad. When Saka needs rest (he's played too many minutes), "
+            "Kubo on the right maintains creativity. That insurance is worth 35m."
+        ],
+        why_wont_work=[
+            "At 1.73m, the PL physicality is a genuine concern. Centre-backs in England are bigger, "
+            "faster, and more aggressive than in La Liga. Santi Cazorla made it work, but he's the "
+            "exception not the rule. The physical mismatch in aerial duels, shoulder challenges, and "
+            "50-50s could nullify his technical advantage.",
+            "La Liga to PL is a significant adaptation — the speed of play, the aerial challenge, the "
+            "refereeing style (less protection for technical players). Many La Liga creators have "
+            "struggled: Coutinho, Hazard post-Chelsea, etc. The transition is not guaranteed.",
+            "His defensive contribution IS limited despite improvements. Can Arteta trust him in a "
+            "system where EVERY player must press? When Arsenal are 1-0 up and defending a lead, "
+            "can Kubo do the dirty work? That question mark lingers.",
+            "At 24, his development curve is flattening — what you see is what you get. Is a 35m "
+            "squad player who might not start really worth it when Arsenal already have Eze and "
+            "Nwaneri for AM backup? The positional overlap could create a selection headache."
+        ],
     ))
 
     # --- ST Option 2 ---
@@ -1365,7 +1840,36 @@ def build_transfer_targets() -> list[Player]:
                    "Arsenal already have relationship"],
         weaknesses=["Release clause is 65m", "Link-up play still developing",
                    "Big club move might affect form"],
-        role_in_squad="starter"
+        role_in_squad="starter",
+        why_works=[
+            "The most physically impressive striker target. 1.95m with GENUINE PACE — that combination "
+            "is almost impossible to find in world football. 14 goals in 24 games shows consistent "
+            "finishing. Arsenal were very close in 2024 — the relationship and trust already exist.",
+            "His release clause (65m) means NO protracted negotiations — pay it and he's yours by "
+            "July 1st. In big games, having a Plan B of 'launch it to the 6'5 striker who runs a "
+            "4.7s 40-yard dash' is incredibly valuable. Deep-defending teams who pack the box against "
+            "Arsenal's patient build-up would HATE facing Sesko's directness.",
+            "The Haaland comparison isn't unfair — similar body type, similar trajectory. At 23, his "
+            "development runway is massive. If Gyokeres struggles to adapt (the xG gap is alarming), "
+            "Sesko becomes the starter AND Arsenal have a 100m+ asset.",
+            "His pressing numbers are strong for a big man — he covers ground and wins the ball high. "
+            "Arteta demands front-press triggers; Sesko has the engine and aggression to execute them."
+        ],
+        why_wont_work=[
+            "Link-up play STILL developing. Arteta's system demands the #9 to be involved in build-up — "
+            "dropping deep, combining with Odegaard, playing one-twos in the final third. Sesko's game "
+            "is more direct: run in behind, win the aerial, finish. That's valuable but it's NOT what "
+            "Arsenal's primary system needs. His 10 key passes in 24 games is very low.",
+            "65m on a SECOND striker when Gyokeres is already there on 200k/week is enormous. The risk "
+            "of creating an unhappy dressing room — two expensive #9s fighting for one shirt — is real. "
+            "Managing egos costs more than managing budgets. Ask Guardiola about Aguero/Dzeko dynamics.",
+            "Leipzig's system FLATTERS strikers — open, transition-heavy, counter-attacking football "
+            "with lots of space in behind. The PL defending Sesko would face is completely different: "
+            "compact, organised, physical. His conversion rate in tight spaces is untested.",
+            "Big-club pressure is different. At Leipzig, there's no expectation to win the league. "
+            "At Arsenal, every game matters. Young strikers can freeze — Gyokeres' own early struggles "
+            "prove that PL pressure affects finishing. Sesko at 65m facing that same pressure is a risk."
+        ],
     ))
 
     # --- ST Option 3 ---
@@ -1396,7 +1900,37 @@ def build_transfer_targets() -> list[Player]:
         weaknesses=["Massive wage demands (free agent premium)",
                    "Competition from Barca, Man Utd, Juventus",
                    "Not the most physically imposing"],
-        role_in_squad="rotation"
+        role_in_squad="rotation",
+        why_works=[
+            "FREE. TRANSFER. In a market where mediocre players cost 50m, getting a proven 15-goal-a-season "
+            "striker for ZERO transfer fee is the best value proposition in football. That 50-65m saved "
+            "can fund a CB AND a LW. Arsenal's budget stretches to cover all squad gaps.",
+            "David's movement is intelligent — he finds space between defenders in a way that's eerily "
+            "similar to Thierry Henry's (smaller scale). His pressing from the front is excellent — "
+            "Lille's system demands it. He's scored 15+ goals for 5 CONSECUTIVE seasons — this isn't "
+            "a one-season wonder, it's a proven elite-level output machine.",
+            "Even as the #2 striker behind Gyokeres, his goal record means he'd contribute 10-15 goals "
+            "from rotation, cups, and substitute appearances. That's the difference between winning "
+            "the league by 2 points or losing it.",
+            "At 26, he's entering his prime. Clinical finishing is the one quality Arsenal's attack "
+            "lacks (Gyokeres: 33% shot accuracy vs David's 50%). David off the bench at 70min against "
+            "a tired defence is a devastatingly effective plan."
+        ],
+        why_wont_work=[
+            "The competition for him is ENORMOUS — Barcelona, Man Utd, Juventus all want him. As a "
+            "free agent, the player holds ALL the cards. David might choose Barca for prestige, Juve "
+            "for lifestyle, or Utd for wages. Arsenal may simply lose the personal terms battle.",
+            "Free agent wage demands are astronomical — agents demand 300k+ signing bonuses, image "
+            "rights packages, and inflated weekly wages. The 'free transfer' label is misleading: "
+            "total cost with signing bonus, agent fees, and 140k/week wages over 4 years is still "
+            "50m+. It's free upfront, not free overall.",
+            "He's not the most physically imposing at 5'11 — in the PL, against Saliba-types, he'd "
+            "struggle in aerial duels. Arteta's system often uses the #9 as a target for crosses and "
+            "set-pieces. David doesn't give you that aerial dimension.",
+            "Is he actually BETTER than Gyokeres? If not, you're paying 140k/week for a backup who "
+            "might not be happy on the bench. Ligue 1 records don't always translate — many Ligue 1 "
+            "strikers have flopped in the PL (Lacazette's decline, Remy, Batshuayi)."
+        ],
     ))
 
     # --- LW Option 2 ---
@@ -1428,7 +1962,40 @@ def build_transfer_targets() -> list[Player]:
         weaknesses=["Release clause is firm — no negotiation",
                    "Athletic Bilbao emotional attachment",
                    "High wage demands"],
-        role_in_squad="starter"
+        role_in_squad="starter",
+        why_works=[
+            "The COMPLETE LW package. Goals (7), assists (8), dribbling (36 completed), pace, "
+            "physicality — he does EVERYTHING. Euro 2024 star alongside Yamal means he thrives on "
+            "the absolute biggest stages. When Martinelli has 3G+2A all season and Williams has "
+            "7G+8A, the upgrade is massive and immediate.",
+            "In Arteta's system, the LW cuts inside while the LB overlaps — Williams does exactly "
+            "this at Athletic Bilbao, and he does it at the highest level in La Liga AND "
+            "international football. The tactical fit is perfect. His physical profile "
+            "(pace + strength) suits the PL — he wouldn't be pushed off the ball like smaller wingers.",
+            "Release clause (58m) is set — no negotiation theatre, no bidding war, no protracted "
+            "summer saga. Arsenal pay 58m and it's done by June. Barcelona tried and FAILED in 2024, "
+            "proving the clause CAN be triggered. He'd immediately become the best LW Arsenal have "
+            "had since peak Alexis Sanchez.",
+            "At 24, he's entering his prime with 8+ years of elite football ahead. His 74 Squawka "
+            "and 7.5 FotMob ratings are the highest of ANY transfer target on the list."
+        ],
+        why_wont_work=[
+            "His emotional attachment to Athletic Bilbao is REAL — he grew up there, his brother Inaki "
+            "is a club legend, the Basque identity runs deep. He turned down Barcelona. Arsenal may "
+            "simply not be able to convince him to leave San Mames for the Emirates. You can trigger "
+            "the clause, but you can't force him to sign.",
+            "58m release clause + 150k/week wages + agent fees = 90m+ total investment on a position "
+            "where Arteta could find a cheaper solution (Adeyemi at 65m WANTS to come; Bakayoko at "
+            "42m is an exciting alternative). The opportunity cost of overspending on LW is starving "
+            "the CB or CM budget.",
+            "Williams is at his BEST driving at defenders in open space — transition football suits "
+            "him. Against deep blocks, where Arsenal spend 70% of their time, is his game as effective? "
+            "Athletic Bilbao play more direct football. Arsenal's patient, positional build-up is a "
+            "very different tactical environment.",
+            "High wage demands could disrupt the wage structure. If Williams arrives on 150k+/week, "
+            "Saka's camp will use it as leverage for a raise. The ripple effect of one marquee "
+            "signing's wages through the squad is the hidden cost boards underestimate."
+        ],
     ))
 
     # --- LW Option 3 ---
@@ -1461,7 +2028,37 @@ def build_transfer_targets() -> list[Player]:
         weaknesses=["Eredivisie to PL is a big jump",
                    "Defensive effort inconsistent",
                    "Decision-making still maturing"],
-        role_in_squad="rotation"
+        role_in_squad="rotation",
+        why_works=[
+            "The analytics darling. 8 goals and 6 assists in 22 Eredivisie games at 22 — the trajectory "
+            "is steep and accelerating. Right-footed on the left, he naturally cuts inside to shoot — "
+            "EXACTLY what Arteta wants from his LW (create overloads left, cut inside, shoot or "
+            "combine with the #10). The Martinelli replacement profile is perfect.",
+            "Contract leverage (2027) gives PSV selling pressure — 40-45m is realistic. At that price, "
+            "Arsenal get a high-ceiling winger AND preserve budget for CB, RB, and CM. That's the "
+            "financial smartness that separates good windows from great ones.",
+            "Belgium international at 22 means he's played on big stages. His 30 dribbles completed "
+            "and 45 progressive carries show he can beat players and progress the ball into the final "
+            "third. His 6.5 xG is the highest of ANY LW target — the goal threat is real, not just "
+            "Eredivisie inflation.",
+            "At 22, the resale value is enormous. If he hits (think Salah at Roma → Liverpool), Arsenal "
+            "have a 100m+ asset. If he's good-not-great, they recoup the 42m easily. The financial "
+            "downside is capped; the upside is uncapped."
+        ],
+        why_wont_work=[
+            "Eredivisie to PL is historically the HARDEST jump for attackers. Depay, Bergwijn, Janssen, "
+            "Ziyech — the list of Eredivisie stars who flopped in England is longer than the successes. "
+            "PSV's system gives attackers space, time, and weaker opposition. The PL gives you none of those.",
+            "His defensive work rate is inconsistent — in Arteta's system, that's NON-NEGOTIABLE. When "
+            "Arsenal lose the ball, the LW must become the first line of press on the opposition RB. "
+            "If Bakayoko can't or won't do that consistently, he can't play for Arteta. Period.",
+            "Decision-making is still maturing — at Arsenal, you get ONE chance in the final third, not "
+            "three. The Eredivisie forgives bad decisions because you get the ball back quickly against "
+            "weaker teams. In the PL, one wrong pass and you're defending a counter-attack.",
+            "The 42m could be better spent on a proven PL attacker or a cheaper development option. "
+            "Bakayoko sits in the awkward middle — too expensive for a gamble, not proven enough "
+            "for certainty. For the same money, Arsenal could get a PL-proven player at another position."
+        ],
     ))
 
     return targets
