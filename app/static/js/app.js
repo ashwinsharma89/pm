@@ -617,119 +617,220 @@
     }
 
     // ==================== BUY TAB ====================
+    const POSITION_ORDER = ["CB", "RB", "LB", "CM", "AM", "ST", "LW"];
+    const POSITION_LABELS = {
+        CB: "Centre-Back", RB: "Right-Back", LB: "Left-Back",
+        CM: "Central Midfield", AM: "Attacking Midfield", ST: "Striker", LW: "Left Wing"
+    };
+
     function renderBuyTab() {
         const buys = DATA.transfer_plan.buy_recommendations || [];
-        let html = "";
 
+        // KPI summary
+        const totalTargets = buys.length;
+        const p1Count = buys.filter(b => b.priority_score >= 75).length;
+        const p2Count = buys.filter(b => b.priority_score >= 60 && b.priority_score < 75).length;
+        const totalFee = buys.reduce((s, b) => s + b.estimated_fee_m, 0);
+        const positionsCount = new Set(buys.map(b => b.position)).size;
+
+        let html = `<div class="buy-kpi-row">
+            ${kpi(totalTargets, "Total Targets", "kpi-blue")}
+            ${kpi(p1Count, "P1 Picks", "kpi-green")}
+            ${kpi(p2Count, "P2 Picks", "kpi-yellow")}
+            ${kpi(positionsCount, "Positions", "kpi-gold")}
+            ${kpi("\u20AC" + Math.round(totalFee) + "m", "Total If All Signed", "kpi-red")}
+        </div>`;
+
+        // Group by position
+        const grouped = {};
         for (const b of buys) {
-            const scoreClass = b.priority_score >= 75 ? "score-high" : b.priority_score >= 55 ? "score-mid" : "score-low";
-            const tier = b.priority_score >= 75 ? "priority-1" : b.priority_score >= 60 ? "priority-2" : "priority-3";
-            const tierLabel = b.priority_score >= 75 ? "Priority 1" : b.priority_score >= 60 ? "Priority 2" : "Priority 3";
-
-            const st = b.stats_summary || {};
-            const sb = b.score_breakdown || {};
-            const deal = b.deal_structure || {};
-
-            html += `
-            <div class="rec-card buy-card">
-                <div class="rec-header">
-                    <div class="rec-player-info">
-                        <h3>${b.player}</h3>
-                        <div class="rec-meta">
-                            <span>${b.position}</span>
-                            <span>Age ${b.age}</span>
-                            <span>${b.nationality}</span>
-                            <span>From: ${b.current_club}</span>
-                            <span>Contract: ${b.contract_expiry}</span>
-                        </div>
-                    </div>
-                    <div class="rec-score">
-                        <span class="priority-badge ${tier}">${tierLabel}</span>
-                        <div class="score-ring ${scoreClass}">${b.priority_score}</div>
-                    </div>
-                </div>
-                <div class="rec-body">
-                    <!-- SCORE BREAKDOWN -->
-                    <div class="rec-section">
-                        <h4>Score Breakdown</h4>
-                        <div class="score-breakdown">
-                            ${breakdownBar("Need", sb.squad_need)}
-                            ${breakdownBar("Quality", sb.player_quality)}
-                            ${breakdownBar("Value", sb.financial_value)}
-                            ${breakdownBar("Age", sb.age_profile)}
-                            ${breakdownBar("Feasibility", sb.feasibility)}
-                        </div>
-                    </div>
-
-                    <!-- STATS -->
-                    <div class="rec-section">
-                        <h4>2025-26 Season Stats</h4>
-                        <div class="stats-grid">
-                            ${statBox(st.appearances, "Apps")}
-                            ${statBox(st.goals, "Goals")}
-                            ${statBox(st.assists, "Assists")}
-                            ${statBox(st.minutes, "Min")}
-                            ${statBox(st.goals_per90, "G/90")}
-                            ${statBox(st.assists_per90, "A/90")}
-                            ${statBox(st.xg ? st.xg.toFixed(1) : "-", "xG")}
-                            ${statBox(st.progressive_passes, "Prog Pass")}
-                            ${statBox(st.progressive_carries, "Prog Carry")}
-                            ${statBox(st.key_passes, "Key Pass")}
-                            ${statBox(st.squawka_score, "Squawka")}
-                            ${statBox(st.fotmob_rating ? st.fotmob_rating.toFixed(1) : "-", "FotMob")}
-                        </div>
-                    </div>
-
-                    <!-- REASONS -->
-                    <div class="rec-section">
-                        <h4>Why Sign This Player</h4>
-                        ${b.reasons.map((r) => `<div class="rec-reason">${r}</div>`).join("")}
-                    </div>
-
-                    <!-- EYE TEST -->
-                    <div class="rec-section">
-                        <h4>Scout / Eye Test Assessment</h4>
-                        <div class="eye-test-box">${b.eye_test}</div>
-                    </div>
-
-                    <!-- DEAL STRUCTURE -->
-                    <div class="rec-section">
-                        <h4>Proposed Deal Structure</h4>
-                        <div class="deal-box">
-                            <div class="deal-row"><span class="deal-label">Type</span><span class="deal-val">${deal.type || "N/A"}</span></div>
-                            <div class="deal-row"><span class="deal-label">Upfront</span><span class="deal-val">\u20AC${deal.upfront || 0}m</span></div>
-                            <div class="deal-row"><span class="deal-label">Installments</span><span class="deal-val">\u20AC${deal.installments || 0}m (${deal.installment_years || 0} yrs)</span></div>
-                            <div class="deal-row"><span class="deal-label">Add-ons</span><span class="deal-val">\u20AC${deal.add_ons || 0}m</span></div>
-                            <div class="deal-row" style="border-top:1px solid var(--border);margin-top:4px;padding-top:6px"><span class="deal-label"><strong>Total</strong></span><span class="deal-val" style="color:var(--green);font-size:16px"><strong>\u20AC${deal.total || 0}m</strong></span></div>
-                            <p style="font-size:12px;color:var(--text-muted);margin-top:8px">${deal.notes || ""}</p>
-                        </div>
-                    </div>
-
-                    <!-- COMPETING WITH -->
-                    <div class="rec-section">
-                        <h4>Competes With (Current Squad)</h4>
-                        <div class="risk-tags">
-                            ${(b.competing_with || []).map((c) => `<span class="strength-tag">${c}</span>`).join("") || "<span style='color:var(--text-muted)'>No direct competition</span>"}
-                        </div>
-                    </div>
-
-                    <!-- RISK FACTORS -->
-                    <div class="rec-section">
-                        <h4>Risk Factors</h4>
-                        <div class="risk-tags">
-                            ${(b.risk_factors || []).map((r) => `<span class="risk-tag">${r}</span>`).join("")}
-                        </div>
-                    </div>
-
-                    <!-- SUMMARY -->
-                    <div class="rec-section">
-                        <h4>Recommendation</h4>
-                        <p style="font-size:14px;font-weight:600;color:var(--arsenal-gold)">${b.recommendation_summary}</p>
-                    </div>
-                </div>
-            </div>`;
+            if (!grouped[b.position]) grouped[b.position] = [];
+            grouped[b.position].push(b);
         }
+        // Sort within each position by priority score descending
+        for (const pos of Object.keys(grouped)) {
+            grouped[pos].sort((a, b) => b.priority_score - a.priority_score);
+        }
+
+        // Render position-by-position
+        for (const pos of POSITION_ORDER) {
+            const players = grouped[pos];
+            if (!players || !players.length) continue;
+
+            const needLevel = players[0].score_breakdown ? players[0].score_breakdown.squad_need : 50;
+            const needLabel = needLevel >= 80 ? "High Need" : needLevel >= 50 ? "Moderate Need" : "Depth";
+            const needClass = needLevel >= 80 ? "pos-need-high" : needLevel >= 50 ? "pos-need-moderate" : "pos-need-depth";
+
+            html += `<div class="position-group">
+                <div class="position-group-header">
+                    <div class="pos-icon">${pos}</div>
+                    <h3>${POSITION_LABELS[pos] || pos}</h3>
+                    <span class="pos-need-badge ${needClass}">${needLabel}</span>
+                </div>
+                <div class="position-cards-row">`;
+
+            players.forEach((b, idx) => {
+                const rank = idx + 1;
+                const rankLabel = "P" + rank;
+                const rankClass = rank === 1 ? "pos-p1" : rank === 2 ? "pos-p2" : "pos-p3";
+                const scoreClass = b.priority_score >= 75 ? "score-high" : b.priority_score >= 55 ? "score-mid" : "score-low";
+                const sb = b.score_breakdown || {};
+                const st = b.stats_summary || {};
+                const deal = b.deal_structure || {};
+
+                html += `<div class="pos-card ${rankClass}">
+                    <div class="pos-card-rank">${rankLabel}</div>
+                    <div class="pos-card-head">
+                        <div>
+                            <h4>${b.player}</h4>
+                            <div class="pos-card-meta">${b.current_club || ""} &middot; Age ${b.age} &middot; ${b.nationality}</div>
+                        </div>
+                    </div>
+                    <div class="pos-card-score">
+                        <div class="mini-ring ${scoreClass}">${b.priority_score}</div>
+                        <div class="mini-bars">
+                            ${miniBar("Need", sb.squad_need)}
+                            ${miniBar("Quality", sb.player_quality)}
+                            ${miniBar("Value", sb.financial_value)}
+                            ${miniBar("Age", sb.age_profile)}
+                            ${miniBar("Feas", sb.feasibility)}
+                        </div>
+                    </div>
+                    <div class="pos-card-stats">
+                        ${miniStat(st.appearances, "Apps")}
+                        ${miniStat(st.goals, "Goals")}
+                        ${miniStat(st.assists, "Ast")}
+                        ${miniStat(st.minutes, "Min")}
+                        ${miniStat(st.goals_per90, "G/90")}
+                        ${miniStat(st.key_passes, "Key P")}
+                        ${miniStat(st.squawka_score, "Sqwk")}
+                        ${miniStat(st.fotmob_rating ? st.fotmob_rating.toFixed(1) : "-", "FotMob")}
+                    </div>
+                    <div class="pos-card-eye">${b.eye_test || ""}</div>
+                    <div class="pos-card-deal">
+                        <div>
+                            <span class="deal-fee">${b.estimated_fee_m === 0 ? "FREE" : "\u20AC" + b.estimated_fee_m + "m"}</span>
+                            <span class="deal-wages" style="margin-left:8px">\u00A3${b.estimated_wages_k}k/wk</span>
+                        </div>
+                        <span style="font-size:11px;color:var(--text-muted)">${deal.type || ""}</span>
+                    </div>
+                    <div class="pos-card-tags">
+                        ${(b.strengths || b.reasons || []).slice(0, 3).map(s => {
+                            const txt = s.replace(/^(Strength: |HIGH NEED: |MODERATE NEED: |GOOD VALUE: |FREE TRANSFER: |YOUTH INVESTMENT: |HIGH PERFORMANCE: )/, "");
+                            return `<span class="mini-strength">${txt.length > 30 ? txt.substring(0, 28) + "..." : txt}</span>`;
+                        }).join("")}
+                        ${(b.risk_factors || []).slice(0, 2).map(r => `<span class="mini-risk">${r.length > 30 ? r.substring(0, 28) + "..." : r}</span>`).join("")}
+                    </div>
+                    <button class="pos-card-expand" data-player-buy='${encodeURIComponent(JSON.stringify(b))}'>View Full Report</button>
+                </div>`;
+            });
+
+            html += `</div></div>`;
+        }
+
         $("#buyCards").innerHTML = html;
+
+        // Bind expand buttons to open full detail modal
+        document.querySelectorAll(".pos-card-expand").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const b = JSON.parse(decodeURIComponent(btn.dataset.playerBuy));
+                openBuyDetailModal(b);
+            });
+        });
+    }
+
+    function miniBar(label, val) {
+        val = val || 0;
+        const color = val >= 70 ? "var(--green)" : val >= 40 ? "var(--yellow)" : "var(--red)";
+        return `<div class="mini-bar-item"><span>${label}</span><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${val}%;background:${color}"></div></div></div>`;
+    }
+    function miniStat(val, label) {
+        return `<div class="mini-stat"><div class="mv">${val !== undefined && val !== null ? val : "-"}</div><div class="ml">${label}</div></div>`;
+    }
+
+    function openBuyDetailModal(b) {
+        const st = b.stats_summary || {};
+        const sb = b.score_breakdown || {};
+        const deal = b.deal_structure || {};
+        const tier = b.priority_score >= 75 ? "P1" : b.priority_score >= 60 ? "P2" : "P3";
+        const tierFull = b.priority_score >= 75 ? "Priority 1" : b.priority_score >= 60 ? "Priority 2" : "Priority 3";
+        const scoreClass = b.priority_score >= 75 ? "score-high" : b.priority_score >= 55 ? "score-mid" : "score-low";
+
+        let html = `
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+                <div>
+                    <h2 style="margin-bottom:2px">${b.player}</h2>
+                    <p style="color:var(--text-secondary);font-size:13px">${b.position} &middot; Age ${b.age} &middot; ${b.nationality} &middot; ${b.current_club || ""}</p>
+                    <p style="color:var(--text-muted);font-size:12px">Contract: ${b.contract_expiry}</p>
+                </div>
+                <div style="text-align:center">
+                    <div class="score-ring ${scoreClass}" style="margin:0 auto 4px">${b.priority_score}</div>
+                    <span style="font-size:11px;font-weight:700;color:var(--arsenal-gold)">${tierFull}</span>
+                </div>
+            </div>
+            <div class="rec-section">
+                <h4>Score Breakdown</h4>
+                <div class="score-breakdown">
+                    ${breakdownBar("Need", sb.squad_need)}
+                    ${breakdownBar("Quality", sb.player_quality)}
+                    ${breakdownBar("Value", sb.financial_value)}
+                    ${breakdownBar("Age", sb.age_profile)}
+                    ${breakdownBar("Feasibility", sb.feasibility)}
+                </div>
+            </div>
+            <div class="rec-section">
+                <h4>2025-26 Season Stats</h4>
+                <div class="stats-grid">
+                    ${statBox(st.appearances, "Apps")}
+                    ${statBox(st.goals, "Goals")}
+                    ${statBox(st.assists, "Assists")}
+                    ${statBox(st.minutes, "Min")}
+                    ${statBox(st.goals_per90, "G/90")}
+                    ${statBox(st.assists_per90, "A/90")}
+                    ${statBox(st.xg ? st.xg.toFixed(1) : "-", "xG")}
+                    ${statBox(st.progressive_passes, "Prog Pass")}
+                    ${statBox(st.progressive_carries, "Prog Carry")}
+                    ${statBox(st.key_passes, "Key Pass")}
+                    ${statBox(st.squawka_score, "Squawka")}
+                    ${statBox(st.fotmob_rating ? st.fotmob_rating.toFixed(1) : "-", "FotMob")}
+                </div>
+            </div>
+            <div class="rec-section">
+                <h4>Why Sign This Player</h4>
+                ${(b.reasons || []).map((r) => `<div class="rec-reason">${r}</div>`).join("")}
+            </div>
+            <div class="rec-section">
+                <h4>Scout / Eye Test Assessment</h4>
+                <div class="eye-test-box">${b.eye_test || ""}</div>
+            </div>
+            <div class="rec-section">
+                <h4>Proposed Deal Structure</h4>
+                <div class="deal-box">
+                    <div class="deal-row"><span class="deal-label">Type</span><span class="deal-val">${deal.type || "N/A"}</span></div>
+                    <div class="deal-row"><span class="deal-label">Upfront</span><span class="deal-val">\u20AC${deal.upfront || 0}m</span></div>
+                    <div class="deal-row"><span class="deal-label">Installments</span><span class="deal-val">\u20AC${deal.installments || 0}m (${deal.installment_years || 0} yrs)</span></div>
+                    <div class="deal-row"><span class="deal-label">Add-ons</span><span class="deal-val">\u20AC${deal.add_ons || 0}m</span></div>
+                    <div class="deal-row" style="border-top:1px solid var(--border);margin-top:4px;padding-top:6px"><span class="deal-label"><strong>Total</strong></span><span class="deal-val" style="color:var(--green);font-size:16px"><strong>\u20AC${deal.total || 0}m</strong></span></div>
+                    <p style="font-size:12px;color:var(--text-muted);margin-top:8px">${deal.notes || ""}</p>
+                </div>
+            </div>
+            <div class="rec-section">
+                <h4>Competes With (Current Squad)</h4>
+                <div class="risk-tags">
+                    ${(b.competing_with || []).map((c) => `<span class="strength-tag">${c}</span>`).join("") || "<span style='color:var(--text-muted)'>No direct competition</span>"}
+                </div>
+            </div>
+            <div class="rec-section">
+                <h4>Risk Factors</h4>
+                <div class="risk-tags">
+                    ${(b.risk_factors || []).map((r) => `<span class="risk-tag">${r}</span>`).join("")}
+                </div>
+            </div>
+            <div class="rec-section">
+                <h4>Recommendation</h4>
+                <p style="font-size:14px;font-weight:600;color:var(--arsenal-gold)">${b.recommendation_summary}</p>
+            </div>`;
+        openModal(html);
     }
 
     // ==================== FINANCIAL TAB ====================
