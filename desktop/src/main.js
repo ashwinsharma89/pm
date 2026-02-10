@@ -127,6 +127,18 @@ function buildMenu() {
       ],
     },
     {
+      label: "Edit",
+      submenu: [
+        { role: "undo" },
+        { role: "redo" },
+        { type: "separator" },
+        { role: "cut" },
+        { role: "copy" },
+        { role: "paste" },
+        { role: "selectAll" },
+      ],
+    },
+    {
       label: "View",
       submenu: [
         { label: "Overview", accelerator: "Cmd+1", click: () => switchTab("overview") },
